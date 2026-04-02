@@ -1,0 +1,6 @@
+print("Hello, I'm wondering if you can help me with this task.")
+print("I'm writing about You. Can u fill in the blanks?")
+name = str(input("What is your name? "))
+age = int(input("How old are you? "))
+city = str(input("Where do you live? "))
+print(f"Your name is {name}, you are {age} years old and you live in {city}.")
