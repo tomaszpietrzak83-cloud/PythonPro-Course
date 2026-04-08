@@ -26,3 +26,4 @@ while True:
         print(f"The result of {number1} {operator} {number2} is: {result}")
     except ValueError:
         print("Invalid input. Please enter numeric values for numbers.")
+    break
