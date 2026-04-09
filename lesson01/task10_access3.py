@@ -6,7 +6,7 @@ if (withAdult.lower() == "yes"):
 else:    
     withAdult = False
 
-if (withAdult and hight >= 120) or (not withAdult and hight >= 160):
+if (withAdult == True and (160 > hight >= 120)) or  (withAdult == False and hight >= 160):
   print("True: 'You can go to the ride!'")
 else:    
   print("False: 'Sorry, you cannot go to the ride.'")
