@@ -13,12 +13,18 @@ while True:
         elif operator == '*':
             result = number1 * number2
         elif operator == '/':
-            if number2 != 0:
-                result = number1 / number2
-            else:
+
+            attempts = 1
+            while number2 == 0 and attempts >= 0:
+                attempts -= 1
                 print("Error: Division by zero is not allowed.")
                 number2 = float(input("Enter second number: "))
-                result = number1 / number2
+            
+            if number2 == 0:
+                raise ZeroDivisionError
+
+            result = number1 / number2
+                    
         else:
             print("Invalid operator. Please use +, -, *, or /.")
             continue
@@ -26,4 +32,6 @@ while True:
         print(f"The result of {number1} {operator} {number2} is: {result}")
     except ValueError:
         print("Invalid input. Please enter numeric values for numbers.")
+    except ZeroDivisionError:
+        print("Thanks for using zero so many times")
     break
