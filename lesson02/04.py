@@ -1,4 +1,4 @@
-name = "Tomek"
+name = "Tom"
 firstLetter = name[0]
-fLcode = ord(firstLetter)
-print(fLcode)
+firstLetterCode = ord(firstLetter)
+print(firstLetterCode)
