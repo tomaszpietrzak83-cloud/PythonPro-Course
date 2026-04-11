@@ -1,4 +1,4 @@
-print("Hello, and welcome into simple rectangle circumference calculator!")
+print("Hello, and welcome to simple rectangle circumference calculator!")
 
 while True:
     try:
