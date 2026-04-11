@@ -1,25 +1,25 @@
-print("Chose a character from list: Dwarf(1), Elf(2), Human(3), Orc(4), else(5)")
+print("Chose a character from list: Dwarf(1), Elf(2), Human(3), Orc(4), custom(5)")
 
-character = str(input("Your character choice: "))
-if character == "1":
+userChoiceOfCharacter = str(input("Your character choice: "))
+if userChoiceOfCharacter == "1":
     character = "Dwarf"
-elif character == "2":
+elif userChoiceOfCharacter == "2":
     character = "Elf"
-elif character == "3":
+elif userChoiceOfCharacter == "3":
     character = "Human"
-elif character == "4":
+elif userChoiceOfCharacter == "4":
     character = "Orc"
 else:
-    character = str(input("Your character race: "))
+    character = input("Your character race: ")
 print("You chose: " + character)
 
-print("Chose class: Warrior(1), Mage(2), Archer(3), else(4)")
-characterClass = str(input("Your class choice: "))
-if characterClass == "1":
+print("Chose class: Warrior(1), Mage(2), Archer(3), custom(4)")
+userChoiceOfCharacterClass = input("Your class choice: ")
+if userChoiceOfCharacterClass == "1":
     characterClass = "Warrior"
-elif characterClass == "2":
+elif userChoiceOfCharacterClass == "2":
     characterClass = "Mage"
-elif characterClass == "3":
+elif userChoiceOfCharacterClass == "3":
     characterClass = "Archer"
 else:
     characterClass = str(input("Your character class: "))
