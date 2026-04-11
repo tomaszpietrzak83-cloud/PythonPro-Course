@@ -2,9 +2,9 @@ print("Welcome to simple calculator!")
 print("You can use +, -, *, / operations.")
 while True:
     try:
-        number1 = float(input("Enter first number: "))
-        operator = input("Enter operator (+, -, *, /): ")
-        number2 = float(input("Enter second number: "))
+        number1 = float(input("Enter first the number: "))
+        operator = input("Enter the operator (+, -, *, /): ")
+        number2 = float(input("Enter the second number: "))
 
         if operator == '+':
             result = number1 + number2
