@@ -1,5 +1,5 @@
-print("Welcome to simple calculator!")
-print("You can use +, -, *, / operations.")
+print("Welcome to the simple calculator!")
+print("You can use +, -, *, / Operators.")
 while True:
     try:
         number1 = float(input("Enter first the number: "))
