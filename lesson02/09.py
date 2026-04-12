@@ -21,4 +21,4 @@ Namespaces are one honking great idea -- let's do more of those!"""
 firstDot = pythonZen.find(".")
 secondDot = pythonZen.find(".", firstDot + 1)
 
-print(pythonZen[0:secondDot])
+print(pythonZen[0:secondDot + 1])
