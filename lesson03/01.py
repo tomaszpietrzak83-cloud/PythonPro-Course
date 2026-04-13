@@ -1,6 +1,7 @@
 age = 56
 name = "Alex"
-average = 4.5
+grades = [4.5, 3.8, 5.0]
+average = sum(grades) / len(grades)
 status = "student"
 isStudent = status == "student"
 print(type(age))
