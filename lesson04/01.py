@@ -1,7 +1,5 @@
 print("This program will perform simple calculations on your numbers.")
 
-
-
 while True:
     try:
         firstNumber = float(input("Please insert your first number: "))
