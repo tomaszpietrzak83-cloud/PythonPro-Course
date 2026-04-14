@@ -1,6 +1,6 @@
 age = int(input("what is your age? "))
 
-drivingLicense = input("do you have a driving license? (yes/no) ")
+drivingLicense = input("do you have a driving license? (yes/no) ").lower
 
-age >= 18 and drivingLicense == "yes"
-print(age >= 18 and drivingLicense == "yes")
+canDrive = age >= 18 and drivingLicense == "yes"
+print(canDrive)
