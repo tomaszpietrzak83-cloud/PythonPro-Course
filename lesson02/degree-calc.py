@@ -1,38 +1,43 @@
-unitIn =input("Please chose the degree unit you want to convert from (C/F/K):").upper()
-unitOut =input("Please chose the degree unit you want to convert to (C/F/K):").upper()
-degreeIn = float(input("Please enter the degree you want to convert:"))
+unitIn = input("Please chose the degree unit you want to convert from (C/F/K):").upper()
+unitOut = input("Please chose the degree unit you want to convert to (C/F/K):").upper()
+degreeIn = float(
+    input("Please enter the degree you want to convert:").replace(",", ".")
+)
 
 if unitIn == unitIn.lower() or unitOut == unitOut.lower():
     unitIn = unitIn.upper()
     unitOut = unitOut.upper()
 
 
-def convertTemperatureUnitValue (fromTemp, toTemp, tempInput):
+def convertUnit(fromIn, to, value):
 
-    if fromTemp == toTemp:
-        print(f" You entered same units therefore no conversion needed your temperature is: {tempInput}")
+    if fromIn == to:
+        print(
+            f" You entered same units therefore no conversion needed your temperature is: {value}"
+        )
     else:
-        if fromTemp == "C" and toTemp == "F":
-            degreeOut = tempInput * 9/5 + 32
-            
-        elif fromTemp == "F" and toTemp == "C":
-            degreeOut = (tempInput - 32) * 5/9
-            
-        elif fromTemp == "C" and toTemp == "K":
-            degreeOut = tempInput + 273.15
-            
-        elif fromTemp == "K" and toTemp == "C":
-            degreeOut = tempInput - 273.15
-            
-        elif fromTemp == "F" and toTemp == "K":
-            degreeOut = (tempInput - 32) * 5/9 + 273.15
-            
-        elif fromTemp == "K" and toTemp == "F":
-            degreeOut = (tempInput - 273.15) * 9/5 + 32
-            
+        if fromIn == "C" and to == "F":
+            degreeOut = value * 9 / 5 + 32
+
+        elif fromIn == "F" and to == "C":
+            degreeOut = (value - 32) * 5 / 9
+
+        elif fromIn == "C" and to == "K":
+            degreeOut = value + 273.15
+
+        elif fromIn == "K" and to == "C":
+            degreeOut = value - 273.15
+
+        elif fromIn == "F" and to == "K":
+            degreeOut = (value - 32) * 5 / 9 + 273.15
+
+        elif fromIn == "K" and to == "F":
+            degreeOut = (value - 273.15) * 9 / 5 + 32
+
         else:
             print("Invalid input. Please enter C, F, or K for the degree units.")
 
-        print(f"{tempInput}°{fromTemp} is equal to {degreeOut}°{toTemp}")
+        print(f"{value}°{fromIn} is equal to {degreeOut}°{to}")
 
-convertTemperatureUnitValue(unitIn, unitOut, degreeIn)   
+
+convertUnit(unitIn, unitOut, degreeIn)
