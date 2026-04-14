@@ -1,43 +1,59 @@
-unitIn = input("Please chose the degree unit you want to convert from (C/F/K):").upper()
-unitOut = input("Please chose the degree unit you want to convert to (C/F/K):").upper()
+try:
+    expectedValues = ("K", "F", "C")
+    unitIn = input(
+        "Please chose the degree unit you want to convert from (C/F/K):"
+    ).upper()
+    unitOut = input(
+        "Please chose the degree unit you want to convert to (C/F/K):"
+    ).upper()
+
+    if (unitIn not in expectedValues) or (unitOut not in expectedValues):
+        raise ValueError
+
+except ValueError:
+    print("Please enter one of: (K/F/C).")
+
 degreeIn = float(
     input("Please enter the degree you want to convert:").replace(",", ".")
 )
 
-if unitIn == unitIn.lower() or unitOut == unitOut.lower():
-    unitIn = unitIn.upper()
-    unitOut = unitOut.upper()
+try:
+    if unitIn == "K" and degreeIn < 0:
+        raise ValueError
+    elif unitIn == "C" and degreeIn < -273.15:
+        raise ValueError
+    elif unitIn == "F" and degreeIn < ((degreeIn - 32) * 5 / 9 + 273.15):
+        raise ValueError
+
+except ValueError:
+    print("Temperature can't be lower than absolute Zero!")
+    exit()
 
 
-def convertUnit(fromIn, to, value):
+if unitIn == unitOut:
+    print(
+        f" You entered same units therefore no conversion needed your temperature is: {degreeIn}"
+    )
 
-    if fromIn == to:
-        print(
-            f" You entered same units therefore no conversion needed your temperature is: {value}"
-        )
+unitInKelvin = 0
+if unitIn == "F":
+    unitInKelvin = (degreeIn - 32) * 5 / 9 + 273.15
+elif unitIn == "C":
+    unitInKelvin = degreeIn - 273.15
+else:
+    unitInKelvin = degreeIn
+
+
+def convertUnit(to, value):
+
+    if to == "C":
+        degreeOut = unitInKelvin - 273.15 / 100
+    elif to == "F":
+        degreeOut = (unitInKelvin + 273.15) * 9 / 5 + 32
     else:
-        if fromIn == "C" and to == "F":
-            degreeOut = value * 9 / 5 + 32
+        degreeOut = value
 
-        elif fromIn == "F" and to == "C":
-            degreeOut = (value - 32) * 5 / 9
-
-        elif fromIn == "C" and to == "K":
-            degreeOut = value + 273.15
-
-        elif fromIn == "K" and to == "C":
-            degreeOut = value - 273.15
-
-        elif fromIn == "F" and to == "K":
-            degreeOut = (value - 32) * 5 / 9 + 273.15
-
-        elif fromIn == "K" and to == "F":
-            degreeOut = (value - 273.15) * 9 / 5 + 32
-
-        else:
-            print("Invalid input. Please enter C, F, or K for the degree units.")
-
-        print(f"{value}°{fromIn} is equal to {degreeOut}°{to}")
+    print(f"{degreeIn}°{unitIn} is equal to {degreeOut}°{to}")
 
 
-convertUnit(unitIn, unitOut, degreeIn)
+convertUnit(unitOut, unitInKelvin)
