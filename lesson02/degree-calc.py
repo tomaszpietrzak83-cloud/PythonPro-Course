@@ -35,25 +35,28 @@ if unitIn == unitOut:
         f" You entered same units therefore no conversion needed your temperature is: {degreeIn}"
     )
 
-unitInKelvin = 0
-if unitIn == "F":
-    unitInKelvin = (degreeIn - 32) * 5 / 9 + 273.15
-elif unitIn == "C":
-    unitInKelvin = degreeIn - 273.15
-else:
-    unitInKelvin = degreeIn
+
+def unitToKelvin(value):
+    unitInKelvin = 0
+    if unitIn == "F":
+        unitInKelvin = (value - 32) * 5 / 9 + 273.15
+    elif unitIn == "C":
+        unitInKelvin = value - 273.15
+    else:
+        unitInKelvin = value
+    return unitInKelvin
 
 
 def convertUnit(to, value):
 
     if to == "C":
-        degreeOut = unitInKelvin - 273.15 / 100
+        degreeOut = unitToKelvin(value) + 273.15
     elif to == "F":
-        degreeOut = (unitInKelvin + 273.15) * 9 / 5 + 32
+        degreeOut = (unitToKelvin(value) + 273.15) * 9 / 5 + 32
     else:
-        degreeOut = value
+        degreeOut = unitToKelvin(value)
 
     print(f"{degreeIn}°{unitIn} is equal to {degreeOut}°{to}")
 
 
-convertUnit(unitOut, unitInKelvin)
+convertUnit(unitOut, degreeIn)
