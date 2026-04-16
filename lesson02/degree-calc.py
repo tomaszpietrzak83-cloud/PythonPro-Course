@@ -17,12 +17,20 @@ degreeIn = float(
     input("Please enter the degree you want to convert:").replace(",", ".")
 )
 
+
+def unitToKelvin(value):
+    unitInKelvin = 0
+    if unitIn == "F":
+        unitInKelvin = (value - 32) * 5 / 9 + 273.15
+    elif unitIn == "C":
+        unitInKelvin = value - 273.15
+    else:
+        unitInKelvin = value
+    return unitInKelvin
+
+
 try:
-    if unitIn == "K" and degreeIn < 0:
-        raise ValueError
-    elif unitIn == "C" and degreeIn < -273.15:
-        raise ValueError
-    elif unitIn == "F" and degreeIn < ((degreeIn - 32) * 5 / 9 + 273.15):
+    if unitToKelvin(degreeIn) < 0:
         raise ValueError
 
 except ValueError:
@@ -34,17 +42,6 @@ if unitIn == unitOut:
     print(
         f" You entered same units therefore no conversion needed your temperature is: {degreeIn}"
     )
-
-
-def unitToKelvin(value):
-    unitInKelvin = 0
-    if unitIn == "F":
-        unitInKelvin = (value - 32) * 5 / 9 + 273.15
-    elif unitIn == "C":
-        unitInKelvin = value - 273.15
-    else:
-        unitInKelvin = value
-    return unitInKelvin
 
 
 def convertUnit(to, value):
