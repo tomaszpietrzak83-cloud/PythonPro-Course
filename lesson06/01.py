@@ -45,5 +45,5 @@ while wantExit is False:
     )
 
     exit = input("Do you want to exit [Y]es or [N]o?").upper()
-    if exit == "yes":
+    if exit == "y":
         wantExit = True
