@@ -45,13 +45,13 @@ if unitIn == unitOut:
 
 
 def convertUnit(to, value):
-
+    temperatureInKelvins = unitToKelvin(value)
     if to == "C":
-        degreeOut = unitToKelvin(value) + 273.15
+        degreeOut = temperatureInKelvins + 273.15
     elif to == "F":
-        degreeOut = (unitToKelvin(value) + 273.15) * 9 / 5 + 32
+        degreeOut = temperatureInKelvins + 273.15 * 9 / 5 + 32
     else:
-        degreeOut = unitToKelvin(value)
+        degreeOut = temperatureInKelvins
 
     print(f"{degreeIn}°{unitIn} is equal to {degreeOut}°{to}")
 
