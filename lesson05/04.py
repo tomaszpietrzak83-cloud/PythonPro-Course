@@ -3,12 +3,12 @@ exampleWord = "alphabet"
 word = input("Please enter a word, or press enter for example word: ")
 
 
-def letterIndexShower(phrase):
+def printLettersAndIndexes(phrase):
     for character in enumerate(phrase):
         print(character)
 
 
 if word == "":
-    letterIndexShower(exampleWord)
+    printLettersAndIndexes(exampleWord)
 else:
-    letterIndexShower(word)
+    printLettersAndIndexes(word)
