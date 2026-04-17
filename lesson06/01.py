@@ -11,24 +11,35 @@ def calculations(a, b, symbol):
 
 wantExit = False
 while wantExit is False:
-    try:
-        firstNumber = float(input("Please enter the first number: ").replace(",", "."))
-        secondNumber = float(
-            input("Please enter the second number: ").replace(",", ".")
-        )
+    allowedOperators = ("+", "-", "*", "/")
+    operator = 0
+    while operator not in allowedOperators:
+        try:
+            operator = input("Please enter operator: ")
 
-    except ValueError:
-        print("Please enter numerical data!")
+            if operator not in allowedOperators:
+                raise ValueError
 
-    try:
-        operator = input("Please enter operator: ")
+        except ValueError:
+            print("Please enter one of following: *, /, +, - !")
 
-        allowedOperators = ("+", "-", "*", "/")
-        if operator not in allowedOperators:
-            raise ValueError
+    while True:
+        try:
+            firstNumber = float(
+                input("Please enter the first number: ").replace(",", ".")
+            )
 
-    except ValueError:
-        print("Please enter one of following: *, /, +, - !")
+            while operator == "/":
+                secondNumber = float(
+                    input("Please enter the second number: ").replace(",", ".")
+                )
+                if secondNumber != 0:
+                    break
+
+            break
+
+        except ValueError:
+            print("Please enter numerical data!")
 
     operation = ""
     if operator == "*":
@@ -45,5 +56,5 @@ while wantExit is False:
     )
 
     exit = input("Do you want to exit [Y]es or [N]o?").upper()
-    if exit == "y":
+    if exit == "Y":
         wantExit = True
