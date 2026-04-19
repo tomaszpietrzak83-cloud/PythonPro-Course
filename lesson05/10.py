@@ -19,16 +19,17 @@ def currencyToPLN(currencyFrom, value):
 
 def currencyExchange(to):
     buy = 0
+    plnAmount = currencyToPLN(currencyIn, amount)
     if to == "U":
-        buy = currencyToPLN(currencyIn, amount) / buyPricesPLN["usd"]
+        buy = plnAmount / buyPricesPLN["usd"]
     elif to == "E":
-        buy = currencyToPLN(currencyIn, amount) / buyPricesPLN["eur"]
+        buy = plnAmount / buyPricesPLN["eur"]
     elif to == "C":
-        buy = currencyToPLN(currencyIn, amount) / buyPricesPLN["chf"]
+        buy = plnAmount / buyPricesPLN["chf"]
     elif to == "G":
-        buy = currencyToPLN(currencyIn, amount) / buyPricesPLN["gbp"]
+        buy = plnAmount / buyPricesPLN["gbp"]
     else:
-        buy = currencyToPLN(currencyIn, amount)
+        buy = plnAmount
     buy = round(buy, 2)
     return buy
 
