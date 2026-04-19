@@ -1,9 +1,13 @@
 from random import randint
 
-number = randint(1, 9)
-guess = 0
-while guess != number:
-    guess = int(input("Guess number form 1 to 9  "))
-    print("It's not that number.")
+secretNumber = randint(1, 9)
 
-print("Congratulation, thats right!")
+while True:
+    userInput = int(input("Guess number form 1 to 9  "))
+
+    if userInput == secretNumber:
+        print("Congratulation, thats right!")
+        break
+
+    print("It's not that number.")
+(1,)
