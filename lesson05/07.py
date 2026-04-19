@@ -9,7 +9,7 @@ He stopped and listened very carefully to the silence. Night fell."""
 userText = input("Please enter a sentence, or press enter for example sentence: ")
 
 
-def cutVowels(text):
+def deleteVowels(text):
     newSentence = ""
     for character in text:
         if character in ("aeiouyAEIOUY"):
@@ -18,4 +18,5 @@ def cutVowels(text):
     return newSentence
 
 
-print(cutVowels(text) if userText == "" else cutVowels(userText))
+print(deleteVowels(text) if userText == "" else deleteVowels(userText))
+# print(deleteVowels(userText or text))
