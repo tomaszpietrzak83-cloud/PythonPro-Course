@@ -1,0 +1,1 @@
+print("", "butter", "milk", "apple", "bread", "chocolate", sep = " -")
