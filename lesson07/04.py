@@ -1,17 +1,14 @@
-def isPrimeMax30(integer):
-    isPrime = False
-    divisionCounter = 0
-    counter = 1
-    for _ in range(1, 31):
-        if integer % counter == 0:
-            divisionCounter += 1
-        counter += 1
-    if divisionCounter == 2:
-        isPrime = True
-        return isPrime
+def isPrime(integer):
+    if integer < 2:
+        return False
+
+    for number in range(2, (int(integer**0.5) + 1)):
+        if integer % number == 0:
+            return False
+    return True
 
 
 integers = [number for number in range(1, 31)]
 
-primeIntegers = [list(filter(lambda number: isPrimeMax30(number), integers))]
+primeIntegers = [list(filter(lambda number: isPrime(number), integers))]
 print(primeIntegers)
