@@ -1,6 +1,6 @@
 exampleWord = "alphabet"
 
-word = input("Please enter a word, or press enter for example word: ")
+word = input("Please enter a word, or press enter for example word ('alphabet'): ")
 
 
 def printLettersAndIndexes(phrase):
