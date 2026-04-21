@@ -8,15 +8,17 @@ He stopped and listened very carefully to the silence. Night fell."""
 
 userText = input("Please enter a sentence, or press enter for example sentence: ")
 
+vowels = "aeiouyAEIOUY"
+
 
 def deleteVowels(text):
     newSentence = ""
     for character in text:
-        if character in ("aeiouyAEIOUY"):
+        if character in vowels:
             continue
         newSentence += character
     return newSentence
 
 
-print(deleteVowels(text) if userText == "" else deleteVowels(userText))
+print(deleteVowels(text if userText == "" else userText))
 # print(deleteVowels(userText or text))
