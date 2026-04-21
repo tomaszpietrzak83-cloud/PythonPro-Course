@@ -1,16 +1,16 @@
-buyPricesPLN = {"usd": 3.5830, "eur": 4.2234, "chf": 4.5725, "gbp": 4.8442}
-spreadsPLN = {"usd": 0.0300, "eur": 0.0300, "chf": 0.0300, "gbp": 0.0400}
+buyPricesPLN = {"pln": 1, "usd": 3.5830, "eur": 4.2234, "chf": 4.5725, "gbp": 4.8442}
+spreadsPLN = {"pln": 0, "usd": 0.0300, "eur": 0.0300, "chf": 0.0300, "gbp": 0.0400}
 
 
 def toPLN(fromCurrency, value):
-    if fromCurrency == "P":
+    if fromCurrency == "pln":
         return value
 
     return (buyPricesPLN[fromCurrency] - spreadsPLN[fromCurrency]) * value
 
 
-def exchange(to):
-    plnAmount = toPLN(currencyIn, amount)
+def exchange(fromCurrency, to):
+    plnAmount = toPLN(fromCurrency, amount)
 
     return round(plnAmount / buyPricesPLN[to], 2)
 
@@ -20,17 +20,23 @@ while wantExit is False:
     availableCurrencies = ("pln", "usd", "eur", "chf", "gbp")
     try:
         currencyIn = input(
-            "Which currency u want to exchange: PLN, USD, EUR, CHF, GBP? "
+            f"Which currency u want to exchange: {availableCurrencies}? "
         ).lower()
         currencyOut = input(
-            "Which currency u want exchange into: PLN, USD, EUR, CHF, GBP? "
+            f"Which currency u want exchange into: {availableCurrencies}? "
         ).lower()
 
-        if (currencyIn and currencyOut) not in (availableCurrencies):
+        if (
+            currencyIn not in availableCurrencies
+            or currencyOut not in availableCurrencies
+        ):
             raise ValueError
+
+        print("OK!")
 
     except ValueError:
         print("Chose one of PLN/USD/EUR/CHF/GBP!")
+        continue
 
     try:
         amount = float(input("How much u want to exchange?: ").replace(",", "."))
@@ -38,10 +44,12 @@ while wantExit is False:
         print("Please enter numerical values.")
         continue
 
-    print(exchange(currencyOut))
+    print(exchange(currencyIn, currencyOut))
 
-    try:
-        exit = input("Do you want to exit?: ").lower()
-        wantExit = exit == "yes"
-    except ValueError:
-        print("Please enter yes, no.")
+    exitInput = None
+    allowCommands = ("yes", "no", "y", "n")
+    while exitInput not in allowCommands:
+        exitInput = input("Do you want to exit?: ").lower()
+        wantExit = (exitInput == "yes") or (exitInput == "y")
+        if exitInput not in allowCommands:
+            print("Please enter yes, no.")
