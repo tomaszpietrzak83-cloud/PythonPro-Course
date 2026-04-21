@@ -1,4 +1,4 @@
-exponentPower = 9
-while exponentPower >= 0:
-    print(2**exponentPower)
-    exponentPower -= 1
+result = 1
+while result < 1000:
+    print(result)
+    result *= 2
