@@ -2,6 +2,19 @@ def analyze(numbers: list[int]):
     return (min(numbers), max(numbers), sum(numbers))
 
 
+def analyze2(numbers):
+    minimum = None
+    maximum = None
+    total = 0
+    for number in numbers:
+        if maximum is None or number > maximum:
+            maximum = number
+        elif minimum is None or number < minimum:
+            minimum = number
+        total += number
+    return (minimum, maximum, total)
+
+
 exampleList = [
     2,
     11,
@@ -27,3 +40,4 @@ exampleList = [
 ]
 
 print(analyze(exampleList))
+print(analyze2(exampleList))
