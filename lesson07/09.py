@@ -1,6 +1,7 @@
 def repeater(n):
 
     def decorator(function):
+        print("This function counts executions:")
 
         def status(*args, **kwargs):
 
@@ -8,7 +9,7 @@ def repeater(n):
                 print()
                 print(f"[{function.__name__}] execution #{_}")
                 function(*args, **kwargs)
-
+            print("\n", f"There was {n} executions.")
             return
 
         return status
@@ -16,7 +17,7 @@ def repeater(n):
     return decorator
 
 
-@repeater(3)
+@repeater(4)
 def greet(name):
     print(f"Hello {name}")
 
