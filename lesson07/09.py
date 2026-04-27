@@ -5,7 +5,7 @@ def repeater(n_times):
 
         def status(*args, **kwargs):
 
-            for _ in range(1, n_times + 1):
+            for _ in range(n_times):
                 print()
                 print(f"[{function.__name__}] execution #{_}")
                 function(*args, **kwargs)
