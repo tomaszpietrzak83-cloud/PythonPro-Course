@@ -7,7 +7,7 @@ filePath = parentPath / "university.db"
 
 with sqlite3.connect(filePath) as connection:
     cursor = connection.cursor()
-    cursor.execute("""
+    cursor.execute("""--sql
     CREATE TABLE IF NOT EXISTS students (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -15,10 +15,11 @@ with sqlite3.connect(filePath) as connection:
         UNIQUE(name, surname)
     )""")
 
-    cursor.execute("""
+    cursor.execute("""--sql
     CREATE TABLE IF NOT EXISTS courses (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         buildingName TEXT NOT NULL,
         numberOfClassroom TEXT NOT NULL,
         UNIQUE(buildingName, numberOfClassroom)
     )""")
+    cursor.commit()

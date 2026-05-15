@@ -7,7 +7,7 @@ libraryPath = parentPath / "06" / "university.db"
 
 with sqlite3.connect(libraryPath) as connection:
     cursor = connection.cursor()
-    cursor.execute("""
+    cursor.execute(""" --sql
     CREATE TABLE IF NOT EXISTS assignments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         studentId INTEGER NOT NULL,
