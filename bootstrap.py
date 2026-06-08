@@ -1,141 +1,145 @@
-"""
-Bootstrap script - Syncs requirements.txt with installed packages
-and validates .gitignore configuration.
-Run at the beginning of your program.
+﻿"""Bootstrap helpers for the Lesson 19 Django project.
+
+This script keeps a few project files in a sane state:
+- .gitignore contains essential Python/Django patterns
+- requirements.txt can be rebuilt from the active virtualenv
+- .env.example exists as a safe template
+- .env is created once if missing
 """
 
 import subprocess
 import sys
 from pathlib import Path
 
+ROOT_DIR = Path(__file__).resolve().parent
+GITIGNORE_PATH = ROOT_DIR / ".gitignore"
+REQUIREMENTS_PATH = ROOT_DIR / "requirements.txt"
+ENV_PATH = ROOT_DIR / ".env"
+ENV_EXAMPLE_PATH = ROOT_DIR / ".env.example"
 
-def get_installed_packages():
-    """Returns a dict of installed packages and their versions."""
-    result = subprocess.run(
-        [sys.executable, "-m", "pip", "list", "--format", "json"],
-        capture_output=True,
-        text=True,
-    )
-    packages = {}
-    try:
-        import json
+REQUIRED_GITIGNORE_PATTERNS = [
+    ".venv/",
+    "venv/",
+    "env/",
+    "__pycache__/",
+    "*.py[cod]",
+    ".env",
+    ".env.*",
+    "!.env.example",
+    "*.sqlite3",
+    "*.db",
+    ".vscode/",
+    ".idea/",
+]
 
-        for pkg in json.loads(result.stdout):
-            packages[pkg["name"].lower()] = pkg["version"]
-    except:
-        pass
-    return packages
+ESSENTIAL_REQUIREMENTS = [
+    "Django==5.2.15",
+    "psycopg2-binary==2.9.12",
+    "python-dotenv==1.2.2",
+]
 
-
-def parse_requirements(file_path="requirements.txt"):
-    """Parses requirements.txt and returns a dict of packages."""
-    requirements = {}
-    if not Path(file_path).exists():
-        return requirements
-
-    with open(file_path, "r") as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith("#"):
-                # Handles: package, package==1.0, package>=1.0, etc.
-                pkg_name = (
-                    line
-                    .split("==")[0]
-                    .split(">=")[0]
-                    .split("<=")[0]
-                    .split(">")[0]
-                    .split("<")[0]
-                    .strip()
-                )
-                requirements[pkg_name.lower()] = line
-    return requirements
+ENV_TEMPLATE = """DJANGO_SECRET_KEY=change-me
+DJANGO_DEBUG=True
+DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
+DJANGO_TIME_ZONE=UTC
+POSTGRES_DB=mojprojekt19
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+"""
 
 
-def parse_gitignore(file_path=".gitignore"):
-    """Parses .gitignore and returns a list of patterns."""
-    patterns = []
-    if not Path(file_path).exists():
-        return patterns
-
-    with open(file_path, "r") as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith("#"):
-                patterns.append(line)
-    return patterns
-
-
-def check_gitignore():
-    """Validates that .gitignore contains essential Python patterns."""
-    essential_patterns = [
-        "venv/",
-        "__pycache__/",
-        "*.pyc",
-        ".env",
-        "*.db",
-        ".vscode/",
+def read_nonempty_lines(path: Path):
+    if not path.exists():
+        return []
+    return [
+        line.strip()
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.strip().startswith("#")
     ]
 
-    if not Path(".gitignore").exists():
-        print("📄 .gitignore not found. Skipping validation.")
+
+def ensure_gitignore():
+    existing = read_nonempty_lines(GITIGNORE_PATH)
+    missing = [
+        pattern
+        for pattern in REQUIRED_GITIGNORE_PATTERNS
+        if pattern not in existing
+    ]
+
+    if not GITIGNORE_PATH.exists():
+        GITIGNORE_PATH.write_text("", encoding="utf-8")
+
+    if not missing:
+        print("OK .gitignore contains the required patterns")
         return
 
-    existing_patterns = parse_gitignore()
-    missing_patterns = []
+    existing_text = GITIGNORE_PATH.read_text(encoding="utf-8")
+    with GITIGNORE_PATH.open("a", encoding="utf-8") as file:
+        if existing_text and not existing_text.endswith("\n"):
+            file.write("\n")
+        for pattern in missing:
+            file.write(pattern + "\n")
 
-    for pattern in essential_patterns:
-        if pattern not in existing_patterns:
-            missing_patterns.append(pattern)
+    print(f"Updated .gitignore with {len(missing)} missing patterns")
 
-    if missing_patterns:
-        print(
-            f"⚠️  Found {len(missing_patterns)} missing patterns in .gitignore:"
+
+def rebuild_requirements_from_pip_freeze():
+    result = subprocess.run(
+        [sys.executable, "-m", "pip", "freeze"],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+
+    lines = [
+        line.strip()
+        for line in result.stdout.splitlines()
+        if line.strip()
+    ]
+
+    missing_essentials = [
+        requirement
+        for requirement in ESSENTIAL_REQUIREMENTS
+        if not any(
+            line.lower().startswith(requirement.split("==")[0].lower())
+            for line in lines
         )
-        with open(".gitignore", "a") as f:
-            for pattern in missing_patterns:
-                f.write(pattern + "\n")
-                print(f"  ✅ Added: {pattern}")
-        print("📝 .gitignore updated!\n")
+    ]
+
+    final_lines = lines + missing_essentials
+    REQUIREMENTS_PATH.write_text(
+        "\n".join(final_lines) + "\n",
+        encoding="utf-8",
+    )
+
+    print(
+        "Rebuilt requirements.txt from the active environment "
+        f"with {len(final_lines)} entries"
+    )
+
+
+def ensure_env_files():
+    if not ENV_EXAMPLE_PATH.exists():
+        ENV_EXAMPLE_PATH.write_text(ENV_TEMPLATE, encoding="utf-8")
+        print("Created .env.example")
     else:
-        print("✅ .gitignore contains all essential patterns\n")
+        print("OK .env.example already exists")
 
-
-def update_requirements():
-    """Checks differences between installed packages and requirements.txt."""
-    installed = get_installed_packages()
-    required = parse_requirements()
-
-    # Skip if requirements.txt doesn't exist
-    if not Path("requirements.txt").exists():
-        print("📄 requirements.txt not found. Skipping.")
-        return
-
-    # Check if all installed packages are in requirements.txt
-    new_packages = []
-    for pkg_name, version in installed.items():
-        if pkg_name not in required and pkg_name not in [
-            "pip",
-            "setuptools",
-            "wheel",
-        ]:
-            new_packages.append(f"{pkg_name}=={version}")
-
-    if new_packages:
-        print(f"✨ Found {len(new_packages)} new packages!")
-        with open("requirements.txt", "a") as f:
-            for pkg in new_packages:
-                f.write(pkg + "\n")
-                print(f"  ✅ Added: {pkg}")
-        print("📝 requirements.txt updated!\n")
+    if not ENV_PATH.exists():
+        ENV_PATH.write_text(ENV_TEMPLATE, encoding="utf-8")
+        print("Created .env - fill in POSTGRES_PASSWORD and SECRET_KEY")
     else:
-        print("✅ requirements.txt is in sync with installed packages\n")
+        print("OK .env already exists")
 
 
 def bootstrap():
-    """Main bootstrap function."""
-    print("🚀 Bootstrap starting...\n")
-    check_gitignore()
-    update_requirements()
+    print("Starting bootstrap checks...\n")
+    ensure_gitignore()
+    rebuild_requirements_from_pip_freeze()
+    ensure_env_files()
+    print("\nBootstrap finished.")
 
 
 if __name__ == "__main__":

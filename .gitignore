@@ -1,6 +1,35 @@
+﻿# Virtual environments
+.venv/
 venv/
+env/
+ENV/
+
+# Python cache
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Environment files
 .env
+.env.*
+!.env.example
+
+# Django / databases
+*.sqlite3
 *.db
+/staticfiles/
+/media/
+
+# Logs and reports
+*.log
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Editors / IDEs
 .vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
