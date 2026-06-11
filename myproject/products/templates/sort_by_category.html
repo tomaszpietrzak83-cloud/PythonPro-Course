@@ -1,0 +1,17 @@
+<!-- TASK 09-->
+
+{% extends 'base.html' %}
+
+{% block title %}Sort by category{% endblock %}
+
+{% block content %}
+    <ul>        
+      {% for product in products %}
+        <li>
+          {{ product.name }} - {{ product.price }} - {{ product.description }}
+        </li>
+      {% empty %}
+        <li>Brak produktów.</li>
+      {% endfor %}
+    </ul>
+{% endblock %}
