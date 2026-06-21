@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{# TASK 02 #}
+{% block title %}Posts by Category{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for post in posts %}
+            <li>
+                <h2>{{ post.title }}</h2>
+                <p>{{ post.content }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
