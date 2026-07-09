@@ -1,4 +1,5 @@
 from datetime import datetime
+
 currentYear = datetime.now().year
 
 birthYear = int(input("Please enter your birth year: "))
