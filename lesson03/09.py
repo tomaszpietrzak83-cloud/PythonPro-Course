@@ -1,6 +1,12 @@
-print("Let's see what happens when we use 'and' and 'or' with different boolean values.")
-firstValue = int(input("Enter the first boolean value (0 for False, 1 for True): "))
-secondValue = int(input("Enter the second boolean value (0 for False, 1 for True): "))
+print(
+    "Let's see what happens when we use 'and' and 'or' with different boolean values."
+)
+firstValue = int(
+    input("Enter the first boolean value (0 for False, 1 for True): ")
+)
+secondValue = int(
+    input("Enter the second boolean value (0 for False, 1 for True): ")
+)
 firstBool = bool(firstValue)
 secondBool = bool(secondValue)
 print(f"First boolean value: {firstBool}")
