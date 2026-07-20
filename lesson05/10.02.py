@@ -32,7 +32,9 @@ def get_currency(info: str = None):
         f"Select currency{info}, possible currencies {AVAILABLE_CURRENCIES}: "
     ).lower()
     if curr not in AVAILABLE_CURRENCIES:
-        raise ValueError("Wrong currency! Possible currencies: PLN/USD/EUR/CHF/GBP!")
+        raise ValueError(
+            "Wrong currency! Possible currencies: PLN/USD/EUR/CHF/GBP!"
+        )
     return curr
 
 
@@ -41,11 +43,8 @@ def ask_exit():
     while True:
         want_exit = input("Do you want to exit (y/n)?: ").lower()
         if want_exit not in "yn":
-            print("Please enter yes, no.")
-        elif want_exit == "y":
-            return True
-        else:
-            return False
+            print("Please enter (y)yes or (n)no.")
+        return want_exit == "y"
 
 
 wantExit = False
@@ -60,7 +59,9 @@ while wantExit is False:
 
     if not error_flag:
         try:
-            amount = input("How much u want to exchange?: ").replace(",", ".", 1)
+            amount = input("How much u want to exchange?: ").replace(
+                ",", ".", 1
+            )
             amount = float(amount)
             print(
                 "you exchange",

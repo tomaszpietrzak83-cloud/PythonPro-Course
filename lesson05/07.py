@@ -6,7 +6,9 @@ He wrote about everything he saw around him.
 Suddenly something moved between the tall trees. 
 He stopped and listened very carefully to the silence. Night fell."""
 
-userText = input("Please enter a sentence, or press enter for example sentence: ")
+userText = input(
+    "Please enter a sentence, or press enter for example sentence: "
+)
 
 vowels = "aeiouyAEIOUY"
 
@@ -20,5 +22,17 @@ def deleteVowels(text):
     return newSentence
 
 
-print(deleteVowels(text if userText == "" else userText))
-# print(deleteVowels(userText or text))
+def deleteNonVowels(text):
+    newSentence = ""
+    for character in text:
+        if character not in vowels:
+            newSentence += character
+    return newSentence
+
+
+question = input("Do you want to delete vowels or non-vowels? (v/n): ")
+
+if question == "v":
+    print(deleteVowels(text if userText == "" else userText))
+elif question == "n":
+    print(deleteNonVowels(text if userText == "" else userText))
