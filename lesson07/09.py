@@ -7,10 +7,9 @@ def repeater(n_times):
 
             for _ in range(n_times):
                 print()
-                print(f"[{function.__name__}] execution #{_}")
+                print(f"[{function.__name__}] execution #{_ + 1}")
                 function(*args, **kwargs)
             print("\n", f"There was {n_times} executions.")
-            return
 
         return status
 

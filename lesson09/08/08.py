@@ -33,8 +33,11 @@ try:
 
 except FileNotFoundError:
     # Informuje uzytkownika, ze plik log.txt nie istnieje w folderze skryptu.
-    print('Nie znaleziono pliku log.txt. Umiesc go w folderze "08" i uruchom program ponownie.')
+    print(
+        'Nie znaleziono pliku log.txt. Umiesc go w folderze "08" i uruchom program ponownie.'
+    )
 else:
     # Wyswietlam informacje, ile linii zapisano do pliku wynikowego.
-    print(f'Zapisano {liczba_znalezionych_linii} pasujacych linii do pliku: {sciezka_wynikow.name}')
-
+    print(
+        f"Zapisano {liczba_znalezionych_linii} pasujacych linii do pliku: {sciezka_wynikow.name}"
+    )

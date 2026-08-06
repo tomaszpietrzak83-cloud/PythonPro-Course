@@ -9,8 +9,14 @@ print(
         map(
             lambda user: user["name"].upper(),
             filter(
-                (lambda user: user["active"]) and (lambda user: user["age"] > 18), users
+                (lambda user: user["active"])
+                and (lambda user: user["age"] > 18),
+                users,
             ),
         )
     )
 )
+
+# print(
+#     [user["name"].upper() for user in users if user["active"] and user["age"] > 18]
+# )

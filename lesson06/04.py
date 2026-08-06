@@ -11,7 +11,7 @@ def someFunction():
 
 def otherFunction():
     """
-    This function use global change,and after calling it
+    This function use global change, and after calling it the global variable securityLevel will be changed.
     """
     global securityLevel
     securityLevel = "admin"

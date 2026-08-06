@@ -103,4 +103,3 @@ while True:
     else:
         # Wyswietlam komunikat o blednym wyborze.
         print("Niepoprawna opcja. Sprobuj ponownie.")
-

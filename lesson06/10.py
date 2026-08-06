@@ -10,13 +10,21 @@ def validating(code: str) -> bool:
     # first declare False
     validation = False
     # second check if length is greater than 8
-    if len(code) >= 8:
-        # third check if there is upper letter
-        if any(char in alphabet.upper() for char in code):
-            # next check if there is digit
-            if any(digit in digits for digit in code):
-                # if all true validation true
-                validation = True
+    # if len(code) >= 8:
+    #     # third check if there is upper letter
+    #     if any(char in alphabet.upper() for char in code):
+    #         # next check if there is digit
+    #         if any(digit in digits for digit in code):
+    #             # if all true validation true
+    #             validation = True
+
+    # check length, upper letter, and digit in a single condition
+    return (
+        len(code) >= 8
+        and any(char in alphabet.upper() for char in code)
+        and any(digit in digits for digit in code)
+    )
+
     # returns True or False
     return validation
 

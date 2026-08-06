@@ -1,9 +1,9 @@
 def factorial(n: int):
+
     result = 1
     while n > 0:
         result *= n
         n -= 1
-
     return result
 
 
@@ -17,7 +17,7 @@ def factorial2(n: int):
         return result * factorial2(n)
 
 
-def factorial3(n):
+def factorial3(n: int):
     if n == 0:
         return 1
     return n * factorial3(n - 1)

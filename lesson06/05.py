@@ -8,8 +8,7 @@ def calculations(a: float, b: float, symbol: str) -> float:
 
     args a, and b.
 
-    a is float number;
-    b is float number;
+    a, b are float numbers;
 
     The function returns float number.
     """

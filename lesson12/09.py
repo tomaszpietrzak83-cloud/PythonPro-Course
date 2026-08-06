@@ -27,8 +27,10 @@ class BankAccount:
     def withdraw(self, amount):
         if amount <= 0:
             raise ValueError("Withdrawal amount must be positive.")
-        if amount > self._balance:
-            raise BankAccount.LackOfFundsError("Insufficient funds for withdrawal.")
+        if amount >= self._balance:
+            raise BankAccount.LackOfFundsError(
+                "Insufficient funds for withdrawal."
+            )
         self._balance -= amount
         print(f"Withdrew: {amount}. New balance: {self._balance}")
 
