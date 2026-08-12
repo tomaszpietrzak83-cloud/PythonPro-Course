@@ -1,19 +1,19 @@
 ﻿# PythonPro-Course
 
-Repozytorium z cwiczeniami z kursu Python Pro. To jest robocze repo do nauki Pythona, Django, SQL, pracy z plikami, testowania i uzywania Gita.
+This repository contains my exercises from the Python Pro course. It is a learning workspace for Python, Django, SQL, file handling, testing, and Git practice.
 
-## Struktura
+## Structure
 
 ```text
 PythonPro-Course/
-  lessons/              # lekcje i projekty lekcyjne
-  README.md             # opis repozytorium
-  MERGE_REPORT.md       # dokumentacja scalenia repozytoriow
-  LEARNING_JOURNAL.md   # dziennik nauki z historii commitow
-  .gitignore            # ignorowane pliki lokalne, cache i venv
+  lessons/              # lessons and lesson projects
+  README.md             # repository overview
+  MERGE_REPORT.md       # repository consolidation documentation
+  LEARNING_JOURNAL.md   # learning journal based on commit history
+  .gitignore            # ignored local files, caches, and virtual environments
 ```
 
-Aktualne katalogi lekcji:
+Current lesson directories:
 
 ```text
 lessons/lesson01
@@ -42,9 +42,9 @@ lessons/lesson23
 lessons/lesson24
 ```
 
-## Praca z virtualenv
+## Working With Virtual Environments
 
-Virtualenv jest lokalny i nie powinien trafic do repozytorium.
+A virtual environment is local machine state and should not be committed to the repository.
 
 Git Bash:
 
@@ -62,15 +62,15 @@ python -m venv .venv
 python -m pip install --upgrade pip
 ```
 
-Instalowanie pakietow najlepiej robic przez:
+Install packages with:
 
 ```bash
-python -m pip install nazwa_pakietu
+python -m pip install package_name
 ```
 
-## Zasady commitow
+## Commit Guidelines
 
-Preferowane sa male commity z opisem celu zmiany, np.:
+Prefer small commits that describe the purpose of the change, for example:
 
 ```text
 feat(lesson12): add custom validation exceptions
@@ -78,9 +78,9 @@ refactor(lesson12): simplify calculator exercises
 chore: organize course lessons directory
 ```
 
-Nie przepisujemy starej historii repozytorium bez waznego powodu. Dla repo publicznego zmiana starych commitow zwykle wymaga `force push`, wiec jest ryzykowna.
+Do not rewrite existing repository history unless there is a strong reason. For a public repository, changing old commits usually requires `force push`, which is risky.
 
-## Dokumentacja
+## Documentation
 
-- `MERGE_REPORT.md` opisuje, jak osobne repozytoria lekcyjne zostaly scalone do tego repo.
-- `LEARNING_JOURNAL.md` podsumowuje postep nauki na podstawie historii commitow.
+- `MERGE_REPORT.md` explains how the separate lesson repositories were consolidated into this repository.
+- `LEARNING_JOURNAL.md` summarizes learning progress based on commit history.

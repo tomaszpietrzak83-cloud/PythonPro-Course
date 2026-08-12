@@ -1,25 +1,25 @@
-﻿# Raport scalenia repozytoriow lekcyjnych
+﻿# Repository Consolidation Report
 
-Data wykonania: 2026-08-12
-Repo docelowe: `C:\Users\Tomek\Documents\Developer\PythonPro-Course`
-Branch docelowy: `main`
+Date: 2026-08-12
+Target repository: `C:\Users\Tomek\Documents\Developer\PythonPro-Course`
+Target branch: `main`
 
-## Cel
+## Goal
 
-Celem bylo uporzadkowanie nauki Pythona w jednym repozytorium `PythonPro-Course`, bez przepisywania starej historii Gita i bez dodawania lokalnych virtualenvow.
+The goal was to organize Python learning work into one repository, `PythonPro-Course`, without rewriting existing Git history and without committing local virtual environments.
 
-Zakres obejmowal tylko repozytoria lekcyjne `Lesson*` / `lesson-*` oraz obecne repo `PythonPro-Course`.
+The scope included only lesson repositories matching `Lesson*` / `lesson-*` and the existing `PythonPro-Course` repository.
 
-## Zasady bezpieczenstwa
+## Safety Rules
 
-Przed zmianami utworzono lokalne punkty powrotu:
+Before making changes, local recovery points were created:
 
 ```bash
 git branch backup/pre-consolidation-20260812
 git tag pre-consolidation-20260812
 ```
 
-Nie wykonano:
+The following commands were not used:
 
 ```bash
 git rebase -i
@@ -29,11 +29,11 @@ git reset --hard
 git push --force
 ```
 
-Stara historia commitow nie zostala przepisana. Import repozytoriow wykonano przez `git subtree add` bez `--squash`, zeby zachowac osobne commity z poprzednich repo.
+Existing commit history was not rewritten. Repositories were imported with `git subtree add` without `--squash`, so commits from the original repositories remain visible as separate commits in the final history.
 
-## Przygotowanie lesson12
+## Preparing lesson12
 
-Przed scaleniem byly lokalne zmiany w `lesson12`. Zostaly podzielone na trzy tematyczne commity:
+Before the consolidation, `lesson12` had local uncommitted changes. They were split into three topic-based commits:
 
 ```bash
 python -m py_compile lesson12/01.py lesson12/02.py lesson12/03.py lesson12/06.py lesson12/07.py lesson12/08.py lesson12/09.py
@@ -48,11 +48,11 @@ git add lesson12/06.py lesson12/09.py
 git commit -m "feat(lesson12): add custom validation exceptions"
 ```
 
-## Porzadkowanie struktury
+## Organizing The Directory Structure
 
-Istniejace lekcje w `PythonPro-Course` przeniesiono do katalogu `lessons/`. Dodano tez `.gitignore` ignorujacy m.in. `.venv/`, `venv/`, `__pycache__/`, cache testow i lokalne pliki edytorow.
+Existing lessons already present in `PythonPro-Course` were moved into the `lessons/` directory. A `.gitignore` file was added to ignore `.venv/`, `venv/`, `__pycache__/`, test caches, and local editor files.
 
-Uzyte komendy w uproszczonej postaci:
+Commands used, simplified:
 
 ```bash
 mkdir lessons
@@ -76,21 +76,21 @@ git add .gitignore
 git commit -m "chore: organize course lessons directory"
 ```
 
-## Import repozytoriow przez subtree
+## Importing Repositories With subtree
 
-Zaimportowano nastepujace repozytoria lokalne:
+The following local repositories were imported:
 
-| Repo zrodlowe | Branch | Katalog docelowy | Zachowanie historii |
+| Source repository | Branch | Target directory | History preserved |
 | --- | --- | --- | --- |
-| `Lesson 15 project app` | `master` | `lessons/lesson15_project_sql_app` | tak |
-| `Lesson 17 app` | `master` | `lessons/lesson17_app` | tak |
-| `Lesson 18` | `master` | `lessons/lesson18_app` | tak |
-| `Lesson 19` | `master` | `lessons/lesson19` | tak |
-| `Lesson 20` | `master` | `lessons/lesson20` | tak |
-| `Lesson22` | `master` | `lessons/lesson22` | tak |
-| `Lesson 23` | `master` | `lessons/lesson23` | tak |
+| `Lesson 15 project app` | `master` | `lessons/lesson15_project_sql_app` | yes |
+| `Lesson 17 app` | `master` | `lessons/lesson17_app` | yes |
+| `Lesson 18` | `master` | `lessons/lesson18_app` | yes |
+| `Lesson 19` | `master` | `lessons/lesson19` | yes |
+| `Lesson 20` | `master` | `lessons/lesson20` | yes |
+| `Lesson22` | `master` | `lessons/lesson22` | yes |
+| `Lesson 23` | `master` | `lessons/lesson23` | yes |
 
-Komendy:
+Commands:
 
 ```bash
 git subtree add --prefix=lessons/lesson15_project_sql_app "C:\Users\Tomek\Documents\Developer\Lesson 15 project app" master --message "chore: import lesson 15 project repository"
@@ -104,13 +104,13 @@ git subtree add --prefix=lessons/lesson23 "C:\Users\Tomek\Documents\Developer\Le
 
 ## Lesson 24
 
-`Lesson 24` nie mial katalogu `.git`, wiec nie bylo historii do zachowania. Pliki zostaly dodane jako nowy katalog:
+`Lesson 24` did not contain a `.git` directory, so there was no separate history to preserve. Its files were added as a new directory:
 
 ```text
 lessons/lesson24/
 ```
 
-Pominieto `.venv` oraz usunieto wygenerowany `__pycache__` z kopii.
+The local `.venv` directory was skipped, and generated `__pycache__` files were removed from the copy.
 
 Commit:
 
@@ -119,27 +119,27 @@ git add lessons/lesson24
 git commit -m "feat(lesson24): add Django lesson materials"
 ```
 
-## Dlaczego nie zmieniano starych commitow
+## Why Old Commits Were Not Renamed
 
-Zmiana opisow starych commitow albo dzielenie duzych commitow wymaga przepisywania historii. Poniewaz repozytoria sa juz na GitHubie, taka operacja moglaby wymagac `git push --force` i moglaby popsuc synchronizacje lokalnej oraz zdalnej historii.
+Renaming old commits or splitting large historical commits would require rewriting Git history. Because the repositories already exist on GitHub, that could require `git push --force` and could break synchronization between local and remote history.
 
-Bezpieczniejsza alternatywa: zostawic historie tak jak jest, a od teraz pisac lepsze, mniejsze commity. Do nauki mozna przygotowac osobny dokument z propozycjami lepszych nazw dla starych commitow, bez zmieniania repo.
+The safer choice was to preserve the existing history and write better, smaller commits from this point forward. A separate document with suggested improved commit messages can be created later for learning purposes without changing repository history.
 
-## Wynik
+## Verification And Cleanup
 
-Wszystkie lekcje sa teraz w jednym repo `PythonPro-Course`, pod katalogiem `lessons/`. Historie osobnych repozytoriow zaimportowanych przez subtree pozostaly widoczne jako osobne commity.
-
-## Dodatkowe czyszczenie po weryfikacji
-
-Po imporcie sprawdzono, czy Git sledzi lokalne srodowiska albo cache Pythona:
+After importing the repositories, tracked local environments and Python cache files were checked with:
 
 ```bash
 git ls-files | Select-String -Pattern '(^|/)(\.venv|venv|__pycache__)(/|$)'
 ```
 
-Nie znaleziono sledzonych virtualenvow, ale w historii repo `Lesson 15 project app` byly sledzone pliki `__pycache__/*.pyc`. Usunieto je z aktualnego drzewa zwyklym commitem, bez przepisywania starej historii:
+No tracked virtual environments were found. Some tracked `__pycache__/*.pyc` files from `Lesson 15 project app` were found and removed from the current tree with a normal cleanup commit, without rewriting old history:
 
 ```bash
 git rm -- <tracked __pycache__ files>
 git commit -m "chore: remove tracked Python cache files"
 ```
+
+## Result
+
+All lessons are now in one repository, `PythonPro-Course`, under the `lessons/` directory. Repositories imported with subtree kept their commits visible in the final history.
