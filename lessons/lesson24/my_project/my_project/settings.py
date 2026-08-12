@@ -123,3 +123,13 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# TASK 01
+LOGOUT_REDIRECT_URL = "/login/"
+
+# TASK 01
+LOGIN_REDIRECT_URL = "home"
+
+# TASK 01
+LOGIN_URL = "login"

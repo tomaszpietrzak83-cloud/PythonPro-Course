@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Django Project</title>
+</head>
+
+<body>
+    <style>
+    .alert {
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #999;
+        background-color: #f5f5f5;
+    }
+
+    .alert-success {
+        border-color: green;
+        background-color: #e8f8e8;
+    }
+    </style>
+
+    {# TASK 04 #}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+
+        {# TASK 02 #}
+        {% if user.is_authenticated %}
+            <a href="{% url 'profile' %}">Profile</a>
+            {# TASK 08 #}
+            <a href="{% url 'password_change' %}">Change password</a>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+            <span>Welcome, {{ user.username }}!</span>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+    </nav>
+
+    <hr>
+
+    {% block content %}
+    {% endblock content %}
+</body>
+</html>
