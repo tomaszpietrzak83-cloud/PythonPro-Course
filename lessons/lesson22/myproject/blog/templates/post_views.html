@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{# TASK 03 06 #}
+{% block title %}First Five Posts{% endblock %}
+
+{% block content %}
+    {# TASK 06 #}
+    <form method="GET">
+        <input type="text" name="q" value="{{ query }}" placeholder="Search posts">
+        <button type="submit">Search</button>
+    </form>
+
+    {# TASK 03 06 #}
+    <ul>
+        {% for post in posts %}
+            <li>
+                <h2>{{ post.title }}</h2>
+                <p>{{ post.content }}</p>
+            </li>
+        {% empty %}
+            <li>No posts found.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
