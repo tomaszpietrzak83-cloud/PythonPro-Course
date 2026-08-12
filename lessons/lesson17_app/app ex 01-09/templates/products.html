@@ -1,0 +1,32 @@
+<!-- TASK 05 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    
+    <div class="products">  
+        <h1>Greetings!</h1>
+        <h2>All Products</h2>      
+        
+        <div class="products-items">
+            <table border="1">
+                <tr>
+                    <th>Name</th>
+                    <th>Price</th>
+                </tr>
+
+                {% for item in products %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>${{ item.price }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>        
+    </div>
+</body>
+</html>

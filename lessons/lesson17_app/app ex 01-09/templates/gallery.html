@@ -1,0 +1,21 @@
+<!-- TASK 07 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Greetings!</h1>
+    <h2>Most Beautiful Nature Photos</h2>
+        <div class="gallery">
+            {% for image in images %}
+                <figure class="gallery-item">
+                    <img class="gallery-image" src="{{ image.url }}" alt="{{ image.caption }}">
+                    <figcaption>{{ image.caption }}</figcaption>
+                </figure>
+            {% endfor %}
+        </div>
+</body>
+</html>

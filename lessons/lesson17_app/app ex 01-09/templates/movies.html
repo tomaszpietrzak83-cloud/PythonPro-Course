@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+</head>
+<body>
+    <h1>Greetings!</h1>
+    <h2>Top Movies</h2>
+        <ul>
+            <!-- TASK 05 -->
+            {% for item in movies %}
+                {% if loop.index % 2 == 0 %}
+                    <p style="background-color: lightgray;">{{ item }}</p>
+                {% else %}
+                    <p>{{ item }}</p>
+                {% endif %}
+            {% endfor %}
+        </ul>
+</body>
+</html>
