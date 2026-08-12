@@ -1,0 +1,19 @@
+<!-- TASK 05-->
+<!-- TASK 04-->
+
+
+{% extends 'base.html' %}
+
+{% block title %}Product List:{% endblock %}
+
+{% block content %}    
+    <ul>
+      {% for product in products %}
+        <li>
+          {{ product.name }} - {{ product.price }} - {{ product.description }}
+        </li>
+      {% empty %}
+        <li>Brak produktów.</li>
+      {% endfor %}
+    </ul>
+{% endblock %}
