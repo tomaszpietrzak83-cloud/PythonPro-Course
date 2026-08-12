@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Room Booking System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+        .stat-card h3 { font-size: 2.5rem; margin: 0; }
+        .stat-card p { margin: 0; opacity: 0.8; }
+
+        .utilization-bar {
+            height: 25px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .utilization-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #28a745, #ffc107, #dc3545);
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <h1 class="mb-4">📊 Booking Dashboard</h1>
+
+        <!-- General statistics -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <h3>{{ stats.total_rooms }}</h3>
+                    <p>🏢 Active rooms</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                    <h3>{{ stats.total_bookings }}</h3>
+                    <p>📅 Total bookings</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card" style="background: linear-gradient(135deg, #fc4a1a 0%, #f7b733 100%);">
+                    <h3>{{ stats.bookings_today }}</h3>
+                    <p>📆 Bookings today</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card" style="background: linear-gradient(135deg, #4568dc 0%, #b06ab3 100%);">
+                    <h3>{{ stats.total_users }}</h3>
+                    <p>👥 Users</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <!-- Upcoming bookings -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>🕐 Upcoming bookings (24h)</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Room</th>
+                                    <th>Title</th>
+                                    <th>Person</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in upcoming %}
+                                <tr>
+                                    <td>{{ booking.start_time.strftime('%H:%M') }}</td>
+                                    <td>{{ booking.room.name }}</td>
+                                    <td>{{ booking.title[:30] }}{% if booking.title|length > 30 %}...{% endif %}</td>
+                                    <td>{{ booking.user.name }}</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-muted text-center">No bookings</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Room utilization -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>📈 Room utilization (last 30 days)</h5>
+                    </div>
+                    <div class="card-body">
+                        {% for room in room_utilization %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>{{ room.room }}</span>
+                                <span>{{ room.utilization }}% ({{ room.hours }}h)</span>
+                            </div>
+                            <div class="utilization-bar">
+                                <div class="utilization-fill" style="width: {{ room.utilization }}%"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top users -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>🏆 Top bookers</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tbody>
+                                {% for user in top_users %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-primary me-2">{{ loop.index }}</span>
+                                        {{ user.name }}
+                                    </td>
+                                    <td class="text-end">
+                                        <span class="badge bg-secondary">{{ user.booking_count }} bookings</span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Bookings per department -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Bookings per department</h5>
+                    </div>                
+                    <div class="card-body">
+                        <canvas id="departmentChart"></canvas>
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        <script>
+                            const departmentLabels = {{ department_labels|tojson }};
+                            const departmentValues = {{ department_values|tojson }};
+
+                            new Chart(document.getElementById("departmentChart"), {
+                                type: "pie",
+                                data: {
+                                    labels: departmentLabels,
+                                    datasets: [{
+                                        data: departmentValues,
+                                        backgroundColor: [
+                                            "#667eea",
+                                            "#38ef7d",
+                                            "#f7b733",
+                                            "#fc4a1a",
+                                            "#b06ab3",
+                                            "#17a2b8"
+                                        ]
+                                    }]
+                                }
+                            });
+                        </script>
+                        
+                    </div>
+                </div>
+            </div>
+        
+
+        <!-- Last 30 days trend -->
+        
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Last 30 days trend</h5>
+                    </div>                
+                    <div class="card-body">
+                        <canvas id="trendChart"></canvas>
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        <script>
+                            const trendLabels = {{ trend_labels|tojson }};
+                            const trendValues = {{ trend_values|tojson }};
+
+                            new Chart(document.getElementById("trendChart"), {
+                                type: "line",
+                                data: {
+                                    labels: trendLabels,
+                                    datasets: [{
+                                        label: "Bookings",
+                                        data: trendValues,
+                                        borderColor: "#667eea",
+                                        backgroundColor: "transparent",
+                                        borderWidth: 2
+                                    }]
+                                }
+                            });
+                        </script>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Booking heatmap</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered text-center">
+                            <thead>
+                                <tr>
+                                    <th>Hour</th>
+                                    {% for day_num, day_name in day_order %}
+                                        <th style="background: #b700ff">{{ day_name }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in heatmap_rows %}
+                                    <tr>
+                                        <td style="background: #00d9ff">{{ row.hour }}:00</td>
+                                        {% for value in row.cells %}
+                                            <td
+                                                style="
+                                                    {% if value == 0 %}
+                                                        background-color: #f2f3e8;
+                                                    {% elif value == 1 %}
+                                                        background-color: #d1e7dd;
+                                                    {% elif value == 2 %}
+                                                        background-color: #a3cfbb;
+                                                    {% elif value == 3 %}
+                                                        background-color: #75b798;
+                                                    {% else %}
+                                                        background-color: #198754;
+                                                        color: white;
+                                                    {% endif %}
+                                                "
+                                            >
+                                                {{ value }}
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
