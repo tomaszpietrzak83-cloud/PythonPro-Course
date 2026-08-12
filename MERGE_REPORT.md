@@ -128,3 +128,18 @@ Bezpieczniejsza alternatywa: zostawic historie tak jak jest, a od teraz pisac le
 ## Wynik
 
 Wszystkie lekcje sa teraz w jednym repo `PythonPro-Course`, pod katalogiem `lessons/`. Historie osobnych repozytoriow zaimportowanych przez subtree pozostaly widoczne jako osobne commity.
+
+## Dodatkowe czyszczenie po weryfikacji
+
+Po imporcie sprawdzono, czy Git sledzi lokalne srodowiska albo cache Pythona:
+
+```bash
+git ls-files | Select-String -Pattern '(^|/)(\.venv|venv|__pycache__)(/|$)'
+```
+
+Nie znaleziono sledzonych virtualenvow, ale w historii repo `Lesson 15 project app` byly sledzone pliki `__pycache__/*.pyc`. Usunieto je z aktualnego drzewa zwyklym commitem, bez przepisywania starej historii:
+
+```bash
+git rm -- <tracked __pycache__ files>
+git commit -m "chore: remove tracked Python cache files"
+```
