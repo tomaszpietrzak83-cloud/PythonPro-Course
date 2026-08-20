@@ -6,7 +6,7 @@ libraryPath = parentPath / "01" / "library.db"
 
 with sqlite3.connect(libraryPath) as connection:
     cursor = connection.cursor()
-    cursor.execute("""SELECT * FROM books""")
+    cursor.execute("""--sql SELECT * FROM books""")
     books = cursor.fetchall()
     for book in books:
         print(book)

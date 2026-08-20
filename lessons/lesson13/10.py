@@ -17,8 +17,18 @@ def findStudentsNumbersOfClassrooms(surname: str) -> list[str]:
     )
 
 
+surname_1 = "Wilson"
+
 with sqlite3.connect(libraryPath) as conn:
     cursor = conn.cursor()
-    cursor.execute(*findStudentsNumbersOfClassrooms("Wilson"))
+    cursor.execute(*findStudentsNumbersOfClassrooms(surname_1))
+    result = cursor.fetchall()
+    print(result)
+
+surname_2 = "Morgan"
+
+with sqlite3.connect(libraryPath) as conn:
+    cursor = conn.cursor()
+    cursor.execute(*findStudentsNumbersOfClassrooms(surname_2))
     result = cursor.fetchall()
     print(result)

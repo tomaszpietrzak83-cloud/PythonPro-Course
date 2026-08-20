@@ -8,14 +8,14 @@ libraryPath = parentPath / "06" / "university.db"
 with sqlite3.connect(libraryPath) as connection:
     cursor = connection.cursor()
     cursor.execute(
-        """
+        """--sql
     SELECT id FROM students
     """
     )
     studentsIDs = [student[0] for student in cursor.fetchall()]
 
     cursor.execute(
-        """
+        """--sql
     SELECT id FROM courses
     """
     )
@@ -25,6 +25,8 @@ with sqlite3.connect(libraryPath) as connection:
         numberOfCourses = randint(2, 5)
 
         chosenCourses = sample(coursesIDs, numberOfCourses)
+
+        # This is an alternative way to choose random courses without duplicates, but it is commented out in favor of using sample() above.
         # chosenCourses = []
         # while len(chosenCourses) < numberOfCourses:
         #     courseID = coursesIDs[randint(0, len(coursesIDs) - 1)]
@@ -32,7 +34,7 @@ with sqlite3.connect(libraryPath) as connection:
         #         chosenCourses.append(courseID)
 
         cursor.executemany(
-            """
+            """--sql
         INSERT OR IGNORE INTO assignments (studentId, courseId) VALUES (?, ?)
         """,
             [(studentID, courseID) for courseID in chosenCourses],

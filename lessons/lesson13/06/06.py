@@ -22,4 +22,3 @@ with sqlite3.connect(filePath) as connection:
         numberOfClassroom TEXT NOT NULL,
         UNIQUE(buildingName, numberOfClassroom)
     )""")
-    cursor.commit()
