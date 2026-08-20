@@ -5,7 +5,9 @@ class MetaValidateMethods(type):
         for (
             attr_name,
             attr_value,
-        ) in namespace.items():  # Go through every attribute defined in the class body.
+        ) in (
+            namespace.items()
+        ):  # Go through every attribute defined in the class body.
             if attr_name.startswith(
                 "__"
             ):  # Ignore magic methods like __init__ or __str__.
@@ -77,5 +79,6 @@ try:  # Start a block that will catch the metaclass validation error.
 
         def missing_docs(self):  # Define a method without a docstring.
             return "This will fail."  # Return a sample value, but the missing docstring is the real problem.
+
 except TypeError as error:  # Catch the error raised during class creation.
     print(error)  # Print the validation message.

@@ -1,6 +1,5 @@
-from flask import Flask, render_template
-
 from database import SessionLocal
+from flask import Flask, render_template
 from models import Product
 
 db = SessionLocal()

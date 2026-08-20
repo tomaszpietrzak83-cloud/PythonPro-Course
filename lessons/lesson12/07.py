@@ -20,13 +20,13 @@ class Date:
         return f"The year is {self.year}"
 
     @classmethod
-    def fromString(cls, date_string):
+    def from_string(cls, date_string):
         day, month, year = date_string.split("-")
         return cls(day, month, year)
 
 
 date_string = "8-05-2021"
-date = Date.fromString(date_string)
+date = Date.from_string(date_string)
 print(date.day_text)
 print(date.month_text)
 print(date.year_text)
