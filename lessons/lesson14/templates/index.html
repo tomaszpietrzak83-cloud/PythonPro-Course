@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="{{url_for('static',filename='style.css')}}">
+<html>
+<head>
+    <title>My Homework presentation from lesson 14 Python</title>
+</head>
+<body>
+    
+    <main class="container">
+
+        <h1>Python - Lesson 14</h1>
+        <p>SQL Homework</p>
+
+        <div class="exercise-list">
+
+            {% for id, exercise in exercises.items() %}
+
+                <a class="link" href="{{ url_for('task', id=id) }}" class="exercise-card">
+                    
+                    <h2>
+                        Exercise {{ id }}: {{ exercise["name"] }}
+                    </h2>
+
+                </a>
+
+            {% endfor %}
+
+        </div>
+
+    </main>
+</body>

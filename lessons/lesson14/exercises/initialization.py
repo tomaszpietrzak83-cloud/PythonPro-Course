@@ -7,7 +7,7 @@ databasePath = parentPath / "shop.db"
 
 def prepare_database():
     """Creates and fills the database for exercises."""
-    conn = sqlite3.connect(databasePath)  # Creates shop.db file
+    conn = sqlite3.connect(databasePath)
     cursor = conn.cursor()
 
     # Remove tables if they already exist for a clean start
@@ -18,45 +18,45 @@ def prepare_database():
     cursor.execute("DROP TABLE IF EXISTS Customers")
 
     # Creating tables
-    cursor.execute("""
-    CREATE TABLE Categories (
-        category_id INTEGER PRIMARY KEY,
-        category_name TEXT UNIQUE NOT NULL
-    )""")
+    cursor.execute("""--sql
+        CREATE TABLE Categories (
+            category_id INTEGER PRIMARY KEY,
+            category_name TEXT UNIQUE NOT NULL
+        )""")
 
-    cursor.execute("""
-    CREATE TABLE Products (
-        product_id INTEGER PRIMARY KEY,
-        product_name TEXT NOT NULL,
-        price REAL NOT NULL,
-        category_id INTEGER,
-        FOREIGN KEY (category_id) REFERENCES Categories(category_id)
-    )""")
+    cursor.execute("""--sql
+        CREATE TABLE Products (
+            product_id INTEGER PRIMARY KEY,
+            product_name TEXT NOT NULL,
+            price REAL NOT NULL,
+            category_id INTEGER,
+            FOREIGN KEY (category_id) REFERENCES Categories(category_id)
+        )""")
 
-    cursor.execute("""
-    CREATE TABLE Customers (
-        customer_id INTEGER PRIMARY KEY,
-        name TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL
-    )""")
+    cursor.execute("""--sql
+        CREATE TABLE Customers (
+            customer_id INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            email TEXT UNIQUE NOT NULL
+        )""")
 
-    cursor.execute("""
-    CREATE TABLE Orders (
-        order_id INTEGER PRIMARY KEY,
-        customer_id INTEGER,
-        order_date DATE,
-        FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
-    )""")
+    cursor.execute("""--sql
+        CREATE TABLE Orders (
+            order_id INTEGER PRIMARY KEY,
+            customer_id INTEGER,
+            order_date DATE,
+            FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
+        )""")
 
-    cursor.execute("""
-    CREATE TABLE Orders_Products (
-        order_id INTEGER,
-        product_id INTEGER,
-        quantity INTEGER NOT NULL,
-        PRIMARY KEY (order_id, product_id),
-        FOREIGN KEY (order_id) REFERENCES Orders(order_id),
-        FOREIGN KEY (product_id) REFERENCES Products(product_id)
-    )""")
+    cursor.execute("""--sql
+        CREATE TABLE Orders_Products (
+            order_id INTEGER,
+            product_id INTEGER,
+            quantity INTEGER NOT NULL,
+            PRIMARY KEY (order_id, product_id),
+            FOREIGN KEY (order_id) REFERENCES Orders(order_id),
+            FOREIGN KEY (product_id) REFERENCES Products(product_id)
+        )""")
 
     # Inserting data
     categories = [("Electronics",), ("Books",), ("Home and Garden",)]
@@ -81,9 +81,13 @@ def prepare_database():
 
     orders_products = [(1, 1, 1), (1, 7, 1), (2, 3, 2), (3, 5, 1)]
 
-    cursor.executemany("INSERT INTO Categories (category_name) VALUES (?)", categories)
+    cursor.executemany(
+        "INSERT INTO Categories (category_name) VALUES (?)", categories
+    )
 
-    cursor.executemany("INSERT INTO Customers (name, email) VALUES (?, ?)", customers)
+    cursor.executemany(
+        "INSERT INTO Customers (name, email) VALUES (?, ?)", customers
+    )
 
     cursor.executemany(
         "INSERT INTO Products (product_name, price, category_id) VALUES (?, ?, ?)",
