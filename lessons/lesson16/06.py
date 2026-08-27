@@ -14,14 +14,13 @@ class HttpRequest:
         for key, value in self.headers.items():
             headers_display += f"\n{key}: {value}"
         print(f"""
---- HTTP Request ---
-Method: {self.method}
-Target: {self.target}
-Headers:{headers_display}
-Body:
-{self.body}
---------------------
-""")
+            --- HTTP Request ---
+            Method: {self.method}
+            Target: {self.target}
+            Headers:{headers_display}
+            Body:{self.body}
+            --------------------
+            """)
 
 
 req = HttpRequest(

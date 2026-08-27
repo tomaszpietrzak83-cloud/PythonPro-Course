@@ -13,6 +13,17 @@ class FakeServer:
             self.db["users"].append(request_["body"])
             return {"code": 201, "body": "Created"}
 
+        elif request_["method"] == "GET" and request_["target"].startswith(
+            "/users/id"
+        ):
+            user_id = int(request_["target"].replace("/users/id", ""))
+
+            for user in self.db["users"]:
+                if user["id"] == user_id:
+                    return {"code": 200, "body": user}
+
+            return {"code": 404, "body": "User not found"}
+
         else:
             return {"code": 404, "body": "Not Found"}
 
@@ -44,3 +55,6 @@ client.send(server, request1)
 
 request3 = {"method": "GET", "target": "/users/id3"}
 client.send(server, request3)
+
+request4 = {"method": "GET", "target": "/users/id2"}
+client.send(server, request4)

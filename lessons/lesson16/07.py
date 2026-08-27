@@ -26,9 +26,9 @@ def parser(url: str):
     return url_dictionary
 
 
-link = "https://api.example.com:8080/users/search?active=true"
-link2 = "https://api.example.com/users/search?active=true"
-link3 = "http://api.example.com/users/search?active=true"
+link = "https://api.example1.com:8080/users/search?active=true"
+link2 = "https://api.example2.com/users/search?active=false"
+link3 = "http://api.example3.com/users/search?active=true"
 
 print(parser(link))
 print(parser(link2))

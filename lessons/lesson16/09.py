@@ -59,7 +59,7 @@ request_put = {
     "method": "PUT",
     "target": "/users",
     "body": {
-        "name": "Kasia",
+        "name": "Kaska",
         "email": "k.nowak@example.com",
         "city": "Warszawa",
     },
