@@ -1,10 +1,9 @@
-from database import SessionLocal
-from flask import Flask, render_template, request, redirect, url_for
-from models import Registry
-
-db = SessionLocal()
+from database import SessionLocal, engine
+from flask import Flask, redirect, render_template, request, url_for
+from models import Base, Registry
 
 app = Flask(__name__)
+Base.metadata.create_all(bind=engine)
 
 
 @app.route("/index")
@@ -20,7 +19,8 @@ def register():
         email = request.form.get("email")
 
         new_registry = Registry()
-        result = new_registry.add_registry(db, name=name, email=email)
+        with SessionLocal() as db:
+            result = new_registry.add_registry(db, name=name, email=email)
 
         if isinstance(result, str):
             return result
