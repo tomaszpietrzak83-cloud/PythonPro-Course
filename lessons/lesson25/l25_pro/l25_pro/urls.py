@@ -7,7 +7,14 @@ router = routers.DefaultRouter()
 # TASK 03
 router.register(r"products", views.ProductViewSet)
 
+# TASK 06
+router.register(r"notes", views.NoteViewSet)
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
+    # TASK 05
+    path("api/set-name/", views.set_name),
+    # TASK 05
+    path("api/hello/", views.hello),
 ]

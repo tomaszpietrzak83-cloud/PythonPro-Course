@@ -1,0 +1,48 @@
+@baseUrl = http://127.0.0.1:8000
+
+
+### TASK 06 - List notes
+GET {{baseUrl}}/api/notes/
+### TASK 06 - Add first note
+
+POST {{baseUrl}}/api/notes/
+Content-Type: application/json
+
+{
+  "title": "Morning Plan",
+  "content": "Review the lesson notes and finish the Django REST Framework exercise."
+}
+
+### TASK 06 - Add second note
+POST {{baseUrl}}/api/notes/
+Content-Type: application/json
+
+{
+  "title": "Shopping List",
+  "content": "Buy coffee, bread, milk, and fresh vegetables after work."
+}
+
+### TASK 06 - Get note 3
+GET {{baseUrl}}/api/notes/3/
+
+### TASK 06 - Update note 3
+
+PUT {{baseUrl}}/api/notes/3/
+Content-Type: application/json
+
+{
+  "title": "Morning Plan",
+  "content": "Review the lesson notes and finish the Django REST Framework exercise and REST :)."
+}
+
+### TASK 06 - Partially update note 3
+
+PATCH {{baseUrl}}/api/notes/3/
+Content-Type: application/json
+
+{
+  "title": "Better morning Plan"
+}
+
+### TASK 06 - Delete note 3
+DELETE {{baseUrl}}/api/notes/3/

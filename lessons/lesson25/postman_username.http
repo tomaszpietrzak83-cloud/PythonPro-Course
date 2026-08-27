@@ -1,0 +1,20 @@
+@baseUrl = http://127.0.0.1:8000
+
+### TASK 05 - GET "Hello, Guest!"
+GET {{baseUrl}}/api/hello/
+
+
+### TASK 05 - SET name: Anna
+GET {{baseUrl}}/api/set-name/?name=Anna
+
+
+### TASK 05 - GET "Hello, Anna!"
+GET {{baseUrl}}/api/hello/
+
+
+### TASK 05 - SET name: Tom
+GET {{baseUrl}}/api/set-name/?name=Tom
+
+
+### TASK 05 - GET "Hello, Tom!"
+GET {{baseUrl}}/api/hello/
