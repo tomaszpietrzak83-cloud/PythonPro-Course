@@ -4,6 +4,7 @@ from task06 import search_phrase
 from task10 import change_task_description
 
 
+# TASK 03
 def pokaz_zadania():
     """Wyświetla listę wszystkich zadań."""
     zadania = db.pobierz_zadania()
@@ -29,18 +30,22 @@ def main():
         print("6. Zmień opis zadania")
         print("7. Wyjdź")
         wybor = input("Wybierz opcję: ")
+
         if wybor == "1":
             pokaz_zadania()
+
         elif wybor == "2":
             opis = input("Podaj opis zadania: ")
             db.dodaj_zadanie(opis)
             print("Zadanie dodane!")
+
         elif wybor == "3":
             try:
                 id_zadania = int(input("Podaj ID zadania do usunięcia: "))
                 delete_task(id_zadania)
             except ValueError:
                 print("Błędne ID. Podaj liczbę.")
+
         elif wybor == "4":
             try:
                 id_zadania = int(input("Podaj ID zadania do oznaczenia: "))
@@ -48,9 +53,11 @@ def main():
                 print("Zadanie zaktualizowane!")
             except ValueError:
                 print("Błędne ID. Podaj liczbę.")
+
         elif wybor == "5":
             phrase = input("Podaj frazę do wyszukania: ")
             results = search_phrase(phrase)
+
             if results:
                 print("\n--- Wyniki wyszukiwania ---")
                 for zadanie in results:

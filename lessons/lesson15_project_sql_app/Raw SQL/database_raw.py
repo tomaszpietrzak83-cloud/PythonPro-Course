@@ -23,6 +23,7 @@ def init_db():
     conn.commit()
 
 
+# TASK 04
 def dodaj_zadanie(opis: str):
     """Dodaje nowe zadanie do bazy danych."""
     with sqlite3.connect(database_path) as conn:

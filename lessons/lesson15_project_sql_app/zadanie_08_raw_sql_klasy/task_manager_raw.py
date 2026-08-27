@@ -31,7 +31,7 @@ class TaskManagerRaw:
         with self._connect() as connection:
             # Wykonujemy SQL tworzacy tabele, jesli jej jeszcze nie ma.
             connection.execute(
-                """
+                """--sql
                 CREATE TABLE IF NOT EXISTS zadania (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     opis TEXT NOT NULL,
@@ -51,7 +51,9 @@ class TaskManagerRaw:
             cursor = connection.cursor()
             # Dodajemy rekord, przekazujac wartosci przez placeholdery.
             cursor.execute(
-                "INSERT INTO zadania (opis, zrobione, priorytet) VALUES (?, ?, ?)",
+                """--sql
+                INSERT INTO zadania (opis, zrobione, priorytet) VALUES (?, ?, ?)
+                """,
                 (description, False, priority),
             )
             # Zapisujemy zmiany w bazie.
@@ -65,7 +67,9 @@ class TaskManagerRaw:
         with self._connect() as connection:
             # Wykonujemy zapytanie i od razu pobieramy wszystkie rekordy.
             rows = connection.execute(
-                "SELECT id, opis, zrobione, priorytet FROM zadania ORDER BY id"
+                """--sql
+                SELECT id, opis, zrobione, priorytet FROM zadania ORDER BY id
+                """
             ).fetchall()
         # Zwracamy liste rekordow.
         return rows
@@ -105,7 +109,7 @@ class TaskManagerRaw:
         with self._connect() as connection:
             # Wykonujemy zapytanie z operatorem LIKE.
             rows = connection.execute(
-                """
+                """--sql
                 SELECT id, opis, zrobione, priorytet
                 FROM zadania
                 WHERE opis LIKE ?
