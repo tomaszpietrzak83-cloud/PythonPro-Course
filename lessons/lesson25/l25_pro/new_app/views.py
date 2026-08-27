@@ -2,8 +2,13 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from .models import Note, Product
-from .serializers import NoteSerializer, ProductSerializer
+from .models import Author, Book, Note, Product
+from .serializers import (
+    AuthorSerializer,
+    BookSerializer,
+    NoteSerializer,
+    ProductSerializer,
+)
 
 
 # TASK 03 08
@@ -34,6 +39,18 @@ class ProductViewSet(viewsets.ModelViewSet):
 class NoteViewSet(viewsets.ModelViewSet):
     queryset = Note.objects.all().order_by("-created_at")
     serializer_class = NoteSerializer
+
+
+# TASK 09
+class AuthorViewSet(viewsets.ModelViewSet):
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+
+
+# TASK 09
+class BookViewSet(viewsets.ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
 
 
 @api_view(["GET"])

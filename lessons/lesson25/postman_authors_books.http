@@ -1,0 +1,49 @@
+@baseUrl = http://127.0.0.1:8000
+
+### TASK 09 - List authors
+GET {{baseUrl}}/api/authors/
+
+### TASK 09 - Get author 1
+GET {{baseUrl}}/api/authors/1/
+
+### TASK 09 - Create author
+POST {{baseUrl}}/api/authors/
+Content-Type: application/json
+
+{
+  "name": "Terry Pratchett"
+}
+
+### TASK 09 - List books
+GET {{baseUrl}}/api/books/
+
+### TASK 09 - Get book 1
+GET {{baseUrl}}/api/books/1/
+
+### TASK 09 - Create book for author 1
+POST {{baseUrl}}/api/books/
+Content-Type: application/json
+
+{
+  "title": "The Test Book",
+  "publication_year": "2026",
+  "author": 1
+}
+
+### TASK 09 - Update book 1
+PUT {{baseUrl}}/api/books/1/
+Content-Type: application/json
+
+{
+  "title": "Animal Farm",
+  "publication_year": "1945",
+  "author": 1
+}
+
+### TASK 09 - Partially update book 1
+PATCH {{baseUrl}}/api/books/1/
+Content-Type: application/json
+
+{
+  "publication_year": "1946"
+}

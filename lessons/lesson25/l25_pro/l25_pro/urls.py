@@ -10,6 +10,12 @@ router.register(r"products", views.ProductViewSet)
 # TASK 06
 router.register(r"notes", views.NoteViewSet)
 
+# TASK 09
+router.register(r"authors", views.AuthorViewSet)
+
+# TASK 09
+router.register(r"books", views.BookViewSet)
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
