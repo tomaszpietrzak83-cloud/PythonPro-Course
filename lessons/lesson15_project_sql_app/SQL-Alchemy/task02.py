@@ -3,6 +3,7 @@ from sqlalchemy_app.models import Zadanie
 
 
 def delete_task(db: Session, id_zadania: int):
+
     task = db.query(Zadanie).filter(Zadanie.id == id_zadania).first()
     if task:
         db.delete(task)

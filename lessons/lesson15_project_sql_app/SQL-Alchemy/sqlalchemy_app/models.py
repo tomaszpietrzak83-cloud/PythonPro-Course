@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlalchemy import Boolean, Column, DateTime, Integer, String
 from sqlalchemy.orm import declarative_base
@@ -12,12 +12,13 @@ class Zadanie(Base):
     id = Column(Integer, primary_key=True)
     opis = Column(String, nullable=False)
     zrobione = Column(Boolean, default=False, nullable=False)
-    # Domyślnie zapisz lokalny czas utworzenia bez mikrosekund.
-    # Używamy `datetime.now()` (lokalny, naive) i usuwamy microsecond,
-    # aby w DB były tylko: rok-miesiąc-dzień godzina:minuta:sekunda.
+    # Domyślnie zapisz czas utworzenia w UTC bez mikrosekund.
+    # Używamy `datetime.now(timezone.utc)` i usuwamy microsecond,
+    # aby w DB były tylko: rok-miesiąc-dzień godzina:minuta:sekunda
+    # z rozpoznawaną strefą czasową.
     creation_time = Column(
         DateTime,
-        default=lambda: datetime.now().replace(microsecond=0),
+        default=lambda: datetime.now(timezone.utc).replace(microsecond=0),
     )
 
     def __repr__(self):

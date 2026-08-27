@@ -1,7 +1,9 @@
 # Importujemy klase Session do typowania parametrow funkcji.
 from sqlalchemy.orm import Session, selectinload
+
 # Importujemy fabryke sesji bazy danych i walidacje schematu.
 from sqlalchemy_app.database import SessionLocal, ensure_database_ready
+
 # Importujemy modele ORM.
 from sqlalchemy_app.models import Tag, Zadanie
 
@@ -79,7 +81,8 @@ def mark_task_as_done(db: Session, task_id: int) -> bool:
 def search_tasks(db: Session, phrase: str) -> list[Zadanie]:
     # Budujemy zapytanie ORM z filtrem LIKE.
     tasks = (
-        db.query(Zadanie)
+        db
+        .query(Zadanie)
         .options(selectinload(Zadanie.tagi))
         .filter(Zadanie.opis.like(f"%{phrase}%"))
         .order_by(Zadanie.id)
@@ -114,7 +117,8 @@ def get_or_create_tag(db: Session, tag_name: str) -> Tag:
 def add_tag_to_task(db: Session, task_id: int, tag_name: str) -> bool:
     # Pobieramy zadanie razem z kolekcja tagow.
     task = (
-        db.query(Zadanie)
+        db
+        .query(Zadanie)
         .options(selectinload(Zadanie.tagi))
         .filter(Zadanie.id == task_id)
         .first()
@@ -137,7 +141,13 @@ def add_tag_to_task(db: Session, task_id: int, tag_name: str) -> bool:
 # Funkcja pobiera wszystkie zadania z tagami.
 def get_all_tasks(db: Session) -> list[Zadanie]:
     # Budujemy zapytanie z dociaganiem relacji tagow.
-    tasks = db.query(Zadanie).options(selectinload(Zadanie.tagi)).order_by(Zadanie.id).all()
+    tasks = (
+        db
+        .query(Zadanie)
+        .options(selectinload(Zadanie.tagi))
+        .order_by(Zadanie.id)
+        .all()
+    )
     # Zwracamy gotowa liste obiektow.
     return tasks
 
@@ -251,7 +261,9 @@ def main() -> None:
             # Opcja 6 dopina tag do wybranego zadania.
             elif choice == "6":
                 # Pobieramy ID zadania.
-                task_id = ask_for_task_id("Podaj ID zadania, do ktorego dodac tag: ")
+                task_id = ask_for_task_id(
+                    "Podaj ID zadania, do ktorego dodac tag: "
+                )
                 # Wracamy do menu po bledzie.
                 if task_id is None:
                     continue

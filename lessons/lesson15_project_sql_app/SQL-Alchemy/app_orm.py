@@ -2,9 +2,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy_app.database import get_db
 from sqlalchemy_app.models import Zadanie
 from task02 import delete_task
-from task07 import search_phraze
+from task07 import search_phrase
 
 
+# TASK 03
 def pokaz_zadania(db: Session):
     """Wyświetla listę wszystkich zadań."""
     zadania = db.query(Zadanie).all()  # Zamiast SELECT * FROM ...
@@ -42,6 +43,7 @@ def oznacz_jako_zrobione(db: Session, id_zadania: int):
 def main():
     db_generator = get_db()
     db_session = next(db_generator)
+
     while True:
         print("Menu (SQLAlchemy):")
         print("1. Pokaż zadania")
@@ -50,6 +52,7 @@ def main():
         print("4. Oznacz zadanie jako zrobione")
         print("5. Wyszukaj zadanie")
         print("6. Wyjdź")
+
         wybor = input("Wybierz opcję: ")
 
         if wybor == "1":
@@ -73,9 +76,11 @@ def main():
                 oznacz_jako_zrobione(db_session, id_zadania)
             except ValueError:
                 print("Błędne ID. Podaj liczbę.")
+
         elif wybor == "5":
             phrase = input("Podaj frazę do wyszukania: ")
-            results = search_phraze(db_session, phrase)
+            results = search_phrase(db_session, phrase)
+
             if results:
                 print("\n--- Wyniki wyszukiwania ---")
                 for zadanie in results:
