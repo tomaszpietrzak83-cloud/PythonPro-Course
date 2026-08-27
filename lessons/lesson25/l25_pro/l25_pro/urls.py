@@ -4,7 +4,7 @@ from new_app import views
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-# TASK 03
+# TASK 03 08
 router.register(r"products", views.ProductViewSet)
 
 # TASK 06

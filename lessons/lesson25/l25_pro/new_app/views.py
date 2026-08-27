@@ -6,7 +6,7 @@ from .models import Note, Product
 from .serializers import NoteSerializer, ProductSerializer
 
 
-# TASK 03
+# TASK 03 08
 class ProductViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows products to be viewed or edited.
@@ -14,6 +14,20 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+    # TASK 08
+    def get_queryset(self):
+        queryset = Product.objects.all()
+        min_price = self.request.query_params.get("min_price")
+        max_price = self.request.query_params.get("max_price")
+
+        if min_price:
+            queryset = queryset.filter(price__gte=min_price)
+
+        if max_price:
+            queryset = queryset.filter(price__lte=max_price)
+
+        return queryset
 
 
 # TASK 06
