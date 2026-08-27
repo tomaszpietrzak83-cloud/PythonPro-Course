@@ -1,0 +1,19 @@
+@baseUrl = http://127.0.0.1:8000
+
+### TASK 08 - Missing filter parameters
+GET {{baseUrl}}/api/filter-products/
+
+### TASK 08 - Products with price >= 50
+GET {{baseUrl}}/api/filter-products/?min_price=50
+
+### TASK 08 - Products with price <= 100
+GET {{baseUrl}}/api/filter-products/?max_price=100
+
+### TASK 08 - Products with price between 50 and 100
+GET {{baseUrl}}/api/filter-products/?min_price=50&max_price=100
+
+### TASK 08 - Products with price between 100 and 200
+GET {{baseUrl}}/api/filter-products/?min_price=100&max_price=200
+
+### TASK 08 - Products with price between 200 and 300
+GET {{baseUrl}}/api/filter-products/?min_price=200&max_price=300

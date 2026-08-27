@@ -19,4 +19,6 @@ urlpatterns = [
     path("api/hello/", views.hello),
     # TASK 07
     path("api/calculate/", views.calculate),
+    # TASK 08
+    path("api/filter-products/", views.filter_by_price),
 ]

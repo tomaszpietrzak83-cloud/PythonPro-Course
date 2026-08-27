@@ -86,3 +86,31 @@ def calculate(request):
         return Response({"error": "Invalid operation."}, status=400)
 
     return Response({"result": result}, status=200)
+
+
+@api_view(["GET"])
+# TASK 08
+def filter_by_price(request):
+    min_price = request.GET.get("min_price")
+    max_price = request.GET.get("max_price")
+
+    if min_price is None and max_price is None:
+        return Response(
+            {
+                "error": "Missing required parameters. Please specify at least one."
+            },
+            status=400,
+        )
+
+    queryset = Product.objects.all()
+    if min_price and max_price:
+        queryset = queryset.filter(price__gte=min_price, price__lte=max_price)
+
+    if min_price:
+        queryset = queryset.filter(price__gte=min_price)
+
+    if max_price:
+        queryset = queryset.filter(price__lte=max_price)
+
+    serializer = ProductSerializer(queryset, many=True)
+    return Response(serializer.data)
