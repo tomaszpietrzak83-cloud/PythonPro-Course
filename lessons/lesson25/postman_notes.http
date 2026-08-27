@@ -44,5 +44,14 @@ Content-Type: application/json
   "title": "Better morning Plan"
 }
 
+### TASK 10 - Reject a note with a title shorter than 5 characters
+POST {{baseUrl}}/api/notes/
+Content-Type: application/json
+
+{
+  "title": "Hey",
+  "content": "This request should fail because the title is too short."
+}
+
 ### TASK 06 - Delete note 3
 DELETE {{baseUrl}}/api/notes/3/

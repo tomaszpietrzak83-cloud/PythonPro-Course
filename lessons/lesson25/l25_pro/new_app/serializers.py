@@ -22,11 +22,21 @@ class BookSerializer(serializers.ModelSerializer):
         fields = ("id", "title", "publication_year", "author", "author_name")
 
 
-# TASK 06
+# TASK 06 10
 class NoteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Note
         fields = "__all__"
+
+    # TASK 10
+    def validate_title(self, value):
+
+        if len(value) < 5:
+            raise serializers.ValidationError(
+                "The title must be at least 5 characters long."
+            )
+
+        return value.capitalize()
 
 
 # TASK 02
