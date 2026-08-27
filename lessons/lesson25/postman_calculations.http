@@ -1,0 +1,19 @@
+@baseUrl = http://127.0.0.1:8000
+
+### TASK 07 - Add: expected result: 15.0
+GET {{baseUrl}}/api/calculate/?num1=10&num2=5&operation=add
+
+### TASK 07 - Subtract: expected result: 5.0
+GET {{baseUrl}}/api/calculate/?num1=10&num2=5&operation=subtract
+
+### TASK 07 - Multiply: expected result: 50.0
+GET {{baseUrl}}/api/calculate/?num1=10&num2=5&operation=multiply
+
+### TASK 07 - Divide: expected result: 2.0
+GET {{baseUrl}}/api/calculate/?num1=10&num2=5&operation=divide
+
+### TASK 07 - Divide by zero: expected result: "error": "Cannot divide by zero."
+GET {{baseUrl}}/api/calculate/?num1=10&num2=0&operation=divide
+
+### TASK 07 - Invalid operation: expected result: "error": "Invalid operation."
+GET {{baseUrl}}/api/calculate/?num1=10&num2=5&operation=power

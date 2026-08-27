@@ -17,4 +17,6 @@ urlpatterns = [
     path("api/set-name/", views.set_name),
     # TASK 05
     path("api/hello/", views.hello),
+    # TASK 07
+    path("api/calculate/", views.calculate),
 ]
