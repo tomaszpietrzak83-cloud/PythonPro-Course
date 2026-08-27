@@ -14,7 +14,7 @@ from .serializers import (
 # TASK 03 08
 class ProductViewSet(viewsets.ModelViewSet):
     """
-    API endpoint that allows products to be viewed or edited.
+    API endpoint that allows tasks to be viewed or edited.
     """
 
     queryset = Product.objects.all()
