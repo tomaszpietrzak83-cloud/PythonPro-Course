@@ -11,8 +11,9 @@ class HttpRequest:
 
     def display(self):
         headers_display = "\n"
+
         for key, value in self.headers.items():
-            headers_display += f"\n{key}: {value}"
+            headers_display += f"\n            {key}: {value}"
         print(f"""
             --- HTTP Request ---
             Method: {self.method}

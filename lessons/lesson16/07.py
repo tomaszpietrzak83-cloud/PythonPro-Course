@@ -29,7 +29,9 @@ def parser(url: str):
 link = "https://api.example1.com:8080/users/search?active=true"
 link2 = "https://api.example2.com/users/search?active=false"
 link3 = "http://api.example3.com/users/search?active=true"
+link4 = "https://facebook.com/"
 
 print(parser(link))
 print(parser(link2))
 print(parser(link3))
+print(parser(link4))
