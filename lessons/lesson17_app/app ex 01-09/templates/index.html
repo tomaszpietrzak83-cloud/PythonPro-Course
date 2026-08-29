@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="home-page">
+        <section class="hero">
+            <p class="eyebrow">Lesson 17</p>
+            <h1>Flask Mini App</h1>
+            <p class="lead">
+                Choose a page below and test how Flask routes connect Python functions with HTML templates.
+            </p>
+        </section>
+
+        <section class="route-grid" aria-label="Lesson pages">
+            <a class="route-card" href="/me" data-kind="Plain text route">
+                <span class="route-path">/me</span>
+                <strong>About Me</strong>
+                <span>Simple text response from Flask.</span>
+            </a>
+            <a class="route-card" href="/movies" data-kind="Template route">
+                <span class="route-path">/movies</span>
+                <strong>Movies</strong>
+                <span>Loop through a list in Jinja.</span>
+            </a>
+            <a class="route-card" href="/book" data-kind="Template route">
+                <span class="route-path">/book</span>
+                <strong>Book</strong>
+                <span>Render values passed from Python.</span>
+            </a>
+            <a class="route-card" href="/gallery" data-kind="Template route">
+                <span class="route-path">/gallery</span>
+                <strong>Gallery</strong>
+                <span>Display a list of image dictionaries.</span>
+            </a>
+            <a class="route-card" href="/products" data-kind="Database route">
+                <span class="route-path">/products</span>
+                <strong>Products</strong>
+                <span>Read rows with SQLAlchemy.</span>
+            </a>
+            <a class="route-card" href="/add/5/3" data-kind="Dynamic route">
+                <span class="route-path">/add/5/3</span>
+                <strong>Calculator</strong>
+                <span>Use URL parameters in a route.</span>
+            </a>
+        </section>
+
+        <section class="tip-panel">
+            <h2>Current route focus</h2>
+            <p id="route-tip">Hover over a card to see what it demonstrates.</p>
+        </section>
+    </main>
+
+    <script>
+        const cards = document.querySelectorAll(".route-card");
+        const routeTip = document.querySelector("#route-tip");
+        const defaultTip = routeTip.textContent;
+
+        cards.forEach((card) => {
+            card.addEventListener("mouseenter", () => {
+                const path = card.querySelector(".route-path").textContent;
+                routeTip.textContent = `${path} - ${card.dataset.kind}`;
+            });
+
+            card.addEventListener("mouseleave", () => {
+                routeTip.textContent = defaultTip;
+            });
+        });
+    </script>
+</body>
+</html>

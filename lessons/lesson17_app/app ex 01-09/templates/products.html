@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <nav class="page-nav">
+        <a href="/">Back to index</a>
+    </nav>
     
     <div class="products">  
         <h1>Greetings!</h1>
@@ -23,6 +26,10 @@
                     <tr>
                         <td>{{ item.name }}</td>
                         <td>${{ item.price }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2">No products yet. Run init_products.py to add sample data.</td>
                     </tr>
                 {% endfor %}
             </table>

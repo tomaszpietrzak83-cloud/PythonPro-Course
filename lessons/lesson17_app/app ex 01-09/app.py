@@ -1,33 +1,51 @@
-from database import SessionLocal
+from database import SessionLocal, engine
 from flask import Flask, render_template
-from models import Product
+from models import Base, Product
 
 db = SessionLocal()
 
 app = Flask(__name__)
+Base.metadata.create_all(bind=engine)
 
 
+@app.route("/index")
 @app.route("/")
 def index():
-    return "Main Page"
+    return render_template("index.html", title="Lesson 17 App")
 
 
 # TASK 01
 @app.route("/me")
 def me():
-    return "Tomasz Pietrzak"
+    return render_template(
+        "simple_result.html",
+        title="About Me",
+        heading="About Me",
+        message="Tomasz Pietrzak",
+    )
 
 
 # TASK 02
 @app.route("/<function_name>/<int:a>/<int:b>")
 def function(function_name, a, b):
     if function_name == "add":
-        return str(a + b)
+        result = a + b
     elif function_name == "subtract":
-        return str(a - b)
+        result = a - b
     else:
-        return """Invalid function. Use 'add' or 'subtract'.
-        Example: /add/5/3 or /subtract/10/4"""
+        return render_template(
+            "simple_result.html",
+            title="Invalid function",
+            heading="Invalid function",
+            message="Use 'add' or 'subtract'. Example: /add/5/3 or /subtract/10/4",
+        )
+
+    return render_template(
+        "simple_result.html",
+        title="Calculator Result",
+        heading="Calculator Result",
+        message=f"{function_name}({a}, {b}) = {result}",
+    )
 
 
 # TASK 03, 04

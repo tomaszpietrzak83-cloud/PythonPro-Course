@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>My favorite book</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
+    <nav class="page-nav">
+        <a href="/">Back to index</a>
+    </nav>
     <h1>Check out my favorite book!</h1>
     <h2><strong>Title:</strong> {{ title }}</h2>
     <p><strong>Author:</strong> {{ author }}</p>

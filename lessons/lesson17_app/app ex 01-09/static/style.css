@@ -3,6 +3,135 @@ body {
     background-color: #f4f4f4;
     margin: 0;
     font-family: Arial, sans-serif;
+    color: #1f2937;
+}
+
+a {
+    color: inherit;
+}
+
+.home-page {
+    width: min(1040px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 48px 0;
+}
+
+.hero {
+    text-align: left;
+    margin-bottom: 28px;
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    color: #0f766e;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: 44px;
+}
+
+.lead {
+    max-width: 680px;
+    color: #4b5563;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.route-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin: 28px 0;
+}
+
+.route-card {
+    display: grid;
+    gap: 8px;
+    min-height: 130px;
+    padding: 18px;
+    text-align: left;
+    text-decoration: none;
+    background: #ffffff;
+    border: 1px solid #dbe3ea;
+    border-radius: 8px;
+    box-shadow: 0 10px 26px rgba(31, 41, 55, 0.08);
+    transition: transform 160ms ease, border-color 160ms ease;
+}
+
+.route-card:hover,
+.route-card:focus {
+    transform: translateY(-3px);
+    border-color: #0f766e;
+}
+
+.route-path {
+    color: #0f766e;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 14px;
+}
+
+.route-card strong {
+    font-size: 20px;
+}
+
+.route-card span:last-child,
+.tip-panel p {
+    color: #5b6472;
+    line-height: 1.5;
+}
+
+.tip-panel {
+    padding: 18px;
+    text-align: left;
+    background: #e6f4f1;
+    border-left: 4px solid #0f766e;
+}
+
+.tip-panel h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+}
+
+.tip-panel p {
+    margin: 0;
+}
+
+.page-nav {
+    display: flex;
+    justify-content: center;
+    padding: 18px;
+}
+
+.page-nav a {
+    padding: 10px 14px;
+    text-decoration: none;
+    background: #ffffff;
+    border: 1px solid #dbe3ea;
+    border-radius: 8px;
+}
+
+.page-nav a:hover,
+.page-nav a:focus {
+    border-color: #0f766e;
+}
+
+.result-panel {
+    width: min(680px, calc(100% - 32px));
+    margin: 48px auto;
+    padding: 28px;
+    background: #ffffff;
+    border: 1px solid #dbe3ea;
+    border-radius: 8px;
+    box-shadow: 0 10px 26px rgba(31, 41, 55, 0.08);
+}
+
+.result-panel p {
+    font-size: 22px;
+    color: #4b5563;
 }
 
 .gallery {

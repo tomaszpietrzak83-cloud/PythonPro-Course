@@ -2,16 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ title }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>    
     <body>
-        <div class="index">
-            <h1>Welcome to the Registry App!</h1>
-                <p>
-                    This is a simple application to demonstrate how to create a registry using Flask and SQLAlchemy.
+        <main class="registry-home">
+            <section class="index">
+                <p class="eyebrow">Lesson 17</p>
+                <h1>Welcome to the Registry App!</h1>
+                <p class="lead">
+                    This app demonstrates a Flask form, a SQLAlchemy model, and a simple success page.
                 </p>
-            <a href="/register">Go to the registration page</a>
-        </div>
+            </section>
+
+            <nav class="lesson-links" aria-label="Registry pages">
+                <a href="/register" data-description="Open the form and add a name with an email address.">
+                    <span>/register</span>
+                    Registration page
+                </a>
+                <a href="/ty" data-description="Preview the page shown after a successful registration.">
+                    <span>/ty</span>
+                    Success page
+                </a>
+            </nav>
+
+            <section class="route-preview">
+                <h2>Route preview</h2>
+                <p id="route-description">Hover over a link to see what this route does.</p>
+            </section>
+        </main>
+
+        <script>
+            const routeDescription = document.querySelector("#route-description");
+            const defaultDescription = routeDescription.textContent;
+            const links = document.querySelectorAll(".lesson-links a");
+
+            links.forEach((link) => {
+                link.addEventListener("mouseenter", () => {
+                    routeDescription.textContent = link.dataset.description;
+                });
+
+                link.addEventListener("mouseleave", () => {
+                    routeDescription.textContent = defaultDescription;
+                });
+            });
+        </script>
     </body>    
 </html>

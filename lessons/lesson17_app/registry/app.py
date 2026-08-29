@@ -7,6 +7,7 @@ Base.metadata.create_all(bind=engine)
 
 
 @app.route("/index")
+@app.route("/")
 def index():
     title = "Registry App"
     return render_template("index.html", title=title)

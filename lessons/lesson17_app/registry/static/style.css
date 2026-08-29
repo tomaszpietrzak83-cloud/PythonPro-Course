@@ -3,6 +3,13 @@ body {
     background-color: #f4f4f4;
     margin: 0;
     font-family: Arial, sans-serif;
+    color: #1f2937;
+}
+
+.registry-home {
+    width: min(860px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 48px 0;
 }
 
 .index {
@@ -10,4 +17,76 @@ body {
     width: 100%;
     margin-bottom: 25px;
     font-size: 22px;
+}
+
+.eyebrow {
+    margin: 0 0 8px;
+    color: #2563eb;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.index h1 {
+    margin: 0;
+    font-size: 42px;
+}
+
+.lead {
+    max-width: 640px;
+    margin: 16px auto 0;
+    color: #4b5563;
+    line-height: 1.6;
+}
+
+.lesson-links {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin: 20px auto;
+}
+
+.lesson-links a {
+    display: grid;
+    gap: 8px;
+    min-width: 210px;
+    padding: 18px;
+    color: #1f2937;
+    text-decoration: none;
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    box-shadow: 0 10px 26px rgba(31, 41, 55, 0.08);
+    transition: transform 160ms ease, border-color 160ms ease;
+}
+
+.lesson-links a:hover,
+.lesson-links a:focus {
+    transform: translateY(-3px);
+    border-color: #2563eb;
+}
+
+.lesson-links span {
+    color: #2563eb;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 14px;
+}
+
+.route-preview {
+    margin: 28px auto 0;
+    padding: 18px;
+    text-align: left;
+    background: #e8f0ff;
+    border-left: 4px solid #2563eb;
+}
+
+.route-preview h2 {
+    margin: 0 0 8px;
+    font-size: 20px;
+}
+
+.route-preview p {
+    margin: 0;
+    color: #4b5563;
 }
