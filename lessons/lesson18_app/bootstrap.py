@@ -8,6 +8,10 @@ import subprocess
 import sys
 from pathlib import Path
 
+ROOT_DIR = Path(__file__).resolve().parent
+GITIGNORE_PATH = ROOT_DIR / ".gitignore"
+REQUIREMENTS_PATH = ROOT_DIR / "requirements.txt"
+
 
 def get_installed_packages():
     """Returns a dict of installed packages and their versions."""
@@ -27,13 +31,14 @@ def get_installed_packages():
     return packages
 
 
-def parse_requirements(file_path="requirements.txt"):
+def parse_requirements(file_path=REQUIREMENTS_PATH):
     """Parses requirements.txt and returns a dict of packages."""
     requirements = {}
-    if not Path(file_path).exists():
+    file_path = Path(file_path)
+    if not file_path.exists():
         return requirements
 
-    with open(file_path, "r") as f:
+    with file_path.open("r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if line and not line.startswith("#"):
@@ -51,13 +56,14 @@ def parse_requirements(file_path="requirements.txt"):
     return requirements
 
 
-def parse_gitignore(file_path=".gitignore"):
+def parse_gitignore(file_path=GITIGNORE_PATH):
     """Parses .gitignore and returns a list of patterns."""
     patterns = []
-    if not Path(file_path).exists():
+    file_path = Path(file_path)
+    if not file_path.exists():
         return patterns
 
-    with open(file_path, "r") as f:
+    with file_path.open("r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
             if line and not line.startswith("#"):
@@ -76,7 +82,7 @@ def check_gitignore():
         ".vscode/",
     ]
 
-    if not Path(".gitignore").exists():
+    if not GITIGNORE_PATH.exists():
         print("📄 .gitignore not found. Skipping validation.")
         return
 
@@ -91,7 +97,7 @@ def check_gitignore():
         print(
             f"⚠️  Found {len(missing_patterns)} missing patterns in .gitignore:"
         )
-        with open(".gitignore", "a") as f:
+        with GITIGNORE_PATH.open("a", encoding="utf-8") as f:
             for pattern in missing_patterns:
                 f.write(pattern + "\n")
                 print(f"  ✅ Added: {pattern}")
@@ -106,7 +112,7 @@ def update_requirements():
     required = parse_requirements()
 
     # Skip if requirements.txt doesn't exist
-    if not Path("requirements.txt").exists():
+    if not REQUIREMENTS_PATH.exists():
         print("📄 requirements.txt not found. Skipping.")
         return
 
@@ -122,7 +128,7 @@ def update_requirements():
 
     if new_packages:
         print(f"✨ Found {len(new_packages)} new packages!")
-        with open("requirements.txt", "a") as f:
+        with REQUIREMENTS_PATH.open("a", encoding="utf-8") as f:
             for pkg in new_packages:
                 f.write(pkg + "\n")
                 print(f"  ✅ Added: {pkg}")
