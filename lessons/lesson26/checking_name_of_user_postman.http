@@ -1,0 +1,6 @@
+### TASK 08 - Protected endpoint without a token
+GET http://127.0.0.1:8000/user/
+
+### TASK 08 - Protected endpoint with an access token
+GET http://127.0.0.1:8000/user/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzg3OTE4NDk5LCJpYXQiOjE3ODc5MTc4OTksImp0aSI6IjVjZTY1NTU3MzFiYzRlMzQ4ZDgyZmZlOGY4NjI5NjQxIiwidXNlcl9pZCI6IjMifQ.ygrU5T5U0H0tlhsXO193ykIE6tAok-FqTleGPr-djZ8

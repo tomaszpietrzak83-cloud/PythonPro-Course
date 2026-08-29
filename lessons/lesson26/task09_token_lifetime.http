@@ -1,0 +1,13 @@
+### TASK 09 - Get a new JWT token
+# @name login
+POST http://127.0.0.1:8000/auth/jwt/create/
+Content-Type: application/json
+
+{
+  "username": "nowy_uzytkownik",
+  "password": "bardzoTrudneHaslo123"
+}
+
+### TASK 09 - Test the protected endpoint with the access token
+GET http://127.0.0.1:8000/user/
+Authorization: Bearer {{login.response.body.access}}

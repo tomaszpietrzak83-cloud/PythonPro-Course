@@ -1,0 +1,9 @@
+### TASK 05 - Register a new user
+POST http://127.0.0.1:8000/auth/users/
+Content-Type: application/json
+
+{
+  "username": "nowy_uzytkownik",
+  "password": "bardzoTrudneHaslo123",
+  "email": "test@example.com"
+}
