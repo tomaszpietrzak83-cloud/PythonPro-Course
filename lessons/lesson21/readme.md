@@ -1,381 +1,116 @@
-# **Lekcja 21: Praca z aplikacją Django - ORM i Szablony**
+# Lesson Setup
 
-`#lekcja` `#python` `#django` `#orm` `#jinja2` `#webdev`
+This lesson includes `run_before_checking_lesson.py` for standalone ZIP use.
 
-W tej lekcji zagłębimy się w dwa kluczowe elementy frameworka Django: system **ORM** do interakcji z bazą danych oraz **system szablonów** (bardzo podobny do Jinja2), który pozwala dynamicznie generować strony HTML. Nauczymy się, jak pobierać, tworzyć i modyfikować dane bez pisania ani jednej linijki SQL oraz jak prezentować te dane użytkownikowi w przeglądarce.
+From the lesson folder, run:
 
-## **1. Django ORM – Rozmowa z bazą danych w języku Python**
-
-W poprzednich lekcjach, pracując z bazami danych, pisaliśmy zapytania SQL. Django wprowadza potężne narzędzie, które pozwala nam zapomnieć o SQL-u w większości przypadków.
-
-> [!definition]
-> 
-> ORM (Object-Relational Mapping) to technika programowania, która pozwala na interakcję z relacyjną bazą danych (jak PostgreSQL) za pomocą obiektów, klas i metod języka programowania (w naszym przypadku Pythona). Zamiast pisać SELECT * FROM articles;, piszemy pythonowy kod Article.objects.all(). Django ORM tłumaczy nasz kod Pythona na zapytania SQL.
-
-Główne zalety ORM to:
-
-- **Szybkość rozwoju**: Piszemy kod w Pythonie, który jest często krótszy i bardziej czytelny niż SQL.
-    
-- **Bezpieczeństwo**: ORM automatycznie chroni nas przed atakami typu SQL Injection.
-    
-- **Niezależność od bazy danych**: Ten sam kod Pythona będzie działał z PostgreSQL, MySQL czy SQLite.
-    
-- **Wygoda**: Pracujemy z danymi jak ze zwykłymi obiektami Pythona.
-    
-
-```mermaid
-graph TD
-    A["Twój kod w Pythonie, np. Article.objects.all()"] --> B{Django ORM};
-    B --> C["Zapytanie SQL, np. SELECT * FROM articles"];
-    C --> D[(Baza Danych)];
-    D --> C;
-    C --> B;
-    B --> A;
-
+```bash
+python run_before_checking_lesson.py
 ```
 
-### **Przykłady użycia Django ORM**
+The script creates a local `.venv` folder inside this lesson and installs the packages listed in `requirements.txt`. It does not use or modify virtual environments outside this lesson folder.
 
-Załóżmy, że mamy model `Article` zdefiniowany w `models.py`:
+After setup, activate the environment:
 
-```python
-# models.py
-from django.db import models
+```bash
+# Windows
+.venv\Scripts\activate
 
-class Article(models.Model):
-    title = models.CharField(max_length=200)
-    content = models.TextField()
-    pub_date = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.title
+# macOS / Linux
+source .venv/bin/activate
 ```
 
-> [!note]
-> 
-> Każdy model w Django (klasa dziedzicząca po models.Model) ma automatycznie dodawany menedżer o nazwie objects. To właśnie przez niego wykonujemy wszystkie operacje na bazie danych.
+Then run the Django project:
 
-Przykład 1: Pobieranie wszystkich obiektów
-
-Aby pobrać wszystkie artykuły z bazy danych, używamy metody all().
-
-```python
-# views.py
-from .models import Article
-
-# Pobierz wszystkie obiekty (rekordy) z modelu Article
-all_articles = Article.objects.all()
-
-# Możemy teraz iterować po wynikach
-for article in all_articles:
-    print(article.title)
+```bash
+cd l21_pro
+python manage.py migrate
+python manage.py seed_lesson21
+python manage.py runserver
 ```
 
-Przykład 2: Tworzenie nowego obiektu
+For local development the project uses a non-secret fallback `SECRET_KEY`.
+For a real deployment, set `DJANGO_SECRET_KEY` in your environment instead of committing it to Git.
 
-Nowe rekordy w bazie danych tworzymy za pomocą metody create().
+Useful URLs:
 
-```python
-# views.py lub konsola `manage.py shell`
-from .models import Article
+- `http://127.0.0.1:8000/categories/`
+- `http://127.0.0.1:8000/categories/1/`
+- `http://127.0.0.1:8000/articles/`
+- `http://127.0.0.1:8000/articles/?q=python`
+- `http://127.0.0.1:8000/admin/`
 
-# Stworzenie nowego artykułu i zapisanie go w bazie danych
-# To jest odpowiednik polecenia INSERT INTO w SQL
-new_article = Article.objects.create(
-    title="Nowy artykuł o Django",
-    content="Treść artykułu o potędze ORM."
-)
+# Lesson21 Implementation Map
 
-print(f"Utworzono artykuł o ID: {new_article.id}")
+The original lesson content was moved to `lesson-21.md`.
+
+Your markdown answers were moved into a separate `solutions/` directory:
+
+- `solutions/01.md` - Category model and migration commands.
+- `solutions/02.md` - shell code for creating categories.
+- `solutions/03.md` - category list view, template, and URL.
+- `solutions/04.md` - static CSS and loading CSS in the template.
+- `solutions/05.md` - `Category.objects.get(name="Sport")` shell query.
+- `solutions/06.md` - category detail view, template, and URL.
+- `solutions/07.md` - `Article` relation to `Category` and article seed data.
+- `solutions/08.md` - `is_published` filtering and recent article badge.
+- `solutions/09.md` - Django admin template override.
+- `solutions/10.md` - GET search form and article filtering.
+
+The implemented project is in `l21_pro/`, with one app named `myapp`, following the same pattern as the neighboring Django lessons.
+
+## How the solution files were implemented
+
+- Tasks 01, 07, and 08 are implemented in `l21_pro/myapp/models.py`.
+- Task 02 and the article data from task 07 are implemented as a repeatable management command in `l21_pro/myapp/management/commands/seed_lesson21.py`.
+- Tasks 03, 06, 07, 08, and 10 are implemented in `l21_pro/myapp/views.py`.
+- Tasks 03, 06, and 10 are wired in `l21_pro/myapp/urls.py`; the app URLs are included from `l21_pro/l21_pro/urls.py`.
+- Task 04 is implemented in `l21_pro/myapp/static/myapp/style.css` and loaded by `l21_pro/myapp/templates/myapp/base.html`.
+- Task 09 is implemented with `l21_pro/templates/admin/base_site.html`, `TEMPLATES["DIRS"]` in `l21_pro/l21_pro/settings.py`, and admin site labels in `l21_pro/myapp/admin.py`.
+- Task 05 stays documented in `solutions/05.md`, because it is a shell query rather than application code.
+
+## Tagged locations
+
+Code uses `# --- TASK ... ---` comments. Templates use Django template comments in the form `{# TASK ... #}`.
+
+- `l21_pro/myapp/models.py`
+  - `# --- TASK 01 ---` above `Category`
+  - `# --- TASK 07 08 ---` above `Article`
+- `l21_pro/myapp/views.py`
+  - `# --- TASK 03 ---` above `category_list_view`
+  - `# --- TASK 06 07 ---` above `category_detail_view`
+  - `# --- TASK 08 10 ---` above `article_list_view`
+- `l21_pro/myapp/urls.py`
+  - `# --- TASK 03 ---` above `/categories/`
+  - `# --- TASK 06 07 ---` above `/categories/<int:pk>/`
+  - `# --- TASK 08 10 ---` above `/articles/`
+- `l21_pro/l21_pro/urls.py`
+  - `# --- TASK 03 06 08 10 ---` above the `myapp.urls` include
+- `l21_pro/l21_pro/settings.py`
+  - `# --- TASK 09 ---` above the project template directory setting
+- `l21_pro/myapp/templates/myapp/category_list.html`
+  - `{# TASK 03 04 #}` above the category list
+- `l21_pro/myapp/templates/myapp/category_detail.html`
+  - `{# TASK 06 #}` above the category title
+  - `{# TASK 07 #}` above the related article list
+- `l21_pro/myapp/templates/myapp/article_list.html`
+  - `{# TASK 10 #}` above the search form
+  - `{# TASK 08 #}` above the recent article badge
+- `l21_pro/templates/admin/base_site.html`
+  - `{# TASK 09 #}` above admin branding
+- `l21_pro/myapp/static/myapp/style.css`
+  - `/* TASK 04 */` above the body background rule
+- `l21_pro/myapp/management/commands/seed_lesson21.py`
+  - `# --- TASK 02 ---` above category seed data
+  - `# --- TASK 07 08 ---` above article seed data
+- `l21_pro/myapp/tests.py`
+  - task comments above view tests
+
+## Checks
+
+From `l21_pro/`, run:
+
+```bash
+python manage.py check
+python manage.py test
 ```
-
-Przykład 3: Filtrowanie i pobieranie obiektów
-
-Do wyszukiwania obiektów spełniających określone warunki służy metoda filter(). Możemy też pobrać jeden, konkretny obiekt za pomocą get().
-
-```python
-# views.py
-from .models import Article
-
-# Pobierz artykuły, których tytuł zawiera słowo "Django"
-# (case-sensitive)
-django_articles = Article.objects.filter(title__contains="Django")
-
-# Pobierz DOKŁADNIE JEDEN artykuł o ID = 1
-# Jeśli nie zostanie znaleziony lub zostanie znalezionych więcej, rzuci wyjątkiem!
-try:
-    specific_article = Article.objects.get(id=1)
-    print(f"Znaleziono artykuł: {specific_article.title}")
-
-    # Aktualizacja pola i zapisanie zmian
-    specific_article.title = "Zaktualizowany tytuł"
-    specific_article.save() # Metoda save() zapisuje zmiany w bazie
-except Article.DoesNotExist:
-    print("Artykuł o ID 1 nie istnieje.")
-
-```
-
-> [!tip]
-> 
-> Django ORM oferuje bogaty zestaw "lookups" do filtrowania, np. __exact, __iexact (case-insensitive), __contains, __icontains, __gt (greater than), __lt (less than) i wiele innych.
-
-## **2. Szablony Django – Dynamiczne strony HTML**
-
-Szablony pozwalają nam oddzielić logikę aplikacji (kod w Pythonie) od warstwy prezentacji (kod HTML). Silnik szablonów Django przetwarza plik HTML, w którym umieszczamy specjalne znaczniki, i "wstrzykuje" w nie dane przekazane z widoku.
-
-> [!info]
-> 
-> Składnia silnika szablonów Django (Django Template Language - DTL) jest bardzo podobna do popularnego silnika Jinja2, którego używaliśmy z Flaskiem. Główne koncepcje są identyczne: zmienne w {{ ... }}, a logika (pętle, warunki) w {% ... %}. Znajomość Jinja2 sprawia, że praca z szablonami Django jest bardzo intuicyjna.
-
-### **Jak podłączyć szablon w Django? (3 kroki)**
-
-Proces wyświetlania dynamicznej strony HTML jest zawsze taki sam:
-
-1. **Stworzenie pliku HTML**: W katalogu `templates` naszej aplikacji tworzymy plik, np. `article_list.html`.
-    
-2. **Stworzenie widoku (view)**: W pliku `views.py` piszemy funkcję, która pobiera dane (np. z modelu) i "renderuje" szablon, przekazując do niego te dane.
-    
-3. **Podłączenie widoku pod URL**: W pliku `urls.py` tworzymy ścieżkę, która mapuje konkretny adres URL na nasz widok.
-    
-
-```mermaid-code
-graph TD
-    subgraph Przeglądarka Użytkownika
-        A[Wpisanie adresu URL, np. `/articles/`]
-    end
-    subgraph Aplikacja Django
-        B{urls.py}
-        C{views.py}
-        D[models.py]
-        E[template.html]
-    end
-    subgraph Baza Danych
-        F[(PostgreSQL)]
-    end
-
-    A --Żądanie (Request)--> B;
-    B --Znajduje pasujący URL i wywołuje widok--> C;
-    C --"Hej, Modelu, daj mi dane"--> D;
-    D --Używa ORM do zapytania--> F;
-    F --Zwraca dane--> D;
-    D --Przekazuje dane do widoku--> C;
-    C --"Hej, Szablonie, wyrenderuj się z tymi danymi"--> E;
-    E --Generuje czysty HTML--> C;
-    C --Odpowiedź (Response) z HTML--> A;
-
-```
-
-
-![[Screenshot 2025-09-10 at 21.44.15.png]]
-
-
-**Przykład krok po kroku:**
-
-**Krok 1: Szablon `templates/articles/article_list.html`**
-
-```python
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>Lista Artykułów</title>
-</head>
-<body>
-    <h1>Wszystkie artykuły</h1>
-    
-    {% if articles %}
-        <ul>
-            {% for article in articles %}
-                <li>
-                    <h2>{{ article.title }}</h2>
-                    <p>Opublikowano: {{ article.pub_date|date:"d.m.Y" }}</p>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Brak artykułów do wyświetlenia.</p>
-    {% endif %}
-</body>
-</html>
-```
-
-> W powyższym szablonie użyliśmy:
-> 
-> - Zmiennej `{{ article.title }}` do wyświetlenia tytułu.
->     
-> - Pętli `{% for article in articles %}` do iteracji po liście.
->     
-> - Instrukcji warunkowej `{% if articles %}` do sprawdzenia, czy lista nie jest pusta.
->     
-> - Filtra `|date:"d.m.Y"`, który formatuje datę.
->     
-
-**Krok 2: Widok `articles/views.py`**
-
-```python
-from django.shortcuts import render
-from .models import Article
-
-def article_list_view(request):
-    # Pobieramy wszystkie artykuły z bazy
-    all_articles = Article.objects.all().order_by('-pub_date') # sortujemy od najnowszych
-    
-    # Tworzymy "kontekst" - słownik danych do przekazania do szablonu
-    context = {
-        'articles': all_articles,
-    }
-    
-    # Renderujemy szablon, przekazując obiekt request i kontekst
-    return render(request, 'articles/article_list.html', context)
-```
-
-**Krok 3: URL `articles/urls.py`**
-
-```python
-from django.urls import path
-from .views import article_list_view
-
-urlpatterns = [
-    path('', article_list_view, name='article-list'),
-]
-```
-
-Teraz, wchodząc na odpowiedni adres URL, zobaczymy dynamicznie wygenerowaną listę artykułów.
-
-## **3. Pliki statyczne (CSS, JS, Obrazki)**
-
-Pliki statyczne to zasoby, które nie zmieniają się dynamicznie, takie jak arkusze stylów CSS, skrypty JavaScript czy obrazki. Django ma wbudowany mechanizm do zarządzania nimi.
-
-**Konfiguracja:**
-
-1. Upewnij się, że `django.contrib.staticfiles` jest w `INSTALLED_APPS` w `settings.py`.
-    
-2. W `settings.py` ustaw `STATIC_URL`, np. `STATIC_URL = '/static/'`.
-    
-3. W katalogu aplikacji stwórz podkatalog `static`, a w nim kolejny z nazwą aplikacji, np. `my_app/static/my_app/style.css`.
-    
-
-Użycie w szablonie:
-
-Aby odwołać się do pliku statycznego, używamy znacznika {% static %}.
-
-```python
-{% load static %} <!-- Załaduj bibliotekę znaczników static na górze szablonu -->
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Strona ze stylami</title>
-    <!-- Link do pliku CSS -->
-    <link rel="stylesheet" href="{% static 'my_app/style.css' %}">
-</head>
-<body>
-    <h1>Ta strona ma styl!</h1>
-    
-    <!-- Przykład użycia obrazka -->
-    <img src="{% static 'my_app/images/logo.png' %}" alt="Moje logo">
-</body>
-</html>
-```
-
-## **4. Moduły i aplikacje wielokrotnego użytku**
-
-Ekosystem Django jest ogromny. Istnieją tysiące gotowych "aplikacji", które możemy podłączyć do naszego projektu, aby dodać nową funkcjonalność bez pisania jej od zera (np. system rejestracji użytkowników, rozbudowane galerie zdjęć).
-
-**Jak zainstalować zewnętrzną aplikację?**
-
-1. **Instalacja przez pip**: `pip install nazwa-pakietu` (np. `pip install django-crispy-forms`).
-    
-2. **Rejestracja w projekcie**: Dodaj nazwę aplikacji (znajdziesz ją w dokumentacji pakietu) do listy `INSTALLED_APPS` w pliku `settings.py`.
-    
-
-```python
-# settings.py
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    
-    # Moje aplikacje
-    'articles.apps.ArticlesConfig',
-    
-    # Zewnętrzne aplikacje
-    'crispy_forms',
-]
-```
-
-## **🧪 Zadania do samodzielnej pracy**
-
-### **Zadania proste**
-
-1. ✏️ Zadanie 1 – Nowy model
-    
-    Stwórz w swojej aplikacji nowy model o nazwie Category z jednym polem name typu CharField. Następnie wygeneruj i wykonaj migracje, aby stworzyć odpowiednią tabelę w bazie danych.
-    
-    (proste)
-    
-2. ✏️ Zadanie 2 – Dodawanie danych
-    
-    Używając konsoli Django (python manage.py shell), stwórz 3 różne obiekty modelu Category (np. "Sport", "Technologia", "Kultura") i zapisz je w bazie danych.
-    
-    (proste)
-    
-3. ✏️ Zadanie 3 – Podstawowy widok i szablon
-    
-    Napisz widok, który pobierze wszystkie obiekty Category z bazy. Stwórz prosty szablon HTML, który wyświetli nazwy wszystkich kategorii w formie listy nieuporządkowanej (<ul>). Podłącz widok pod adres URL /categories/.
-    
-    (proste)
-    
-4. ✏️ Zadanie 4 – Plik statyczny CSS
-    
-    Stwórz plik style.css w odpowiednim katalogu static. Dodaj do niego regułę, która zmienia kolor tła strony (body { background-color: #f0f8ff; }). Podłącz ten plik CSS do szablonu z listą kategorii.
-    
-    (proste)
-    
-5. ✏️ Zadanie 5 – Filtrowanie w shellu
-    
-    W konsoli Django (shell) napisz zapytanie ORM, które pobierze tylko kategorię o nazwie "Sport". Użyj metody get().
-    
-    (proste)
-    
-
-### **Zadania "Challenge"**
-
-6. 🧠 Zadanie 6 – Widok szczegółów
-    
-    Stwórz nowy widok category_detail_view, który będzie przyjmował w URL-u ID kategorii (np. /categories/1/). Widok powinien pobrać z bazy danych tylko ten jeden, konkretny obiekt Category i przekazać go do nowego szablonu category_detail.html, który wyświetli jego nazwę w nagłówku <h1>.
-    
-    Wskazówka: path('categories/<int:pk>/', ...) w urls.py i def my_view(request, pk): ... w views.py.
-    
-    (challenge)
-    
-7. 🧠 Zadanie 7 – Relacja i wyświetlanie
-    
-    Zmodyfikuj model Article, dodając do niego pole category typu ForeignKey do modelu Category (on_delete=models.CASCADE). Przypisz w shellu każdemu artykułowi jakąś kategorię. Następnie zmodyfikuj szablon category_detail.html tak, aby pod nazwą kategorii wyświetlał listę wszystkich artykułów należących do tej kategorii.
-    
-    Wskazówka: Po stworzeniu relacji, z obiektu kategorii możesz odwołać się do powiązanych artykułów przez category.article_set.all().
-    
-    (challenge)
-    
-8. 🧠 Zadanie 8 – Logika warunkowa w szablonie
-    
-    Dodaj do modelu Article pole is_published typu BooleanField z default=True. W widoku listy artykułów pobieraj tylko te, które są opublikowane (is_published=True). W szablonie article_list.html dodaj obok tytułu każdego artykułu napis "NOWOŚĆ!" (np. w <span>), ale tylko jeśli artykuł został opublikowany w ciągu ostatnich 3 dni.
-    
-    Wskazówka: Możesz potrzebować niestandardowego tagu szablonu lub przekazać dodatkową informację z widoku. Prostsze rozwiązanie: użyj wbudowanego filtra timesince lub timeuntil.
-    
-    (challenge)
-    
-9. 🧠 Zadanie 9 – Zmiana w panelu admina
-    
-    Domyślnie tytuł w panelu admina to "Django administration". Znajdź w internecie, jak nadpisać szablon admin/base.html, aby zmienić ten tytuł na "Panel Administratora Mojej Strony".
-    
-    (challenge)
-    
-10. 🧠 Zadanie 10 – Prosty formularz wyszukiwania
-    
-    W szablonie listy artykułów (article_list.html) dodaj prosty formularz HTML (<form method="GET"> ... </form>) z jednym polem <input type="text" name="q">. W widoku article_list_view sprawdź, czy w żądaniu GET istnieje parametr q (request.GET.get('q')). Jeśli tak, przefiltruj artykuły, aby pokazać tylko te, których tytuł zawiera szukaną frazę.
-    
-    (challenge)
