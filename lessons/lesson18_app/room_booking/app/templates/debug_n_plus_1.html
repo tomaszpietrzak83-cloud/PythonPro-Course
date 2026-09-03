@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}N+1 Debug - Room Booking System{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">N+1 Query Comparison</h1>
+
+<table class="table table-bordered align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Method</th>
+            <th>SQL queries</th>
+            <th>Time</th>
+            <th>Rows</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="table-danger">
+            <td>Without optimization (N+1)</td>
+            <td>{{ unoptimized.query_count }}</td>
+            <td>{{ unoptimized.time_ms }} ms</td>
+            <td>{{ unoptimized.rows }}</td>
+        </tr>
+        <tr class="table-success">
+            <td>With joinedload</td>
+            <td>{{ optimized.query_count }}</td>
+            <td>{{ optimized.time_ms }} ms</td>
+            <td>{{ optimized.rows }}</td>
+        </tr>
+        <tr>
+            <td><strong>Difference</strong></td>
+            <td colspan="3">
+                {% if query_ratio %}
+                    <strong>{{ query_ratio }}x fewer queries</strong>
+                {% else %}
+                    No optimized query count available.
+                {% endif %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h2 class="h4 mt-5">Sample Rows</h2>
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Room</th>
+            <th>User</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for booking in optimized.sample %}
+        <tr>
+            <td>{{ booking.title }}</td>
+            <td>{{ booking.room }}</td>
+            <td>{{ booking.user }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -18,7 +18,61 @@ from app.models import Booking, Room, User, db, get_booking_statistics
 dashboard_bp = Blueprint("dashboard", __name__)
 
 
+@dashboard_bp.route("/")
+def index():
+    """Application index with links to available pages and API routes."""
+    pages = [
+        {
+            "label": "Dashboard",
+            "url": "/dashboard",
+            "description": "Statistics, upcoming bookings, room utilization.",
+        },
+    ]
+
+    api_routes = [
+        {
+            "method": "GET",
+            "url": "/api/dashboard/stats",
+            "href": "/api/dashboard/stats",
+            "description": "Dashboard statistics as JSON.",
+        },
+        {
+            "method": "GET",
+            "url": "/api/bookings/",
+            "href": "/api/bookings/",
+            "description": "List bookings with optional filters.",
+        },
+        {
+            "method": "GET",
+            "url": "/debug/n-plus-1",
+            "href": "/debug/n-plus-1",
+            "description": "Compare unoptimized booking loading with joinedload.",
+        },
+        {
+            "method": "GET",
+            "url": "/api/bookings/available-rooms?start_time=2026-09-01T09:00:00&end_time=2026-09-01T10:00:00&capacity=1",
+            "href": "/api/bookings/available-rooms?start_time=2026-09-01T09:00:00&end_time=2026-09-01T10:00:00&capacity=1",
+            "description": "Find rooms available in a selected time range.",
+        },
+        {
+            "method": "GET",
+            "url": "/api/notifications?user_id=1",
+            "href": "/api/notifications?user_id=1",
+            "description": "List unread notifications for a user.",
+        },
+        {
+            "method": "GET",
+            "url": "/api/reports/monthly?month=2026-08",
+            "href": "/api/reports/monthly?month=2026-08",
+            "description": "Download a monthly PDF report.",
+        },
+    ]
+
+    return render_template("index.html", pages=pages, api_routes=api_routes)
+
+
 @dashboard_bp.route("/dashboard")
+# TASK 03
 def dashboard():
     """Dashboard homepage."""
 
@@ -147,6 +201,7 @@ def dashboard():
 
 
 @dashboard_bp.route("/api/dashboard/stats")
+# TASK 03
 def api_stats():
     """API endpoint for statistics (for JS charts)."""
     stats = get_booking_statistics()

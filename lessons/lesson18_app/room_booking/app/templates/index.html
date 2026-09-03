@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Room Booking System{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between gap-3 mb-4">
+    <div>
+        <h1 class="mb-1">Room Booking System</h1>
+        <p class="text-muted mb-0">Start page with links to the available views and API routes.</p>
+    </div>
+    <a class="btn btn-primary" href="/dashboard">Open dashboard</a>
+</div>
+
+<section class="mb-5">
+    <h2 class="h4 mb-3">Pages</h2>
+    <div class="list-group">
+        {% for page in pages %}
+        <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-start gap-3" href="{{ page.url }}">
+            <span>
+                <strong>{{ page.label }}</strong>
+                <span class="d-block text-muted">{{ page.description }}</span>
+            </span>
+            <code>{{ page.url }}</code>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<section>
+    <h2 class="h4 mb-3">GET Links</h2>
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Method</th>
+                    <th scope="col">URL</th>
+                    <th scope="col">Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for route in api_routes %}
+                <tr>
+                    <td><span class="badge text-bg-secondary">{{ route.method }}</span></td>
+                    <td><a href="{{ route.href }}"><code>{{ route.url }}</code></a></td>
+                    <td>{{ route.description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

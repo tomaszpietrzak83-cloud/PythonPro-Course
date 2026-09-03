@@ -9,6 +9,7 @@ app = create_app()
 query_count = 0
 
 
+# TASK 02
 def count_queries(conn, cursor, statement, parameters, context, executemany):
     global query_count
     query_count += 1
@@ -19,6 +20,7 @@ with app.app_context():
 
 
 @app.route("/debug/n-plus-1")
+# TASK 02
 def demo_n_plus_1():
 
     global query_count
@@ -28,7 +30,7 @@ def demo_n_plus_1():
     products = Booking.query.all()
     bad_result = []
     for p in products:
-        bad_result.append(f"{p.title} - {p.room.name} - {p.user.name} ")
+        bad_result.append(f"{p.title} - {p.room.name} - {p.user.name}")
     bad_time = time.time() - start
     bad_queries = query_count
 
@@ -42,6 +44,7 @@ def demo_n_plus_1():
         good_result.append(f"{p.title} - {p.room.name} - {p.user.name}")
     good_time = time.time() - start
     good_queries = query_count
+    query_ratio = bad_queries / good_queries if good_queries else 0
     return f"""
     <head>
         <meta charset="UTF-8">
@@ -52,19 +55,25 @@ def demo_n_plus_1():
             <th>Metoda</th>
             <th>Zapytań SQL</th>
             <th>Czas</th>
+            <th>Wiersze</th>
         </tr>
         <tr style="background: #ffcccc">
-            <td>❌ Bez optymalizacji (N+1)</td>
+            <td>Bez optymalizacji (N+1)</td>
             <td>{bad_queries}</td>
             <td>{bad_time * 1000:.2f} ms</td>
+            <td>{len(bad_result)}</td>
         </tr>
         <tr style="background: #ccffcc">
-            <td>✅ Z joinedload</td>
+            <td>Z joinedload</td>
             <td>{good_queries}</td>
             <td>{good_time * 1000:.2f} ms</td>
+            <td>{len(good_result)}</td>
+        </tr>
+        <tr>
+            <td><strong>Różnica</strong></td>
+            <td colspan="3"><strong>{query_ratio:.1f}x mniej zapytań</strong></td>
         </tr>
     </table>
-    <p>Różnica: {bad_queries / good_queries:.0f}x mniej zapytań!</p>
     """
 
 
