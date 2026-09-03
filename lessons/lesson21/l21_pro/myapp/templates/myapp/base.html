@@ -1,0 +1,25 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Lesson 21{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'myapp/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <h1>Lesson 21 - Django ORM and Templates</h1>
+        <nav>
+            <a href="{% url 'myapp:category_list' %}">Categories</a>
+            <a href="{% url 'myapp:article_list' %}">Articles</a>
+            <a href="{% url 'admin:index' %}">Admin</a>
+        </nav>
+    </header>
+
+    <main class="page">
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

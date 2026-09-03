@@ -1,0 +1,21 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Category Details{% endblock %}
+
+{% block content %}
+    {# TASK 06 #}
+    <h2>{{ category.name }}</h2>
+
+    {# TASK 07 #}
+    <h3>Articles in this Category</h3>
+    <ul class="item-list">
+        {% for article in articles %}
+            <li>
+                <h4>{{ article.title }}</h4>
+                <p>{{ article.content }}</p>
+            </li>
+        {% empty %}
+            <li>No articles in this category.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

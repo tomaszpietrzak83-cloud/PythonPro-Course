@@ -1,0 +1,20 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Category List{% endblock %}
+
+{% block content %}
+    {# TASK 03 04 #}
+    <h2>All Categories</h2>
+
+    <ul class="item-list">
+        {% for category in categories %}
+            <li>
+                <a href="{% url 'myapp:category_detail' category.pk %}">
+                    {{ category.name }}
+                </a>
+            </li>
+        {% empty %}
+            <li>No categories to display.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

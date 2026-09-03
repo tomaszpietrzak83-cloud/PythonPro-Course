@@ -1,0 +1,36 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Article List{% endblock %}
+
+{% block content %}
+    <h2>Published Articles</h2>
+
+    {# TASK 10 #}
+    <form class="search-form" method="get">
+        <input
+            type="text"
+            name="q"
+            value="{{ query }}"
+            placeholder="Search by title"
+        >
+        <button type="submit">Search</button>
+    </form>
+
+    <ul class="item-list">
+        {% for article in articles %}
+            <li>
+                <h3>
+                    {{ article.title }}
+                    {# TASK 08 #}
+                    {% if article.pub_date >= recent_threshold %}
+                        <span class="badge">NEW!</span>
+                    {% endif %}
+                </h3>
+                <p>{{ article.content }}</p>
+                <small>Category: {{ article.category.name }}</small>
+            </li>
+        {% empty %}
+            <li>No matching articles found.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
