@@ -28,3 +28,5 @@ my_acces_token.py
 # Local lesson runtime state
 *.sqlite3
 *.sqlite3-journal
+django_cache/
+*.djcache
