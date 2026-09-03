@@ -20,8 +20,9 @@ class DevelopmentConfig(Config):
     """Development configuration."""
 
     DEBUG = True
+    # TASK 01
     SQLALCHEMY_DATABASE_URI = os.getenv(
-        "DATABASE_URL", "postgresql://postgres:admin123@localhost/room_booking"
+        "DATABASE_URL", "postgresql://postgres:admin123@127.0.0.1:5432/room_booking"
     )
 
 

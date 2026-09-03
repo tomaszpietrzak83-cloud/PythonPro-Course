@@ -8,7 +8,10 @@ from datetime import datetime, timedelta
 from app import create_app
 from app.models import Booking, Equipment, Room, User, db
 
-app = create_app()
+try:
+    app = create_app()
+except RuntimeError as error:
+    raise SystemExit(str(error)) from None
 
 
 def seed_database():
