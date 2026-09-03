@@ -1,5 +1,38 @@
 # Lesson Setup
 
+This lesson is inside the `PythonPro-Course` repository, so use the main course
+virtual environment from the repository root. Do not run the standalone setup
+script unless this lesson is copied out as a separate ZIP/project.
+
+From this lesson folder, start the room booking app with:
+
+```powershell
+.\run_room_booking.ps1
+```
+
+or:
+
+```bat
+run_room_booking.bat
+```
+
+The starter runs `room_booking\run.py` with `..\..\.venv\Scripts\python.exe`.
+It uses PostgreSQL through `room_booking\.env` or the default connection URL:
+
+```text
+postgresql://postgres:admin123@127.0.0.1:5432/room_booking
+```
+
+If your local PostgreSQL uses a different password, user, port, or database name,
+create `room_booking\.env` from `room_booking\.env.example` and update
+`DATABASE_URL`.
+
+Install lesson dependencies into the main course environment with:
+
+```powershell
+..\..\.venv\Scripts\python.exe -m pip install Flask-SQLAlchemy psycopg2-binary python-dotenv reportlab matplotlib
+```
+
 This lesson includes `run_before_checking_lesson.py` for standalone ZIP use.
 
 From the lesson folder, run:
@@ -21,6 +54,61 @@ source .venv/bin/activate
 ```
 
 Then run the lesson files normally.
+
+# Lesson18 Task Map
+
+This file lists where `TASK` markers were added to make review easier.
+
+Templates use Jinja comments in the form `{# TASK ... #}`.
+
+## Tagged Locations
+
+- `flask_masterclass/config.py`
+  - `# TASK 01` above the PostgreSQL `SQLALCHEMY_DATABASE_URI`
+- `flask_masterclass/app.py`
+  - `# TASK 01` above `/test-db`
+- `room_booking/config.py`
+  - `# TASK 01` above the PostgreSQL `SQLALCHEMY_DATABASE_URI`
+- `room_booking/02_N+1.py`
+  - `# TASK 02` above the query counter
+  - `# TASK 02` above `/debug/n-plus-1`
+- `room_booking/app/routes/debug.py`
+  - `# TASK 02` above the registered `/debug/n-plus-1` JSON endpoint
+- `room_booking/_03_new_statistics.py`
+  - `# TASK 03` above reservation-per-department, per-day trend, and heatmap helpers
+- `room_booking/app/routes/dashboard.py`
+  - `# TASK 03` above `/dashboard`
+  - `# TASK 03` above `/api/dashboard/stats`
+- `room_booking/app/templates/dashboard.html`
+  - `{# TASK 03 #}` above the general statistics, department chart, trend chart, and heatmap sections
+- `room_booking/app/models.py`
+  - `# TASK 03` above `get_booking_statistics`
+  - `# TASK 04` above `Notification`
+  - `# TASK 04` above the `Booking.after_insert` notification listener
+  - `# TASK 05` above `Booking.recurrence_rule` and `Booking.series_id`
+- `room_booking/app/routes/notifications.py`
+  - `# TASK 04` above notification list, mark-as-read, and reminder logic
+- `room_booking/app/routes/bookings.py`
+  - `# TASK 05` above recurring booking creation and cancellation endpoints
+- `room_booking/app/routes/reports.py`
+  - `# TASK 06` above `/api/reports/monthly`
+
+## Other Prepared Files
+
+- `room_booking/.env.example` shows the expected PostgreSQL `DATABASE_URL` format.
+- `room_booking/.env` is local private configuration and is intentionally ignored by git.
+- `flask_masterclass/.env` is local private configuration and is intentionally ignored by git.
+- `run_room_booking.ps1` and `run_room_booking.bat` run the room booking app from the main `PythonPro-Course` virtual environment.
+- `run_before_checking_lesson.py` is kept for standalone lesson distribution and creates a lesson-local virtual environment.
+
+## Short Task Notes
+
+- Task 01 configures PostgreSQL and verifies database connectivity.
+- Task 02 demonstrates the N+1 query problem and the `joinedload` optimization.
+- Task 03 adds dashboard statistics, department distribution, booking trend, and heatmap data.
+- Task 04 adds notifications, admin notification creation, reminders, listing, and mark-as-read.
+- Task 05 adds recurring booking fields, series creation, single cancellation, series cancellation, and conflict validation.
+- Task 06 generates a monthly PDF report with summary metrics, top rooms, top users, and a utilization chart.
 
 Lekcja 18: Flask + PostgreSQL — Master Class
 ORM, Optymalizacja, Relacje i Prawdziwy Projekt

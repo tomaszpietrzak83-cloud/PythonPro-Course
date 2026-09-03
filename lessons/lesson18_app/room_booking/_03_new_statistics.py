@@ -4,6 +4,7 @@ from app.models import Booking, User, db
 from sqlalchemy import asc, desc, extract, func
 
 
+# TASK 03
 def reservation_per_department():
 
     bookings = (
@@ -21,6 +22,7 @@ def reservation_per_department():
     return bookings
 
 
+# TASK 03
 def reservation_per_day():
 
     bookings = (
@@ -39,6 +41,7 @@ def reservation_per_day():
     return bookings
 
 
+# TASK 03
 def heat_map_of_bookings():
 
     bookings = (

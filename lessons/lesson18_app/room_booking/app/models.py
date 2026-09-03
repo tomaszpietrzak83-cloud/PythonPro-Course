@@ -159,6 +159,7 @@ class Booking(db.Model):
         db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow
     )
 
+    # TASK 05
     recurrence_rule = db.Column(db.String(20), nullable=True)
     series_id = db.Column(db.String(36), nullable=True)
 
@@ -204,7 +205,7 @@ class Booking(db.Model):
         return data
 
 
-# --- Task 04: Notifications ---
+# TASK 04
 class Notification(db.Model):
     __tablename__ = "notifications"
 
@@ -266,6 +267,7 @@ def find_available_rooms(
     return available
 
 
+# TASK 03
 def get_booking_statistics(start_date=None, end_date=None):
     """
     Get booking statistics.
@@ -333,7 +335,7 @@ def get_booking_statistics(start_date=None, end_date=None):
     }
 
 
-# --- Task 04: Notifications ---
+# TASK 04
 @event.listens_for(Booking, "after_insert")
 def booking_after_insert(mapper, connection, target):
     admin_id = connection.execute(

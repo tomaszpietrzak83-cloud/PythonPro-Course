@@ -1,4 +1,4 @@
-# --- Task 04: Notifications ---
+# TASK 04
 from datetime import datetime, timedelta
 
 from flask import Blueprint, jsonify, request
@@ -9,6 +9,7 @@ notification_bp = Blueprint("notification", __name__)
 
 
 @notification_bp.route("/api/notifications", methods=["GET"])
+# TASK 04
 def get_notifications():
     current_user_id = request.args.get("user_id", type=int)
     if current_user_id is None:
@@ -46,6 +47,7 @@ def get_notifications():
 
 
 @notification_bp.route("/api/notifications/<int:id>/read", methods=["POST"])
+# TASK 04
 def mark_notification_as_read(id):
     notification = Notification.query.get(id)
     if not notification:
@@ -57,6 +59,7 @@ def mark_notification_as_read(id):
     return jsonify({"message": "Notification marked as read"})
 
 
+# TASK 04
 def create_upcoming_booking_reminders():
     now = datetime.now()
     one_hour_later = now + timedelta(hours=1)

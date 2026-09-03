@@ -21,6 +21,7 @@ class DevelopmentConfig(Config):
     """Konfiguracja deweloperska."""
 
     DEBUG = True
+    # TASK 01
     # Format: postgresql://USER:PASSWORD@HOST:PORT/DATABASE
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL",

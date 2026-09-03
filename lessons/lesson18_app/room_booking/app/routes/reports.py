@@ -1,6 +1,9 @@
 from datetime import datetime
 from io import BytesIO
 
+import matplotlib
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from flask import Blueprint, jsonify, request, send_file
 from reportlab.lib.utils import ImageReader
@@ -13,6 +16,7 @@ reports_bp = Blueprint("reports", __name__)
 
 
 @reports_bp.route("/monthly", methods=["GET"])
+# TASK 06
 def monthly_report():
 
     month = request.args.get("month")

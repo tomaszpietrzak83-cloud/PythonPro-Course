@@ -18,6 +18,7 @@ def index():
 
 
 @app.route("/test-db")
+# TASK 01
 def test_db():
     """Testuje połączenie z bazą."""
     try:

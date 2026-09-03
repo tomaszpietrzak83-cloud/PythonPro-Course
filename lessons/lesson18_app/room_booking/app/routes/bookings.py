@@ -64,6 +64,7 @@ def get_bookings():
 
 
 @bookings_bp.route("/series/<series_id>/cancel", methods=["POST"])
+# TASK 05
 def cancel_series(series_id):
     bookings = Booking.query.filter_by(series_id=series_id).all()
 
@@ -91,6 +92,7 @@ def cancel_series(series_id):
 
 
 @bookings_bp.route("/<int:id>/cancel", methods=["POST"])
+# TASK 05
 def cancel_single_occurrence(id):
     booking = Booking.query.get(id)
 
@@ -118,6 +120,7 @@ def cancel_single_occurrence(id):
 
 
 @bookings_bp.route("/", methods=["POST"])
+# TASK 05
 def create_booking():
     """
     Create a new booking.
@@ -296,6 +299,7 @@ def create_booking():
 
 
 @bookings_bp.route("/<int:booking_id>", methods=["DELETE"])
+# TASK 05
 def cancel_booking(booking_id):
     """Cancel a booking."""
     booking = Booking.query.get_or_404(booking_id)
