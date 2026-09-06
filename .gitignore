@@ -19,6 +19,7 @@ ENV/
 .idea/
 .DS_Store
 Thumbs.db
+*.zip
 
 # Local secrets
 .env
