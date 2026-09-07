@@ -2,66 +2,6 @@
 
 This roadmap is designed so that every version of the project is usable. Do not try to build everything at once. Finish one version, run the server, click through the app, and only then move to the next version.
 
-## Version 0.0.1 - Project Runs
-
-Goal: the Django project starts without errors.
-
-Tasks:
-
-1. Go to `lessons/lesson28/l28_pro`.
-2. Add `GameShelf` to `INSTALLED_APPS`.
-3. Run initial migrations.
-4. Start the development server.
-5. Open the default Django page or admin URL.
-
-Working result:
-
-- `python manage.py runserver` works.
-- The project loads in the browser.
-
-Suggested check:
-
-```bash
-python manage.py check
-```
-
-## Version 0.0.2 - First Real Page
-
-Goal: create one working view.
-
-Tasks:
-
-1. Create a `urls.py` file inside `GameShelf`.
-2. Add a simple home view.
-3. Connect `GameShelf.urls` in the main project `urls.py`.
-4. Create a basic template.
-5. Add a link to the admin page.
-
-Working result:
-
-- `/` shows a GameShelf homepage.
-- The page is simple, but it is yours.
-
-## Version 0.0.3 - First Model
-
-Goal: store games in the database.
-
-Tasks:
-
-1. Create the `Game` model with only the most important fields:
-   - `title`
-   - `description`
-   - `release_date`
-2. Create and run migrations.
-3. Register `Game` in Django admin.
-4. Create a superuser.
-5. Add a few games manually in admin.
-
-Working result:
-
-- You can add games in admin.
-- The database contains real records.
-
 ## Version 0.0.4 - Game Catalog
 
 Goal: show games from the database.
