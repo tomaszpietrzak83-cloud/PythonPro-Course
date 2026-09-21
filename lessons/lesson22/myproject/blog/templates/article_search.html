@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Advanced article search · Article Atlas{% endblock %}
+
+{% block extra_head %}
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<section class="hero compact-hero">
+    <p class="eyebrow">Search workspace</p>
+    <h1>Find the article you remember.</h1>
+    <p>Combine only the clues you have. Every field is optional.</p>
+</section>
+
+{# SEARCH-SITE: Repeated field names become repeated GET parameters. #}
+<form class="search-panel" method="get" id="article-search-form">
+    <div class="form-grid">
+        <label>
+            <span>From date</span>
+            <input type="date" name="from" value="{{ date_from }}">
+        </label>
+        <label>
+            <span>To date</span>
+            <input type="date" name="to" value="{{ date_to }}">
+        </label>
+        <label class="wide-field">
+            <span>Categories</span>
+            <select name="category" id="category-select" multiple placeholder="All categories">
+                {% for category in categories %}
+                    <option value="{{ category.pk }}"{% if category.pk|stringformat:'s' in selected_categories %} selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+            <small>No selection searches every category.</small>
+        </label>
+        <label class="wide-field">
+            <span>Authors</span>
+            <select name="author" id="author-select" multiple
+                    data-url="{% url 'blog:author_suggestions' %}"
+                    placeholder="Type at least 1 characters">
+                {% for author in author_terms %}<option selected value="{{ author }}">{{ author }}</option>{% endfor %}
+            </select>
+            <small>Select a suggestion or press Enter to keep a name fragment.</small>
+        </label>
+        <label class="wide-field">
+            <span>Tags</span>
+            <select name="tag" id="tag-select" multiple
+                    data-url="{% url 'blog:tag_suggestions' %}"
+                    placeholder="Type at least 1 characters">
+                {% for tag in tag_terms %}<option selected value="{{ tag }}">{{ tag }}</option>{% endfor %}
+            </select>
+            <small>Tags contribute to the match score; they are not mandatory filters.</small>
+        </label>
+        <label class="wide-field">
+            <span>Keywords</span>
+            <select name="keyword" id="keyword-select" multiple placeholder="Type a word and press Enter">
+                {% for keyword in keywords %}<option selected value="{{ keyword }}">{{ keyword }}</option>{% endfor %}
+            </select>
+            <small>Each keyword contributes one point to the match score.</small>
+        </label>
+    </div>
+    <div class="form-actions">
+        <button class="button primary" type="submit">Search articles</button>
+        <a class="button subtle" href="{% url 'blog:article_search' %}">Clear form</a>
+        <a class="text-link" href="{% url 'blog:search_help' %}">How does this work?</a>
+    </div>
+</form>
+
+{% if errors %}
+    <div class="message error-message" role="alert">
+        {% for error in errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+{% endif %}
+
+{% if submitted and not errors %}
+<section class="results-section">
+    <div class="results-heading">
+        <div>
+            <p class="eyebrow">Search results</p>
+            <h2>{{ result_count }} article{{ result_count|pluralize }}</h2>
+        </div>
+        {% if keywords or author_terms or tag_terms %}
+            <button class="button subtle" type="button" id="clear-highlights">Clear highlights</button>
+        {% endif %}
+    </div>
+
+    <div class="result-list">
+        {% for post in page_obj %}
+            <article class="result-card">
+                <div class="result-meta">
+                    <span>{{ post.publication_date|date:"M j, Y" }}</span>
+                    <span>{{ post.category.name }}</span>
+                    {% if post.match_percent is not None %}
+                        <strong>{{ post.match_percent }}% match · {{ post.match_count }} of {{ post.criteria_count }}</strong>
+                    {% endif %}
+                </div>
+                <h3 class="js-keyword-text">
+                    <a href="{% url 'blog:article_detail' post.pk %}{% if current_query %}?{{ current_query }}{% endif %}">{{ post.title }}</a>
+                </h3>
+                <p class="result-author js-author" data-value="{{ post.author.full_name }}">By {{ post.author.full_name }}</p>
+                <p class="result-excerpt js-keyword-text">{{ post.content|truncatechars:100 }}</p>
+                <div class="tag-list" aria-label="Tags">
+                    {% for tag in post.tags.all %}
+                        <span class="tag-chip js-tag" data-value="{{ tag.name }}">{{ tag.name }}</span>
+                    {% endfor %}
+                </div>
+            </article>
+        {% empty %}
+            <div class="empty-state">
+                <h3>No matching articles</h3>
+                <p>Try fewer criteria, a shorter author fragment, or a wider date range.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if page_obj.paginator.num_pages > 1 %}
+        <nav class="pagination" aria-label="Search result pages">
+            {% if page_obj.has_previous %}
+                <a href="?{{ pagination_query }}&page={{ page_obj.previous_page_number }}">← Previous</a>
+            {% endif %}
+            <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+            {% if page_obj.has_next %}
+                <a href="?{{ pagination_query }}&page={{ page_obj.next_page_number }}">Next →</a>
+            {% endif %}
+        </nav>
+    {% endif %}
+</section>
+{% endif %}
+
+{{ highlight_data|json_script:"highlight-data" }}
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/mark.min.js"></script>
+    <script src="{% static 'blog/search.js' %}"></script>
+{% endblock %}

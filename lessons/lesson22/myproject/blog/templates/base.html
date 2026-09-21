@@ -1,20 +1,34 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}My site{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Article Atlas{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'blog/styles.css' %}">
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <header>
-        <h1>Welcome to my website!</h1>
+    <header class="site-header">
+        <a class="brand" href="{% url 'blog:post_views' %}">
+            <span class="brand-mark">A</span>
+            <span>Article Atlas</span>
+        </a>
+        <nav aria-label="Main navigation">
+            <a href="{% url 'blog:post_views' %}">Latest</a>
+            <a href="{% url 'blog:article_search' %}">Advanced search</a>
+            <a href="{% url 'blog:search_help' %}">Help</a>
+        </nav>
     </header>
-    <main>
-        {% block content %}
-        
-        {% endblock %}
+    <main class="page-shell">
+        {% block content %}{% endblock %}
     </main>
-    <footer>
-        <p>&copy; 2026 - Kurs Django</p>
+    <footer class="site-footer">
+        <p>Article Atlas · Django learning project · 2026</p>
     </footer>
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>

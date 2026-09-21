@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Search help · Article Atlas{% endblock %}
+
+{% block content %}
+<section class="help-page">
+    <div class="help-heading">
+        <div>
+            <p class="eyebrow">Search guide</p>
+            <h1>Use the clues you have.</h1>
+        </div>
+        <div class="language-switch" role="group" aria-label="Help language">
+            <button type="button" class="active" data-language-button="en">EN</button>
+            <button type="button" data-language-button="pl">PL</button>
+        </div>
+    </div>
+
+    <div data-language-panel="en">
+        <div class="help-grid">
+            <section><span>01</span><h2>All fields are optional</h2><p>Use a date range, categories, authors, tags, keywords, or any combination. Empty fields do not limit the results.</p></section>
+            <section><span>02</span><h2>Authors use OR</h2><p>Choosing Jane and Thomas returns posts written by Jane or Thomas. A fragment such as “tom” can match more than one author.</p></section>
+            <section><span>03</span><h2>Scoring is flexible</h2><p>Every keyword and tag is one point. A post matching two of three criteria receives 67%. Posts scoring zero are hidden.</p></section>
+            <section><span>04</span><h2>Share the URL</h2><p>Your criteria live in the address bar. Copy the dynamic URL to bookmark the search or send it to someone else.</p></section>
+        </div>
+        <aside class="tip-box"><strong>Tip:</strong> Type at least one character for author and tag suggestions. Press Enter to keep your own fragment instead.</aside>
+    </div>
+
+    <div data-language-panel="pl" hidden>
+        <div class="help-grid">
+            <section><span>01</span><h2>Wszystkie pola są opcjonalne</h2><p>Użyj zakresu dat, kategorii, autorów, tagów, słów kluczowych lub dowolnego ich połączenia. Puste pola nie ograniczają wyników.</p></section>
+            <section><span>02</span><h2>Autorzy działają jak „lub”</h2><p>Wybranie Jane i Thomasa pokaże artykuły Jane lub Thomasa. Fragment „tom” może pasować do kilku autorów.</p></section>
+            <section><span>03</span><h2>Elastyczna zgodność</h2><p>Każde słowo kluczowe i tag to jeden punkt. Dwa trafienia z trzech dają 67%. Artykuły z wynikiem zero są ukrywane.</p></section>
+            <section><span>04</span><h2>Udostępnij adres</h2><p>Kryteria są zapisane w pasku adresu. Skopiuj dynamiczny URL, aby zapisać wyszukiwanie albo wysłać je innej osobie.</p></section>
+        </div>
+        <aside class="tip-box"><strong>Wskazówka:</strong> Wpisz co najmniej jeden znak, aby zobaczyć podpowiedzi autora lub tagu. Wciśnij Enter, aby zachować własny fragment.</aside>
+    </div>
+    <a class="button primary" href="{% url 'blog:article_search' %}">Open advanced search</a>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const buttons = document.querySelectorAll("[data-language-button]");
+    const panels = document.querySelectorAll("[data-language-panel]");
+    buttons.forEach((button) => button.addEventListener("click", () => {
+        const language = button.dataset.languageButton;
+        buttons.forEach((item) => item.classList.toggle("active", item === button));
+        panels.forEach((panel) => { panel.hidden = panel.dataset.languagePanel !== language; });
+        localStorage.setItem("article-help-language", language);
+    }));
+    const savedLanguage = localStorage.getItem("article-help-language");
+    document.querySelector(`[data-language-button="${savedLanguage}"]`)?.click();
+</script>
+{% endblock %}
