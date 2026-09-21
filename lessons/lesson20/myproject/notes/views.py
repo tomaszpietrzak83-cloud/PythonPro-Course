@@ -3,10 +3,11 @@ from django.shortcuts import get_object_or_404, render
 
 from .models import Note
 
+
 # --- TASK 06 ---
-# def notes_list(request):
-#     notes = Note.objects.all()
-#     return render(request, "note_list.html", {"notes": notes})
+def notes_list(request):
+    notes = Note.objects.all()
+    return render(request, "note_list.html", {"notes": notes})
 
 
 def note_detail(request, note_id):
