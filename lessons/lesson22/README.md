@@ -1,4 +1,37 @@
-# Lesson Setup
+# Running inside PythonPro-Course
+
+Inside this repository, lesson 22 uses the main `PythonPro-Course/.venv` environment.
+VS Code settings point to this environment when opening either the whole course
+or lesson 22 as a separate folder. If VS Code previously saved a different
+interpreter, use `Python: Select Interpreter` and select
+`PythonPro-Course/.venv/Scripts/python.exe`.
+
+You can run `myproject/blog/management/commands/seed_blog.py` directly using
+Run Python File. It delegates to `manage.py seed_blog` using the main course
+environment regardless of which interpreter starts the file.
+The seeder deletes existing posts, authors, categories, and tags and creates new sample data.
+
+The advanced article search added for this lesson is documented in
+[`SEARCH_SITE.md`](SEARCH_SITE.md). It explains the models, scoring algorithm,
+JavaScript libraries, seeder and tests.
+
+You can also run this command from the course root folder:
+
+```powershell
+.\.venv\Scripts\python.exe lessons\lesson22\myproject\manage.py seed_blog
+```
+
+To create a Django administrator, run `create_superuser.py` and answer the
+interactive questions about username, email and password:
+
+```powershell
+.\.venv\Scripts\python.exe lessons\lesson22\create_superuser.py
+```
+
+The script finds the course virtual environment and delegates to Django's
+`manage.py createsuperuser` command. It does not store a password in source code.
+
+# Lesson Setup (standalone ZIP)
 
 This lesson includes `run_before_checking_lesson.py` for standalone ZIP use.
 
