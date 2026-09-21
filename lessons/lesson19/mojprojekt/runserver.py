@@ -4,6 +4,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 MANAGE_PY = BASE_DIR / "manage.py"
+SERVER_ADDRESS = "127.0.0.1:8000"
 
 
 def run_manage(*args, stop_on_error=True):
@@ -23,7 +24,7 @@ def main():
     if has_model_changes():
         run_manage("makemigrations")
         run_manage("migrate")
-    run_manage("runserver")
+    run_manage("runserver", SERVER_ADDRESS, "--noreload")
 
 
 if __name__ == "__main__":
