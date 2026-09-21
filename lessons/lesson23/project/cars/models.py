@@ -14,7 +14,7 @@ class Dealer(models.Model):
 class Car(models.Model):
     brand = models.CharField(max_length=50)
     model = models.CharField(max_length=50)
-    year = models.IntegerField()
+    year = models.IntegerField(blank=True, null=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     description = models.TextField()
     photo = models.ImageField(upload_to="car_photos/")

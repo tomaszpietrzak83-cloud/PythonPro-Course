@@ -31,11 +31,15 @@ class CarAdmin(admin.ModelAdmin):
     # TASK 07
     readonly_fields = ("year",)
     # TASK 08
-    actions = ("mark_as_unavailable", "mark_as_available")
+    actions = (
+        "mark_as_unavailable",
+        "mark_as_available",
+        "change_availability",
+    )
 
     # TASK 06
     def full_name(self, obj):
-        return f"{obj.brand} {obj.model}"
+        return f"{obj.model} {obj.brand} "
 
     # TASK 06
     full_name.short_description = "Full Name"
@@ -51,6 +55,14 @@ class CarAdmin(admin.ModelAdmin):
         queryset.update(is_available=True)
         self.message_user(
             request, "Selected cars have been marked as available."
+        )
+
+    def change_availability(self, request, queryset):
+        for car in queryset:
+            car.is_available = not car.is_available
+            car.save()
+        self.message_user(
+            request, "Selected cars availability have been changed."
         )
 
     # TASK 09
