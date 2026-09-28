@@ -14,7 +14,10 @@
     <main>
         <p>Version 0.0.2: the first working page is ready.</p>
         <p>
-            <a href="/admin/">Open admin panel</a>
+            <a href="{% url 'gameshelf:game_list' %}">Browse the game catalog</a>
+        </p>
+        <p>
+            <a href="{% url 'admin:index' %}">Open admin panel</a>
         </p>
     </main>
 </body>

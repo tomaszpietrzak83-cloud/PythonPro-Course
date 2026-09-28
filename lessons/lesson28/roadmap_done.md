@@ -62,7 +62,22 @@ Working result:
 Continue with:
 
 ```text
-Version 0.0.4 - Game Catalog
+Version 0.0.5 - Game Detail Page
 ```
 
-The next goal is to show games from the database on a public `/games/` page.
+## Version 0.0.4 - Game Catalog
+
+Status: done.
+
+Completed:
+
+1. A public game list view was added.
+2. The `/games/` route displays games from the database.
+3. The game list template displays titles and descriptions.
+4. The homepage links to the game catalog.
+5. The game catalog links back to the homepage.
+
+Working result:
+
+- `/games/` shows the games stored in the database.
+- Visitors can navigate between the homepage and the catalog.

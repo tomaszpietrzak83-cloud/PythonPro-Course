@@ -3,6 +3,9 @@
 {% block title %}Game List{% endblock %}
 
 {% block content %}
+    <p>
+        <a href="{% url 'gameshelf:home' %}">Back to homepage</a>
+    </p>
     <ul>
     {% for game in games %}
         <li>Title: {{ game.title }}<br><br> 
