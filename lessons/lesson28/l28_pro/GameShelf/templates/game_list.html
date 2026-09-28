@@ -1,22 +1,41 @@
 {% extends 'base.html' %}
 
-{% block title %}Game List{% endblock %}
+{% block title %}Game Catalog | GameShelf{% endblock %}
 
 {% block content %}
-    <p>
-        <a href="{% url 'gameshelf:home' %}">Back to homepage</a>
-    </p>
-    <ul>
-    {% for game in games %}
-        <li>
-            <a href="{% url 'gameshelf:game_detail' game.pk %}">
-                {{ game.title }}
-            </a>
-            <br><br>
-            Description:<br>
-               {{ game.description }}
-        </li><br>
-    {% endfor %}
-    </ul>
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">GameShelf collection</p>
+            <h1>Game catalog</h1>
+        </div>
+        <a class="text-link" href="{% url 'gameshelf:home' %}">Back to homepage</a>
+    </div>
+
+    {% if games %}
+        <section class="game-grid" aria-label="Games">
+            {% for game in games %}
+                <article class="game-card">
+                    <div class="game-card-content">
+                        <p class="card-number">{{ forloop.counter|stringformat:'02d' }}</p>
+                        <h2>
+                            <a href="{% url 'gameshelf:game_detail' game.pk %}">
+                                {{ game.title }}
+                            </a>
+                        </h2>
+                        <p>{{ game.description|truncatewords:24 }}</p>
+                        <a class="text-link" href="{% url 'gameshelf:game_detail' game.pk %}">
+                            View details →
+                        </a>
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+    {% else %}
+        <div class="empty-state">
+            <h2>No games yet</h2>
+            <p>Add a game in the admin panel to start your catalog.</p>
+            <a class="button" href="{% url 'admin:index' %}">Open admin panel</a>
+        </div>
+    {% endif %}
 
 {% endblock %}

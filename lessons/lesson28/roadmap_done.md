@@ -57,14 +57,6 @@ Working result:
 - Games can be managed from Django admin.
 - The database contains manually added game records.
 
-## Next Version
-
-Continue with:
-
-```text
-Version 0.0.5 - Game Detail Page
-```
-
 ## Version 0.0.4 - Game Catalog
 
 Status: done.
@@ -105,4 +97,29 @@ Continue with:
 
 ```text
 Version 0.1.0 - Minimum Usable App
+```
+
+## Version 0.1.0 - Minimum Usable App
+
+Status: done.
+
+Completed:
+
+1. Shared navigation was added to the base template.
+2. A responsive stylesheet was added for the main pages.
+3. The homepage and game catalog received clearer layouts and empty states.
+4. The game detail page received matching visual styling.
+5. Tests were added for the homepage, catalog, detail page, and 404 behavior.
+
+Working result:
+
+- Visitors can navigate through a consistent, styled GameShelf interface.
+- The main views are covered by automated tests.
+
+## Next Version
+
+Continue with:
+
+```text
+Version 0.1.1 - Studio Model
 ```

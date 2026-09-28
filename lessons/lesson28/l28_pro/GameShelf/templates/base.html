@@ -1,20 +1,32 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="GameShelf - a personal PC game catalog.">
+    <link rel="stylesheet" href="{% static 'GameShelf/styles.css' %}">
     <title>{% block title %}GameShelf{% endblock %}</title>
 </head>
 <body>
-    <header>
-        <h1>Welcome to GameShelf - My final project!</h1>
+    <header class="site-header">
+        <div class="container header-content">
+            <a class="brand" href="{% url 'gameshelf:home' %}">GameShelf</a>
+            <nav aria-label="Main navigation">
+                <a href="{% url 'gameshelf:home' %}">Home</a>
+                <a href="{% url 'gameshelf:game_list' %}">Game catalog</a>
+                <a href="{% url 'admin:index' %}">Admin</a>
+            </nav>
+        </div>
     </header>
-    <main>
+    <main class="container page-content">
         {% block content %}
-        
         {% endblock %}
     </main>
-    <footer>
-        <p>&copy; 2026 - Django</p>
+    <footer class="site-footer">
+        <div class="container">
+            <p>&copy; 2026 GameShelf · Built with Django</p>
+        </div>
     </footer>
 </body>
 </html>

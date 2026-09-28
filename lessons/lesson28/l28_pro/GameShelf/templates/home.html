@@ -1,24 +1,32 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameShelf</title>
-</head>
-<body>
-    <header>
-        <h1>GameShelf</h1>
-        <p>Your personal PC game library.</p>
-    </header>
+{% extends 'base.html' %}
 
-    <main>
-        <p>Version 0.0.2: the first working page is ready.</p>
-        <p>
-            <a href="{% url 'gameshelf:game_list' %}">Browse the game catalog</a>
+{% block title %}Home | GameShelf{% endblock %}
+
+{% block content %}
+    <section class="hero">
+        <p class="eyebrow">Personal PC game catalog</p>
+        <h1>Keep your game collection in one place.</h1>
+        <p class="hero-text">
+            Browse your catalog, discover game details, and build your personal
+            GameShelf one title at a time.
         </p>
-        <p>
-            <a href="{% url 'admin:index' %}">Open admin panel</a>
-        </p>
-    </main>
-</body>
-</html>
+        <a class="button" href="{% url 'gameshelf:game_list' %}">
+            Browse the game catalog
+        </a>
+    </section>
+
+    <section class="feature-grid" aria-label="GameShelf features">
+        <article class="feature-card">
+            <h2>Browse</h2>
+            <p>See the games stored in your catalog.</p>
+        </article>
+        <article class="feature-card">
+            <h2>Explore</h2>
+            <p>Open a title to read its description and release date.</p>
+        </article>
+        <article class="feature-card">
+            <h2>Manage</h2>
+            <p>Use the admin panel to maintain your game data.</p>
+        </article>
+    </section>
+{% endblock %}
