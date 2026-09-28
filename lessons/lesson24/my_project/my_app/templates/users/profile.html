@@ -2,8 +2,29 @@
 
 {% block content %}
     {# TASK 03 #}
-    <h1>Profile</h1>
-    <p>Welcome on your profile page!</p>
-    <p>You are logged in as {{ user.username }}.</p>
-    <p>Your email address is {{ user.email }}.</p>
+    <section class="panel">
+        <div class="content-heading">
+            <div>
+                <p class="eyebrow">Account overview</p>
+                <h1>Profile</h1>
+                <p>Welcome to your personal account space.</p>
+            </div>
+            <span class="status-icon" style="width: 54px; height: 54px; margin: 0;"><i data-lucide="user-round"></i></span>
+        </div>
+
+        <div class="profile-grid">
+            <article class="info-card">
+                <p class="info-label">Username</p>
+                <p class="info-value">{{ user.username }}</p>
+            </article>
+            <article class="info-card">
+                <p class="info-label">Account status</p>
+                <p class="info-value"><span style="color: var(--success);">●</span> Active</p>
+            </article>
+            <article class="info-card info-card-wide">
+                <p class="info-label">Email address</p>
+                <p class="info-value">{{ user.email|default:"No email added" }}</p>
+            </article>
+        </div>
+    </section>
 {% endblock content %}

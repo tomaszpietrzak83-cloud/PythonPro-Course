@@ -1,10 +1,27 @@
 {% extends "base.html" %} 
 {% block content %}
     {# TASK 10 #}
-    <h1>User List</h1>
-    <ul>
+    <section class="panel">
+        <div class="content-heading">
+            <div>
+                <p class="eyebrow">Administration</p>
+                <h1>User list</h1>
+                <p>Accounts currently registered in the application.</p>
+            </div>
+            <i data-lucide="users" style="width: 42px; height: 42px; color: var(--cyan);"></i>
+        </div>
+    <ul class="users-list">
         {% for user in users %}
-            <li>{{ user.username }} - {{ user.email }}</li>
+            <li class="user-row">
+                <span class="user-name">
+                    <span class="avatar">{{ user.username|first|upper }}</span>
+                    {{ user.username }}
+                </span>
+                <span class="user-email">{{ user.email|default:"No email added" }}</span>
+            </li>
+        {% empty %}
+            <li class="user-row">No users found.</li>
         {% endfor %}
     </ul>
+    </section>
 {% endblock content %}

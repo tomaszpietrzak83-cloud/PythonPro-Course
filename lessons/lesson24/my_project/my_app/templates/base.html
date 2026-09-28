@@ -1,56 +1,77 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Django Project</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#08111f">
+    <title>{% block title %}AuthSpace{% endblock title %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 
 <body>
-    <style>
-    .alert {
-        padding: 10px;
-        margin: 10px 0;
-        border: 1px solid #999;
-        background-color: #f5f5f5;
-    }
+    <header class="site-header">
+        <div class="nav-inner">
+            <a class="brand" href="{% url 'home' %}">
+                <span class="brand-mark"><i data-lucide="shield-check"></i></span>
+                <span>AuthSpace</span>
+            </a>
 
-    .alert-success {
-        border-color: green;
-        background-color: #e8f8e8;
-    }
-    </style>
+            <nav class="main-nav" aria-label="Main navigation">
+                <a class="nav-link" href="{% url 'home' %}">
+                    <i data-lucide="house"></i> Home
+                </a>
+
+                {# TASK 02 #}
+                {% if user.is_authenticated %}
+                    <a class="nav-link" href="{% url 'profile' %}">
+                        <i data-lucide="user-round"></i> Profile
+                    </a>
+                    {# TASK 08 #}
+                    <a class="nav-link" href="{% url 'password_change' %}">
+                        <i data-lucide="key-round"></i> Password
+                    </a>
+                    <form class="logout-form" method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="nav-button" type="submit">
+                            <i data-lucide="log-out"></i> Logout
+                        </button>
+                    </form>
+                    <span class="nav-user">
+                        <span class="avatar">{{ user.username|first|upper }}</span>
+                        <span>{{ user.username }}</span>
+                    </span>
+                {% else %}
+                    <a class="nav-link" href="{% url 'login' %}">
+                        <i data-lucide="log-in"></i> Login
+                    </a>
+                    <a class="nav-link" href="{% url 'register' %}">
+                        <i data-lucide="user-plus"></i> Register
+                    </a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
 
     {# TASK 04 #}
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-            {{ message }}
+            <div class="alert alert-{{ message.tags }}" role="status">
+                {{ message }}
             </div>
         {% endfor %}
     {% endif %}
 
-    <nav>
-        <a href="{% url 'home' %}">Home</a>
+    <main class="site-main">
+        {% block content %}
+        {% endblock content %}
+    </main>
 
-        {# TASK 02 #}
-        {% if user.is_authenticated %}
-            <a href="{% url 'profile' %}">Profile</a>
-            {# TASK 08 #}
-            <a href="{% url 'password_change' %}">Change password</a>
-            <form method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
-            </form>
-            <span>Welcome, {{ user.username }}!</span>
-        {% else %}
-            <a href="{% url 'login' %}">Login</a>
-            <a href="{% url 'register' %}">Register</a>
-        {% endif %}
-    </nav>
+    <footer class="site-footer">
+        AuthSpace · Django authentication practice project
+    </footer>
 
-    <hr>
-
-    {% block content %}
-    {% endblock content %}
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>lucide.createIcons();</script>
 </body>
 </html>

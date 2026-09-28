@@ -1,9 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-    <h2>You have been logged out</h2>
-    <div class="border-top pt-3">
-        <small class="text-muted">
-            <a href="{% url 'login' %}">Log in again</a>
-        </small>
-    </div>
+    <section class="status-card">
+        <div class="status-icon"><i data-lucide="check-circle-2"></i></div>
+        <p class="eyebrow">Session ended</p>
+        <h2>You have been logged out</h2>
+        <p>Your account is safe. You can log in again whenever you are ready.</p>
+        <a class="button" href="{% url 'login' %}">
+            Log in again <i data-lucide="log-in"></i>
+        </a>
+    </section>
 {% endblock content %}

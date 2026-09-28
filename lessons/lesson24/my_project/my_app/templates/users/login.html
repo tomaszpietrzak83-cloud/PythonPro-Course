@@ -1,20 +1,27 @@
 {% extends "base.html" %}
+{% block title %}Log in · AuthSpace{% endblock title %}
 {% block content %}
-    <div class="content-section">
+    <section class="auth-layout">
+        <div class="auth-intro">
+            <p class="eyebrow">Welcome back</p>
+            <h1>Sign in to your space.</h1>
+            <p>Enter your details to continue to your protected dashboard.</p>
+        </div>
+
+        <div class="auth-card">
         <form method="POST">
             {% csrf_token %}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Log in</legend>
+                <legend>Log in</legend>
                 {{ form.as_p }}
             </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Log in</button>
-            </div>
+            <button class="button" type="submit">
+                Continue <i data-lucide="arrow-right"></i>
+            </button>
         </form>
-        <div class="border-top pt-3">
-            <small class="text-muted">
-                Don't have an account? <a class="ml-2" href="{% url 'register' %}">Sign up</a>
-            </small>
+        <div class="auth-switch">
+            Don't have an account? <a href="{% url 'register' %}">Create one</a>
         </div>
-    </div>
+        </div>
+    </section>
 {% endblock content %}

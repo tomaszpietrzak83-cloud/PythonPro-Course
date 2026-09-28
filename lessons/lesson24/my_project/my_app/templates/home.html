@@ -1,6 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Main Page</h1>
-    <p>Welcome to my Django project.</p>
+    <section class="hero">
+        <div class="hero-copy">
+            <p class="eyebrow">Your private space</p>
+            <h1>Welcome back,<br><span>{{ user.username }}.</span></h1>
+            <p>Manage your account in one calm, secure place. Your authentication flow is powered by Django.</p>
+            <div class="button-row">
+                <a class="button" href="{% url 'profile' %}">
+                    View profile <i data-lucide="arrow-right"></i>
+                </a>
+                <a class="button button-secondary" href="{% url 'password_change' %}">
+                    Update password <i data-lucide="key-round"></i>
+                </a>
+            </div>
+        </div>
+
+        <aside class="hero-card">
+            <div class="security-icon"><i data-lucide="lock-keyhole"></i></div>
+            <h3>Account protected</h3>
+            <p>Your session is active and your private area is available only to authenticated users.</p>
+        </aside>
+    </section>
 {% endblock content %}
