@@ -8,7 +8,11 @@
     </p>
     <ul>
     {% for game in games %}
-        <li>Title: {{ game.title }}<br><br> 
+        <li>
+            <a href="{% url 'gameshelf:game_detail' game.pk %}">
+                {{ game.title }}
+            </a>
+            <br><br>
             Description:<br>
                {{ game.description }}
         </li><br>

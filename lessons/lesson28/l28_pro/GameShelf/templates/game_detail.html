@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ game.title }} | GameShelf{% endblock %}
+
+{% block content %}
+    <p>
+        <a href="{% url 'gameshelf:game_list' %}">Back to game catalog</a>
+    </p>
+
+    <article>
+        <h2>{{ game.title }}</h2>
+        <p>{{ game.description }}</p>
+
+        {% if game.release_date %}
+            <p>Release date: {{ game.release_date }}</p>
+        {% endif %}
+    </article>
+{% endblock %}

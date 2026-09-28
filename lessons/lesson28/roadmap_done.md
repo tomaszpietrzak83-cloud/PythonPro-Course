@@ -81,3 +81,28 @@ Working result:
 
 - `/games/` shows the games stored in the database.
 - Visitors can navigate between the homepage and the catalog.
+
+## Version 0.0.5 - Game Detail Page
+
+Status: done.
+
+Completed:
+
+1. A game detail view was added.
+2. The detail page uses a URL containing the game ID.
+3. A dedicated detail template displays the game's information.
+4. Every game in the catalog links to its detail page.
+5. Missing games return a standard 404 response through `get_object_or_404`.
+
+Working result:
+
+- Clicking a game in `/games/` opens its detail page.
+- An unknown game ID returns HTTP 404.
+
+## Next Version
+
+Continue with:
+
+```text
+Version 0.1.0 - Minimum Usable App
+```
