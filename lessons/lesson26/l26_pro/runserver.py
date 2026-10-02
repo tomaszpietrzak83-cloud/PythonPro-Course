@@ -1,7 +1,6 @@
-from pathlib import Path
 import subprocess
 import sys
-
+from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 MANAGE_PY = BASE_DIR / "manage.py"
@@ -17,7 +16,12 @@ def run_manage(*args, stop_on_error=True):
 
 
 def has_model_changes():
-    return run_manage("makemigrations", "--check", "--dry-run", stop_on_error=False) != 0
+    return (
+        run_manage(
+            "makemigrations", "--check", "--dry-run", stop_on_error=False
+        )
+        != 0
+    )
 
 
 def main():
