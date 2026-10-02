@@ -1,0 +1,72 @@
+@baseUrl = http://127.0.0.1:8000
+@username = twoj_uzytkownik
+@password = twoje_haslo
+@otherUsername = drugi_istniejacy_uzytkownik
+@otherPassword = haslo_drugiego_uzytkownika
+
+### TASK 22-25 - Zaloguj istniejącego administratora (zmień credentials, aby sprawdzić zwykłego użytkownika)
+# @name login
+POST {{baseUrl}}/auth/jwt/create/
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+### TASK 22 - Request ID powinien pojawić się w body i nagłówku X-Request-ID
+GET {{baseUrl}}/api/request-id/
+
+### TASK 24 - Zaloguj się i otrzymaj JWT z claimem username
+# @name custom_login
+POST {{baseUrl}}/auth/jwt/custom-create/
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+### TASK 25 - Publiczny status
+GET {{baseUrl}}/api/status/
+
+### TASK 25 - Lista notatek zalogowanego użytkownika
+GET {{baseUrl}}/api/notes/
+Authorization: Bearer {{login.response.body.access}}
+
+### TASK 25 - Utwórz własną notatkę
+# @name create_note
+POST {{baseUrl}}/api/notes/
+Authorization: Bearer {{login.response.body.access}}
+Content-Type: application/json
+
+{
+  "title": "Pierwsza notatka",
+  "content": "Widoczna tylko dla właściciela."
+}
+
+### TASK 25 - Szczegóły notatki są dostępne dla jej właściciela
+GET {{baseUrl}}/api/notes/{{create_note.response.body.id}}/
+Authorization: Bearer {{login.response.body.access}}
+
+### TASK 25 - Zaloguj drugiego istniejącego użytkownika
+# @name other_login
+POST {{baseUrl}}/auth/jwt/create/
+Content-Type: application/json
+
+{
+  "username": "{{otherUsername}}",
+  "password": "{{otherPassword}}"
+}
+
+### TASK 25 - Drugi użytkownik nie powinien widzieć cudzej notatki (oczekuj 404)
+GET {{baseUrl}}/api/notes/{{create_note.response.body.id}}/
+Authorization: Bearer {{other_login.response.body.access}}
+
+### TASK 25 - Statystyki dostępne tylko dla administratora
+GET {{baseUrl}}/api/admin-stats/
+Authorization: Bearer {{login.response.body.access}}
+
+### TASK 23 - Dodaj tymczasowo 127.0.0.1 do BLOCKED_IPS w settings.py i zrestartuj serwer.
+### Żądanie powinno otrzymać 403. Usuń adres z listy, aby przywrócić dostęp.
+GET {{baseUrl}}/api/status/

@@ -1,0 +1,10 @@
+# @name login
+# @name refresh
+
+### TASK 14 - Test the protected endpoint with the refreshed access token
+POST http://127.0.0.1:8000/auth/jwt/refresh/
+Content-Type: application/json
+
+{
+  "refresh": "{{login.response.body.access}}"
+}

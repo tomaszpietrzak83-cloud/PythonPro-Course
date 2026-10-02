@@ -1,0 +1,28 @@
+@baseUrl = http://127.0.0.1:8000
+@username = twoj_uzytkownik
+@password = twoje_haslo
+
+### TASK 16/18 - Zaloguj istniejącego użytkownika (do TASK 18 użyj administratora)
+# @name login
+POST {{baseUrl}}/auth/jwt/create/
+Content-Type: application/json
+
+{
+  "username": "nowy_uzytkownik",
+  "password": "bardzoTrudneHaslo123"
+}
+
+### TASK 16 - Sprawdź X-Response-Time i konsolę serwera
+GET {{baseUrl}}/user/
+Authorization: Bearer {{login.response.body.access}}
+
+### TASK 17 - Brak X-Client-Id powinien zwrócić 403
+GET {{baseUrl}}/api/private/data/
+
+### TASK 17 - Z nagłówkiem request przejdzie przez middleware (endpoint może zwrócić 404)
+GET {{baseUrl}}/api/private/data/
+X-Client-Id: rest-client
+
+### TASK 18 - Wymaga access tokenu administratora (is_staff=True)
+GET {{baseUrl}}/api/admin-info/
+Authorization: Bearer {{login.response.body.access}}

@@ -3,3 +3,5 @@ Django==6.1
 djangorestframework==3.18.0
 djangorestframework-simplejwt==5.5.1
 djoser==2.3.4
+# TASK 20: HTTP client used by the example scripts.
+requests>=2.32,<3

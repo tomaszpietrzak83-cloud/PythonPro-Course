@@ -21,7 +21,9 @@ Content-Type: application/json
 
 {
   "refresh": "{{login.response.body.refresh}}"
+
 }
+
 
 ### TASK 10 - Test the protected endpoint with the refreshed access token
 GET http://127.0.0.1:8000/user/

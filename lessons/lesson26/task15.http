@@ -1,0 +1,30 @@
+@baseUrl = http://127.0.0.1:8000
+@username = twoj_uzytkownik
+@password = twoje_haslo
+
+### TASK 15 - Zaloguj się do istniejącej bazy użytkowników
+# @name login
+POST {{baseUrl}}/auth/jwt/create/
+Content-Type: application/json
+
+{
+  "username": "{{username}}",
+  "password": "{{password}}"
+}
+
+### TASK 15 - Użyj access tokenu z odpowiedzi zapytania login
+GET {{baseUrl}}/user/
+Authorization: Bearer {{login.response.body.access}}
+
+### TASK 15 - Odśwież token przy użyciu refresh z odpowiedzi login
+# @name refresh
+POST {{baseUrl}}/auth/jwt/refresh/
+Content-Type: application/json
+
+{
+  "refresh": "{{login.response.body.refresh}}"
+}
+
+### TASK 15 - Użyj nowego access tokenu z odpowiedzi refresh
+GET {{baseUrl}}/user/
+Authorization: Bearer {{refresh.response.body.access}}

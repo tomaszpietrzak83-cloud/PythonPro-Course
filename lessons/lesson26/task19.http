@@ -1,0 +1,20 @@
+@baseUrl = http://127.0.0.1:8000
+@username = twoj_uzytkownik
+@password = twoje_haslo
+
+### TASK 19 - Zaloguj istniejącego użytkownika
+# @name login
+POST {{baseUrl}}/auth/jwt/create/
+Content-Type: application/json
+
+{
+  "username": "nowy_uzytkownik",
+  "password": "bardzoTrudneHaslo123"
+}
+
+### TASK 19 - Dane aktualnie uwierzytelnionego użytkownika
+GET {{baseUrl}}/auth/users/me/
+Authorization: Bearer {{login.response.body.access}}
+
+### TASK 19 - Ten sam endpoint bez tokenu (oczekuj odmowy dostępu)
+GET {{baseUrl}}/auth/users/me/

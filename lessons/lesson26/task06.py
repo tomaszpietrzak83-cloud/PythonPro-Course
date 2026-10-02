@@ -1,5 +1,3 @@
-from datetime import datetime, timezone
-
 my_token_analyze_from_jwt_dot_io = {
     "token_type": "access",
     "exp": 1787914496,

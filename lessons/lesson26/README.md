@@ -64,6 +64,20 @@ HTTP request files use comments in the form `### TASK ...`.
 - `task06.py` contains notes from inspecting the JWT payload and calculating access-token lifetime.
 - `my_acces_token.py` and `l26_pro/db.sqlite3` are local runtime artifacts used during manual testing and are intentionally ignored by Git.
 
+## Tasks 15–25
+
+- `task15.http` uses REST Client variables (`@baseUrl`) and response references to reuse JWTs from earlier requests; update the username and password to match a user already in your database.
+- `l26_pro/myapp/middleware.py` and `l26_pro/l26_pro/settings.py` contain the response-time, required-client-header, request-ID, and IP-blocking middleware (TASK 16, 17, 22, 23).
+- `task16-18.http` tests the middleware and administrator-only endpoint.
+- `l26_pro/myapp/views.py` and `l26_pro/l26_pro/urls.py` provide the administrator and request-ID endpoints (TASK 18, 22).
+- `task19.http` checks Djoser's current-user endpoint with and without a token.
+- `task20_login_and_profile.py` and `task21_refresh_access_token.py` are runnable `requests` examples; credentials and optional existing tokens come from environment variables.
+- `l26_pro/myapp/views.py` provides a custom JWT endpoint that adds the username claim; see `task22-25.http` (TASK 24).
+- `l26_pro/notes/` contains the per-user notes API, with its initial migration, and `task22-25.http` contains example requests (TASK 25).
+- `l26_pro/notes/management/commands/seed_notes.py` adds repeatable sample notes for an existing user, without creating accounts or a database. Apply the app migration to the configured database, then run `python manage.py seed_notes --username <istniejacy_uzytkownik>` from `lessons/lesson26/l26_pro`.
+
+Install/update dependencies with the setup command above. The examples connect to the lesson project's existing database; use credentials for users already stored there. To compare note visibility, set `@username` and `@otherUsername` in `task22-25.http` to two existing accounts. For the Python HTTP examples, set `DJANGO_USERNAME` and `DJANGO_PASSWORD`; TASK 21 can also use `DJANGO_ACCESS_TOKEN` and `DJANGO_REFRESH_TOKEN` to exercise refresh with an expired token. To test IP blocking, temporarily add your client address to `BLOCKED_IPS` in `settings.py`, restart Django, then remove it so local requests work again.
+
 ## Generated Django Files
 
 These files are framework scaffolding or generated database state, so they do not need task markers unless custom lesson code is added there later.
