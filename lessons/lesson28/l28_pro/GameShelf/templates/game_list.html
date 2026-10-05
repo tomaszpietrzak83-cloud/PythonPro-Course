@@ -11,6 +11,16 @@
         <a class="text-link" href="{% url 'gameshelf:home' %}">Back to homepage</a>
     </div>
 
+    <form class="catalog-filters" method="get" action="{% url 'gameshelf:game_list' %}">
+        <div>
+            {{ filter_form.genre.label_tag }}
+            {{ filter_form.genre }}
+            {{ filter_form.genre.errors }}
+        </div>
+        <button class="button" type="submit">Apply filters</button>
+        <a class="text-link" href="{% url 'gameshelf:game_list' %}">Clear filters</a>
+    </form>
+
     {% if games %}
         <section class="game-grid" aria-label="Games">
             {% for game in games %}
@@ -33,8 +43,8 @@
         </section>
     {% else %}
         <div class="empty-state">
-            <h2>No games yet</h2>
-            <p>Add a game in the admin panel to start your catalog.</p>
+            <h2>No games found</h2>
+            <p>Try changing the filters or add a game in the admin panel.</p>
             <a class="button" href="{% url 'admin:index' %}">Open admin panel</a>
         </div>
     {% endif %}

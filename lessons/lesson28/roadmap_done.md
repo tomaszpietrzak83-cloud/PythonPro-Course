@@ -121,7 +121,7 @@ Working result:
 Continue with:
 
 ```text
-Version 0.1.2 - Genres
+Version 0.1.3 - Tags
 ```
 
 ## Version 0.1.1 - Studio Model
@@ -133,3 +133,14 @@ Status: done.
 - Studios can be managed in admin and appear in catalog and detail pages.
 - Applied migrations on PostgreSQL; all 5 tests and system checks pass.
 - Verified the catalog in the browser. Studio names are entered manually.
+
+## Version 0.1.2 - Genres
+
+Status: done.
+
+- Added Genre (unique name and slug) and Game.genres (many-to-many).
+- Seeded all 19 RAWG genres with a data migration; no API key is needed.
+- Source: https://rawg.io/genres (2026-10-05).
+- Added admin editing, genre links on detail pages, and a GET catalog filter.
+- Unknown genres produce a form error instead of a server error.
+- Migrations, 8 tests, system checks, and browser catalog verification pass.

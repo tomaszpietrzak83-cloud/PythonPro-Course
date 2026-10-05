@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Game, Studio
+from .models import Game, Genre, Studio
 
 
 class GameShelfViewsTests(TestCase):
@@ -56,3 +56,27 @@ class StudioTests(TestCase):
         studio.delete()
         game.refresh_from_db()
         self.assertIsNone(game.studio)
+
+
+class GenreTests(TestCase):
+    def test_rawg_genres_are_seeded(self):
+        self.assertEqual(Genre.objects.count(), 19)
+        self.assertEqual(Genre.objects.get(slug="role-playing-games-rpg").name, "RPG")
+
+    def test_genre_filter_and_detail(self):
+        action = Genre.objects.get(slug="action")
+        game = Game.objects.create(title="Action Example")
+        game.genres.add(action, Genre.objects.get(slug="adventure"))
+        other = Game.objects.create(title="Other Example")
+        response = self.client.get(reverse("gameshelf:game_list"), {"genre": "action"})
+        self.assertEqual(list(response.context["games"]), [game])
+        self.assertNotContains(response, other.title)
+        detail = self.client.get(reverse("gameshelf:game_detail", args=[game.pk]))
+        self.assertContains(detail, "Action")
+        self.assertContains(detail, "Adventure")
+
+    def test_unknown_genre_returns_form_error(self):
+        response = self.client.get(reverse("gameshelf:game_list"), {"genre": "unknown"})
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context["filter_form"].errors)
+        self.assertFalse(response.context["games"].exists())
