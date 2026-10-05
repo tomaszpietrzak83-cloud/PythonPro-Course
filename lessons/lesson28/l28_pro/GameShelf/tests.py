@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Game
+from .models import Game, Studio
 
 
 class GameShelfViewsTests(TestCase):
@@ -42,3 +42,17 @@ class GameShelfViewsTests(TestCase):
         response = self.client.get(reverse("gameshelf:game_detail", args=[9999]))
 
         self.assertEqual(response.status_code, 404)
+
+
+class StudioTests(TestCase):
+    def test_studio_is_visible_and_deleting_it_preserves_game(self):
+        studio = Studio.objects.create(name="Test Studio")
+        game = Game.objects.create(title="Test Game", studio=studio)
+        for url in (
+            reverse("gameshelf:game_list"),
+            reverse("gameshelf:game_detail", args=[game.pk]),
+        ):
+            self.assertContains(self.client.get(url), studio.name)
+        studio.delete()
+        game.refresh_from_db()
+        self.assertIsNone(game.studio)

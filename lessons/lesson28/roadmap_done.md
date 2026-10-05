@@ -121,5 +121,15 @@ Working result:
 Continue with:
 
 ```text
-Version 0.1.1 - Studio Model
+Version 0.1.2 - Genres
 ```
+
+## Version 0.1.1 - Studio Model
+
+Status: done.
+
+- Added Studio and an optional Game.studio foreign key.
+- Deleting a studio keeps its games (SET_NULL).
+- Studios can be managed in admin and appear in catalog and detail pages.
+- Applied migrations on PostgreSQL; all 5 tests and system checks pass.
+- Verified the catalog in the browser. Studio names are entered manually.
