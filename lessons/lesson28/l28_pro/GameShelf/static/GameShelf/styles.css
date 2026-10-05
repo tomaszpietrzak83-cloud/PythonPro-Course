@@ -28,6 +28,26 @@
 }
 .catalog-filters .button { margin: 0; border: 0; font: inherit; cursor: pointer; }
 
+.search-field { position: relative; flex: 1 1 260px; }
+.search-field input { width: 100%; }
+.search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid var(--line);
+    border-radius: 0.5rem;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+.search-suggestions a { display: block; padding: 0.75rem; text-decoration: none; }
+.search-suggestions a:hover, .search-suggestions a:focus { background: var(--background); }
+.search-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
 * {
     box-sizing: border-box;
 }

@@ -91,14 +91,6 @@ Working result:
 - Clicking a game in `/games/` opens its detail page.
 - An unknown game ID returns HTTP 404.
 
-## Next Version
-
-Continue with:
-
-```text
-Version 0.1.0 - Minimum Usable App
-```
-
 ## Version 0.1.0 - Minimum Usable App
 
 Status: done.
@@ -115,14 +107,6 @@ Working result:
 
 - Visitors can navigate through a consistent, styled GameShelf interface.
 - The main views are covered by automated tests.
-
-## Next Version
-
-Continue with:
-
-```text
-Version 0.1.4 - Search
-```
 
 ## Version 0.1.1 - Studio Model
 
@@ -155,3 +139,28 @@ Status: done.
 - Tags can be assigned in admin and displayed as filter links on detail pages.
 - Genre and tag filters combine using AND; selected values stay in the URL.
 - Migrations, 11 tests, system checks, and browser verification pass.
+
+## Version 0.1.4 - Search
+
+Status: done.
+
+- Added case-insensitive title search using `q`, combined with `genre` and `tag`.
+- Added `/games/suggestions/?q=a`: up to 3 matching database titles, ordered by title then ID.
+- Suggestions appear while typing from the first non-whitespace character.
+- Links open game details; Tab navigates links, Escape closes suggestions, Enter submits search.
+- JavaScript debounces requests and cancels stale responses; search also works without JavaScript.
+- Existing games were preserved; studios, genres and tags can be assigned through admin.
+- All 19 tests, system checks, migration consistency and browser search verification pass.
+
+### Learning notes
+
+- `ForeignKey`: many games can share one studio; `SET_NULL` preserves games when a studio is deleted.
+- `ManyToManyField`: a game can have several genres/tags, and each genre/tag can describe many games.
+- `select_related` joins the studio; `prefetch_related` loads collections without a query for every item.
+- `ModelChoiceField` validates URL filter values against actual database records.
+- `title__icontains` searches inside titles regardless of letter case; `[:3]` limits results in SQL.
+- PostgreSQL was already configured and available; all migrations and tests ran against it.
+
+## Next Version
+
+Continue with: Version 0.2.0 - Authentication.

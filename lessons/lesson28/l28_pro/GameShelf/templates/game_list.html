@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Game Catalog | GameShelf{% endblock %}
 
@@ -11,7 +12,15 @@
         <a class="text-link" href="{% url 'gameshelf:home' %}">Back to homepage</a>
     </div>
 
-    <form class="catalog-filters" method="get" action="{% url 'gameshelf:game_list' %}">
+    <form class="catalog-filters" id="catalog-filters" method="get" action="{% url 'gameshelf:game_list' %}"
+          data-suggestions-url="{% url 'gameshelf:game_suggestions' %}">
+        <div class="search-field">
+            {{ filter_form.q.label_tag }}
+            {{ filter_form.q }}
+            {{ filter_form.q.errors }}
+            <ul class="search-suggestions" id="search-suggestions" aria-label="Suggested games" hidden></ul>
+            <span id="search-status" class="search-status" role="status" aria-live="polite"></span>
+        </div>
         <div>
             {{ filter_form.genre.label_tag }}
             {{ filter_form.genre }}
@@ -22,8 +31,8 @@
             {{ filter_form.tag }}
             {{ filter_form.tag.errors }}
         </div>
-        <button class="button" type="submit">Apply filters</button>
-        <a class="text-link" href="{% url 'gameshelf:game_list' %}">Clear filters</a>
+        <button class="button" type="submit">Search / filter</button>
+        <a class="text-link" href="{% url 'gameshelf:game_list' %}">Clear search and filters</a>
     </form>
 
     {% if games %}
@@ -49,9 +58,10 @@
     {% else %}
         <div class="empty-state">
             <h2>No games found</h2>
-            <p>Try changing the filters or add a game in the admin panel.</p>
+            <p>Try changing the search or filters, or add a game in the admin panel.</p>
             <a class="button" href="{% url 'admin:index' %}">Open admin panel</a>
         </div>
     {% endif %}
 
+    <script src="{% static 'GameShelf/search.js' %}" defer></script>
 {% endblock %}
