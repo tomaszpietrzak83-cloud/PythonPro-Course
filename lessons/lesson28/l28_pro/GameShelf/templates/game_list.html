@@ -17,6 +17,11 @@
             {{ filter_form.genre }}
             {{ filter_form.genre.errors }}
         </div>
+        <div>
+            {{ filter_form.tag.label_tag }}
+            {{ filter_form.tag }}
+            {{ filter_form.tag.errors }}
+        </div>
         <button class="button" type="submit">Apply filters</button>
         <a class="text-link" href="{% url 'gameshelf:game_list' %}">Clear filters</a>
     </form>

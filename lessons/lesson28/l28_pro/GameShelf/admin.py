@@ -1,6 +1,13 @@
 from django.contrib import admin
 
-from .models import Game, Genre, Studio
+from .models import Game, Genre, Studio, Tag
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ("name", "slug")
+    search_fields = ("name",)
+    prepopulated_fields = {"slug": ("name",)}
 
 
 @admin.register(Genre)
@@ -20,6 +27,6 @@ class StudioAdmin(admin.ModelAdmin):
 class GameAdmin(admin.ModelAdmin):
     list_display = ("title", "studio", "release_date")
     search_fields = ("title", "studio__name")
-    list_filter = ("studio", "genres", "release_date")
-    filter_horizontal = ("genres",)
+    list_filter = ("studio", "genres", "tags", "release_date")
+    filter_horizontal = ("genres", "tags")
     list_select_related = ("studio",)

@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Game, Genre, Studio
+from .models import Game, Genre, Studio, Tag
 
 
 class GameShelfViewsTests(TestCase):
@@ -77,6 +77,36 @@ class GenreTests(TestCase):
 
     def test_unknown_genre_returns_form_error(self):
         response = self.client.get(reverse("gameshelf:game_list"), {"genre": "unknown"})
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context["filter_form"].errors)
+        self.assertFalse(response.context["games"].exists())
+
+
+class TagTests(TestCase):
+    def test_rawg_starter_tags_are_seeded(self):
+        self.assertEqual(Tag.objects.count(), 12)
+        self.assertEqual(Tag.objects.get(slug="singleplayer").name, "Singleplayer")
+
+    def test_tag_filter_combines_with_genre_and_shows_detail(self):
+        tag = Tag.objects.get(slug="co-op")
+        action = Genre.objects.get(slug="action")
+        game = Game.objects.create(title="Co-op Action")
+        game.tags.add(tag, Tag.objects.get(slug="open-world"))
+        game.genres.add(action)
+        other = Game.objects.create(title="Co-op Puzzle")
+        other.tags.add(tag)
+        other.genres.add(Genre.objects.get(slug="puzzle"))
+        url = reverse("gameshelf:game_list")
+        response = self.client.get(url, {"tag": "co-op"})
+        self.assertEqual(list(response.context["games"]), [game, other])
+        response = self.client.get(url, {"tag": "co-op", "genre": "action"})
+        self.assertEqual(list(response.context["games"]), [game])
+        detail = self.client.get(reverse("gameshelf:game_detail", args=[game.pk]))
+        self.assertContains(detail, "Co-op")
+        self.assertContains(detail, "Open World")
+
+    def test_unknown_tag_returns_form_error(self):
+        response = self.client.get(reverse("gameshelf:game_list"), {"tag": "unknown"})
         self.assertEqual(response.status_code, 200)
         self.assertTrue(response.context["filter_form"].errors)
         self.assertFalse(response.context["games"].exists())

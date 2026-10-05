@@ -15,6 +15,9 @@ def game_list(request):
         genre = filter_form.cleaned_data["genre"]
         if genre:
             games = games.filter(genres=genre)
+        tag = filter_form.cleaned_data["tag"]
+        if tag:
+            games = games.filter(tags=tag)
     else:
         games = games.none()
     return render(request, "game_list.html", {"games": games, "filter_form": filter_form})
@@ -22,6 +25,6 @@ def game_list(request):
 
 def game_detail(request, pk):
     game = get_object_or_404(
-        Game.objects.select_related("studio").prefetch_related("genres"), pk=pk
+        Game.objects.select_related("studio").prefetch_related("genres", "tags"), pk=pk
     )
     return render(request, "game_detail.html", {"game": game})

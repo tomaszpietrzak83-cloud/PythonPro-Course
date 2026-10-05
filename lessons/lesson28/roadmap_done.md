@@ -121,7 +121,7 @@ Working result:
 Continue with:
 
 ```text
-Version 0.1.3 - Tags
+Version 0.1.4 - Search
 ```
 
 ## Version 0.1.1 - Studio Model
@@ -144,3 +144,14 @@ Status: done.
 - Added admin editing, genre links on detail pages, and a GET catalog filter.
 - Unknown genres produce a form error instead of a server error.
 - Migrations, 8 tests, system checks, and browser catalog verification pass.
+
+## Version 0.1.3 - Tags
+
+Status: done.
+
+- Added Tag (unique name and slug) and Game.tags (many-to-many).
+- Seeded 12 popular RAWG tags, including Singleplayer, Co-op and Open World.
+- Source: https://rawg.io/tags (2026-10-05); this is an extensible starter subset.
+- Tags can be assigned in admin and displayed as filter links on detail pages.
+- Genre and tag filters combine using AND; selected values stay in the URL.
+- Migrations, 11 tests, system checks, and browser verification pass.
