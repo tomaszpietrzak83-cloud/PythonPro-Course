@@ -1,0 +1,21 @@
+# Wspolne zaleznosci lekcji; historyczne pliki lekcji maja sprzeczne wersje.
+openpyxl>=3.1,<4
+Flask>=3.1,<4
+Flask-SQLAlchemy>=3.1,<4
+Pygments>=2.19,<3
+SQLAlchemy>=2.0.49,<2.1
+alembic>=1.18,<2
+psycopg2-binary>=2.9,<3
+python-dotenv>=1.2,<2
+Pillow>=12,<13
+reportlab>=4,<5
+matplotlib>=3.10,<4
+numpy>=2,<3
+Django>=5.2.17,<5.3
+django-allauth>=65,<66
+Faker>=40,<41
+djangorestframework>=3.16,<4
+djangorestframework-simplejwt>=5.5,<6
+djoser>=2.3,<3
+django-debug-toolbar>=6,<8
+django-redis>=6,<8
