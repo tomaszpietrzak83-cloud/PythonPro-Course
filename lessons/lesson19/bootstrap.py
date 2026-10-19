@@ -137,7 +137,7 @@ def ensure_env_files():
 def bootstrap():
     print("Starting bootstrap checks...\n")
     ensure_gitignore()
-    rebuild_requirements_from_pip_freeze()
+    print("Zaleznosci kursu: uruchom setup_course.py w glownym katalogu.")
     ensure_env_files()
     print("\nBootstrap finished.")
 

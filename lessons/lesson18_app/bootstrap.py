@@ -141,7 +141,7 @@ def bootstrap():
     """Main bootstrap function."""
     print("🚀 Bootstrap starting...\n")
     check_gitignore()
-    update_requirements()
+    print("Zaleznosci kursu: uruchom setup_course.py w glownym katalogu.")
 
 
 if __name__ == "__main__":

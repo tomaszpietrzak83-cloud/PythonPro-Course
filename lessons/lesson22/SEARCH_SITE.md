@@ -135,7 +135,7 @@ page_obj = Paginator(results, 5).get_page(request.GET.get("page"))
 
 ### Tom Select
 
-Tom Select zmienia zwykłe pola `<select multiple>` w kontrolki z tokenami. Autorzy i tagi pobierają podpowiedzi z małych widoków JSON po wpisaniu trzech znaków.
+Tom Select zmienia zwykłe pola `<select multiple>` w kontrolki z tokenami. Autorzy i tagi pobierają podpowiedzi z małych widoków JSON po wpisaniu jednego znaku.
 
 ```javascript
 fetch(`${element.dataset.url}?q=${encodeURIComponent(query)}`)
@@ -186,7 +186,7 @@ cd lessons\lesson22\myproject
 ..\..\..\.venv\Scripts\python.exe manage.py test blog
 ```
 
-Testy obejmują między innymi punktację 67%, alternatywę autorów i kategorii, walidację dat, limit pięciu wyników, podpowiedzi od trzech znaków oraz reguły usuwania autora, kategorii i tagu.
+Testy obejmują między innymi punktację 67%, alternatywę autorów i kategorii, walidację dat, limit pięciu wyników, podpowiedzi od jednego znaku oraz reguły usuwania autora, kategorii i tagu.
 
 ## 8. Pomysły na wersję 2
 

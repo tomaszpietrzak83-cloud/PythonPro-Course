@@ -84,12 +84,12 @@ class SearchSiteTests(TestCase):
             reversed_range, "The start date cannot be later than the end date"
         )
 
-    def test_autocomplete_starts_after_three_characters(self):
+    def test_autocomplete_starts_after_one_character(self):
         url = reverse("blog:author_suggestions")
 
-        self.assertJSONEqual(self.client.get(url, {"q": "th"}).content, [])
+        self.assertJSONEqual(self.client.get(url, {"q": ""}).content, [])
         self.assertJSONEqual(
-            self.client.get(url, {"q": "tho"}).content,
+            self.client.get(url, {"q": "t"}).content,
             [{"value": "Thomas Stone", "text": "Thomas Stone"}],
         )
 

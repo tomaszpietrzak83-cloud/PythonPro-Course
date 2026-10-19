@@ -150,7 +150,7 @@ def article_search(request):
     return render(request, "article_search.html", context)
 
 
-# SEARCH-SITE: Small JSON endpoints feed Tom Select after three characters.
+# SEARCH-SITE: Small JSON endpoints feed Tom Select after one character.
 def author_suggestions(request):
     query = request.GET.get("q", "").strip()
     if len(query) < 1:

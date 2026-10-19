@@ -44,23 +44,20 @@ lessons/lesson24
 
 ## Working With Virtual Environments
 
-A virtual environment is local machine state and should not be committed to the repository.
-
-Git Bash:
-
-```bash
-python -m venv .venv
-source .venv/Scripts/activate
-python -m pip install --upgrade pip
-```
-
-PowerShell:
+Use one `.venv` in the course root for all lessons. With Python 3.12 installed:
 
 ```powershell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
+python setup_course.py
+.\.venv\Scripts\Activate.ps1
+python run_lesson.py lessons/lesson01/task1_hello.py
 ```
+
+`setup_course.py` installs the shared dependencies. Lesson setup scripts call it as well.
+See [URUCHAMIANIE.md](URUCHAMIANIE.md) for Windows setup, application launchers,
+external services and the limitations of the checks.
+
+Before merging the shared environment changes, read [MERGE_NOTES.md](MERGE_NOTES.md)
+for the reasons, dependencies between changes, PostgreSQL requirements and validation.
 
 Install packages with:
 

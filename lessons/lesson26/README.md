@@ -16,7 +16,7 @@ cd lessons\lesson26\l26_pro
 ```
 
 For standalone ZIP use, this lesson also includes `run_before_checking_lesson.py`.
-That script creates a local `.venv` folder inside this lesson and installs the packages listed in `requirements.txt`.
+That script prepares the shared `.venv` in the course root.
 
 # Lesson26 Task Map
 

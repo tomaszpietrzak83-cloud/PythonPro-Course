@@ -1,2 +1,2 @@
-Django==6.1
-djangorestframework==3.18.0
+# Wspolne zaleznosci calego kursu.
+-r ../../requirements.txt

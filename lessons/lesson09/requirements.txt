@@ -1,1 +1,2 @@
-openpyxl==3.1.5
+# Wspolne zaleznosci calego kursu.
+-r ../../requirements.txt
