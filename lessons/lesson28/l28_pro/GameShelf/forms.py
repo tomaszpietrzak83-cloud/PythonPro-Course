@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Genre, Tag
+from .models import Genre, Tag, UserGame
 
 
 class CatalogFilterForm(forms.Form):
@@ -28,4 +28,12 @@ class CatalogFilterForm(forms.Form):
         to_field_name="slug",
         required=False,
         empty_label="All genres",
+    )
+
+
+class LibraryFilterForm(forms.Form):
+    list_type = forms.ChoiceField(
+        label="Collection",
+        choices=[("all", "All games"), *UserGame.ListType.choices],
+        required=False,
     )

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}My Library | GameShelf{% endblock %}
+{% block content %}
+    <div class="page-heading">
+        <div>
+            <p class="eyebrow">Your personal collection</p>
+            <h1>My Library</h1>
+        </div>
+        <a class="text-link" href="{% url 'gameshelf:game_list' %}">Browse the catalog</a>
+    </div>
+    <form class="catalog-filters" method="get" action="{% url 'gameshelf:my_library' %}">
+        <div>
+            {{ library_form.list_type.label_tag }}
+            {{ library_form.list_type }}
+            {{ library_form.list_type.errors }}
+        </div>
+        <button class="button" type="submit">Filter library</button>
+        <a class="text-link" href="{% url 'gameshelf:my_library' %}">Show all</a>
+    </form>
+    {% if entries %}
+        <section class="game-grid" aria-label="My saved games">
+            {% for entry in entries %}
+                <article class="game-card">
+                    <div class="game-card-content">
+                        <p class="library-badge">{{ entry.get_list_type_display }}</p>
+                        <h2><a href="{% url 'gameshelf:game_detail' entry.game.pk %}">{{ entry.game.title }}</a></h2>
+                        {% if entry.game.studio %}<p>Studio: {{ entry.game.studio.name }}</p>{% endif %}
+                        <p>{{ entry.game.description|truncatewords:24 }}</p>
+                        <a class="text-link" href="{% url 'gameshelf:game_detail' entry.game.pk %}">View details →</a>
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+    {% else %}
+        <div class="empty-state">
+            <h2>No saved games in this view</h2>
+            <p>Browse the catalog to save games, or choose a different list.</p>
+            <a class="button" href="{% url 'gameshelf:game_list' %}">Browse the catalog</a>
+        </div>
+    {% endif %}
+{% endblock %}

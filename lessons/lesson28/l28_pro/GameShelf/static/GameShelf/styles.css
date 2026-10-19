@@ -82,6 +82,8 @@ a {
     justify-content: space-between;
     min-height: 72px;
     gap: 1rem;
+    flex-wrap: wrap;
+    padding-block: 1rem;
 }
 
 .brand {
@@ -143,6 +145,16 @@ nav {
 .library-actions { margin-top: 1.5rem; }
 .library-actions form { display: inline-block; margin-right: 0.5rem; }
 .library-actions button { border: 0; font: inherit; cursor: pointer; }
+.game-card .library-badge {
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    padding: 0.2rem 0.65rem;
+    border-radius: 1rem;
+    background: #efedff;
+    color: var(--accent-dark);
+    font-size: 0.85rem;
+    font-weight: 700;
+}
 
 nav a,
 .text-link {

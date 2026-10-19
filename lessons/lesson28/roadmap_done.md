@@ -211,6 +211,27 @@ Status: done.
 - Owned games stay owned: a wishlist request shows an explanation instead of moving them.
 - All 47 tests pass. Verified adding to wishlist and then moving to owned in the browser.
 
+## Version 0.2.4 - My Library
+
+Status: done.
+
+- Added `/library/`, accessible only after login and always scoped to the current user.
+- Added all/owned/wishlist filters, list labels, detail links and a useful empty state.
+- Navigation and saved game details link to My Library.
+- Related games/studios load together, avoiding a separate query per library card.
+- All 55 tests pass on PostgreSQL. System checks and migration consistency checks pass.
+- Verified registration, login/logout, owned/wishlist saves, moving wishlist to owned,
+  library filters and the narrow-screen layout in the browser using a local test account.
+
+### Learning notes for versions 0.1.4.1-0.2.4
+
+- `get_or_create` reuses a record without changing it; `update_or_create` can update its list type.
+- `UniqueConstraint` enforces one user/game pair even when requests arrive simultaneously.
+- `request.user` comes from the authenticated session; a user ID submitted by a form is not trusted.
+- `login_required` controls access, `require_POST` limits mutations, and CSRF protects submitted forms.
+- Django's `UserCreationForm` validates passwords and stores their hashes rather than plain text.
+- To regenerate the sample catalog safely: `python manage.py seed_db --games 100 --seed 28`.
+
 ## Next Version
 
-Continue with: Version 0.2.4 - My Library.
+Continue with: Version 0.3.0 - Play Status, Rating, and Notes.

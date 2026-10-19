@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
-from .forms import CatalogFilterForm
+from .forms import CatalogFilterForm, LibraryFilterForm
 from .models import Game, UserGame
 
 
@@ -99,3 +99,21 @@ def add_to_wishlist(request, pk):
     else:
         messages.success(request, f"{game.title} is now on your wishlist.")
     return redirect("gameshelf:game_detail", pk=game.pk)
+
+
+@login_required
+@require_GET
+def my_library(request):
+    entries = UserGame.objects.filter(user=request.user).select_related(
+        "game", "game__studio"
+    ).order_by("game__title", "pk")
+    library_form = LibraryFilterForm(request.GET)
+    if library_form.is_valid():
+        list_type = library_form.cleaned_data["list_type"]
+        if list_type and list_type != "all":
+            entries = entries.filter(list_type=list_type)
+    else:
+        entries = entries.none()
+    return render(
+        request, "my_library.html", {"entries": entries, "library_form": library_form}
+    )
