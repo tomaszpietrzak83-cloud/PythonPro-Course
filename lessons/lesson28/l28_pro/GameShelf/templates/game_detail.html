@@ -24,5 +24,18 @@
         {% if game.release_date %}
             <p class="release-date">Released {{ game.release_date|date:"F j, Y" }}</p>
         {% endif %}
+        <div class="library-actions">
+            {% if user.is_authenticated %}
+                {% if library_entry %}<p>In your library: <strong>{{ library_entry.get_list_type_display }}</strong></p>{% endif %}
+                {% if library_entry.list_type != 'owned' %}
+                    <form method="post" action="{% url 'gameshelf:add_to_owned' game.pk %}">
+                        {% csrf_token %}
+                        <button class="button" type="submit">Add to owned</button>
+                    </form>
+                {% endif %}
+            {% else %}
+                <p><a class="text-link" href="{% url 'gameshelf:login' %}?next={{ request.path|urlencode }}">Log in to save this game</a></p>
+            {% endif %}
+        </div>
     </article>
 {% endblock %}

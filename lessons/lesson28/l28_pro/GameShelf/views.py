@@ -1,12 +1,13 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.views.decorators.http import require_GET, require_http_methods
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from .forms import CatalogFilterForm
-from .models import Game
+from .models import Game, UserGame
 
 
 def home(request):
@@ -67,4 +68,20 @@ def game_detail(request, pk):
     game = get_object_or_404(
         Game.objects.select_related("studio").prefetch_related("genres", "tags"), pk=pk
     )
-    return render(request, "game_detail.html", {"game": game})
+    library_entry = None
+    if request.user.is_authenticated:
+        library_entry = UserGame.objects.filter(user=request.user, game=game).first()
+    return render(
+        request, "game_detail.html", {"game": game, "library_entry": library_entry}
+    )
+
+
+@login_required
+@require_POST
+def add_to_owned(request, pk):
+    game = get_object_or_404(Game, pk=pk)
+    UserGame.objects.update_or_create(
+        user=request.user, game=game, defaults={"list_type": UserGame.ListType.OWNED}
+    )
+    messages.success(request, f"{game.title} is now in your owned games.")
+    return redirect("gameshelf:game_detail", pk=game.pk)

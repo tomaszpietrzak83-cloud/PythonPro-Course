@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.urls import reverse
 
 from .models import Game, UserGame
@@ -54,3 +54,62 @@ class UserGameModelTests(TestCase):
         self.assertContains(response, "Shared game")
         self.assertContains(response, "collector")
         self.assertContains(response, "Wishlist")
+
+
+class OwnedActionTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_user("owner")
+        cls.other_user = get_user_model().objects.create_user("other_owner")
+        cls.game = Game.objects.create(title="Orbit Adventures")
+
+    def setUp(self):
+        self.url = reverse("gameshelf:add_to_owned", args=[self.game.pk])
+
+    def test_anonymous_post_requires_login_without_writing(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith(reverse("gameshelf:login")))
+        self.assertFalse(UserGame.objects.exists())
+
+    def test_authenticated_get_does_not_write(self):
+        self.client.force_login(self.user)
+        self.assertEqual(self.client.get(self.url).status_code, 405)
+        self.assertFalse(UserGame.objects.exists())
+
+    def test_repeated_posts_create_one_owned_entry_for_current_user(self):
+        self.client.force_login(self.user)
+        for _ in range(2):
+            response = self.client.post(self.url, {"user": self.other_user.pk}, follow=True)
+            self.assertContains(response, "is now in your owned games.")
+            self.assertContains(response, "In your library:")
+        entry = UserGame.objects.get()
+        self.assertEqual(entry.user, self.user)
+        self.assertEqual(entry.list_type, "owned")
+
+    def test_wishlist_moves_to_owned_and_preserves_other_users_entry(self):
+        entry = UserGame.objects.create(user=self.user, game=self.game, list_type="wishlist")
+        other = UserGame.objects.create(user=self.other_user, game=self.game, list_type="wishlist")
+        self.client.force_login(self.user)
+        self.client.post(self.url)
+        entry.refresh_from_db()
+        other.refresh_from_db()
+        self.assertEqual(entry.list_type, "owned")
+        self.assertEqual(other.list_type, "wishlist")
+        self.assertEqual(UserGame.objects.count(), 2)
+
+    def test_missing_game_returns_404_without_writing(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse("gameshelf:add_to_owned", args=[999999]))
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse(UserGame.objects.exists())
+
+    def test_post_requires_csrf_token(self):
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(self.user)
+        self.assertEqual(client.post(self.url).status_code, 403)
+        self.assertFalse(UserGame.objects.exists())
+        client.get(reverse("gameshelf:game_detail", args=[self.game.pk]))
+        response = client.post(self.url, {"csrfmiddlewaretoken": client.cookies["csrftoken"].value})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(UserGame.objects.get().list_type, "owned")

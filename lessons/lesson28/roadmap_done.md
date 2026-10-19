@@ -192,6 +192,16 @@ Status: done.
 - Applied migration on PostgreSQL. All 35 tests pass, including uniqueness, user isolation,
   cascade behavior and the admin list; the public homepage still loads in the browser.
 
+## Version 0.2.2 - Add to Owned
+
+Status: done.
+
+- Added a login-protected, CSRF-protected POST action and game detail button.
+- `update_or_create` saves one entry for the current user; wishlist entries move to owned.
+- Detail pages show the current user's saved list type and success messages.
+- All 41 tests pass, covering repeated requests, authentication, CSRF, 404s and user isolation.
+- Verified login with return to game details and adding a seeded game in the browser.
+
 ## Next Version
 
-Continue with: Version 0.2.2 - Add to Owned.
+Continue with: Version 0.2.3 - Add to Wishlist.

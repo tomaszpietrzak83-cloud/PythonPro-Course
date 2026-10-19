@@ -140,6 +140,9 @@ nav {
     background: var(--surface);
 }
 .message.success { border-color: #a6d8bf; background: #effaf3; }
+.library-actions { margin-top: 1.5rem; }
+.library-actions form { display: inline-block; margin-right: 0.5rem; }
+.library-actions button { border: 0; font: inherit; cursor: pointer; }
 
 nav a,
 .text-link {
