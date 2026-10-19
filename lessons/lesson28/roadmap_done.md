@@ -161,8 +161,17 @@ Status: done.
 - `title__icontains` searches inside titles regardless of letter case; `[:3]` limits results in SQL.
 - PostgreSQL was already configured and available; all migrations and tests ran against it.
 
+## Version 0.1.4.1 - Faker Seeder: 100 FAKE Games
+
+Status: done.
+
+- `python manage.py seed_db` creates 100 fictional games with the FAKE genre and tag.
+- `--games` changes the target count; `--seed` controls reproducible Faker data.
+- Unique, nullable `Game.seed_key` identifies generated records without affecting manual games.
+- Repeated runs reuse records and preserve edits; increasing the count adds missing records.
+- Migration applied on PostgreSQL. All 22 tests pass; two local runs created 100 then reused 100 games.
+- Verified `/games/?genre=fake&tag=fake` in the browser.
+
 ## Next Version
 
-Continue with: Version 0.1.4.1 - Faker Seeder: 100 FAKE Games.
-
-After that, continue with Version 0.2.0 - Authentication. The seeder is planned, not completed.
+Continue with: Version 0.2.0 - Authentication.

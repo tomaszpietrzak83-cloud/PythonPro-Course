@@ -34,6 +34,7 @@ class Tag(models.Model):
 
 
 class Game(models.Model):
+    seed_key = models.CharField(max_length=80, unique=True, null=True, blank=True, editable=False)
     title = models.CharField(max_length=120)
     description = models.TextField()
     release_date = models.DateField(null=True, blank=True)
