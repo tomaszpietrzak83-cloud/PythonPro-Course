@@ -172,6 +172,16 @@ Status: done.
 - Migration applied on PostgreSQL. All 22 tests pass; two local runs created 100 then reused 100 games.
 - Verified `/games/?genre=fake&tag=fake` in the browser.
 
+## Version 0.2.0 - Authentication
+
+Status: done.
+
+- Added registration using Django UserCreationForm, built-in login and POST-only logout.
+- Navigation reflects authentication; forms show validation errors and use CSRF protection.
+- Login respects safe local `next` destinations and rejects external redirects.
+- Registration creates a regular account and sends the user to login.
+- All 29 tests pass. Registered, logged in and logged out a local test account in the browser.
+
 ## Next Version
 
-Continue with: Version 0.2.0 - Authentication.
+Continue with: Version 0.2.1 - UserGame Model.

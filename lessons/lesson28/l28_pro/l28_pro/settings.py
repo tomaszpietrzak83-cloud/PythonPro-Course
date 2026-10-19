@@ -140,3 +140,7 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGIN_URL = "gameshelf:login"
+LOGIN_REDIRECT_URL = "gameshelf:game_list"
+LOGOUT_REDIRECT_URL = "gameshelf:home"

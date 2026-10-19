@@ -1,7 +1,9 @@
+from django.contrib import messages
+from django.contrib.auth.forms import UserCreationForm
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_http_methods
 
 from .forms import CatalogFilterForm
 from .models import Game
@@ -9,6 +11,18 @@ from .models import Game
 
 def home(request):
     return render(request, "home.html")
+
+
+@require_http_methods(["GET", "POST"])
+def register(request):
+    if request.user.is_authenticated:
+        return redirect("gameshelf:game_list")
+    form = UserCreationForm(request.POST if request.method == "POST" else None)
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Your account is ready. You can now log in.")
+        return redirect("gameshelf:login")
+    return render(request, "registration/register.html", {"form": form})
 
 
 def filtered_games(params):
