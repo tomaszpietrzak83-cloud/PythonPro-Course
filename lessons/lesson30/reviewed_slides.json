@@ -1,0 +1,988 @@
+{
+  "1.worker": {
+    "code": "def work():\n    with span(\"Thread\", \"waiting\"):\n        time.sleep(3)\n    event(\"log\", \"Thread\", \"The worker thread has finished!\")",
+    "body": {
+      "pl": "Funkcja work opisuje zadanie, ale sama definicja go nie uruchamia. time to moduł standardowy; time.sleep(3) usypia bieżący wątek na około 3 sekundy. span i event zapisują ten przebieg dla UI.",
+      "en": "work defines the task but defining it does not execute it. time is a standard module; time.sleep(3) pauses the current thread for about three seconds. span and event record the execution for the UI."
+    },
+    "details": [
+      {
+        "code": "def work():",
+        "body": {
+          "pl": "Definiujemy funkcję work bez parametrów. Ten nagłówek nie uruchamia jej ciała.",
+          "en": "Define work without parameters. This header does not execute its body."
+        }
+      },
+      {
+        "code": "with span(\"Thread\", \"waiting\"):",
+        "body": {
+          "pl": "with span otwiera obserwację o nazwie Thread i etykiecie waiting. Wcięte instrukcje należą do tego przedziału.",
+          "en": "with span opens an observation named Thread with the label waiting. Indented instructions belong to this interval."
+        }
+      },
+      {
+        "code": "time.sleep(3)",
+        "body": {
+          "pl": "time.sleep(3) wstrzymuje wątek wykonujący tę linię na około 3 sekundy. Nie zatrzymuje wszystkich wątków programu.",
+          "en": "time.sleep(3) pauses the thread executing this line for about three seconds. It does not stop all program threads."
+        }
+      },
+      {
+        "code": "event(\"log\", \"Thread\", \"The worker thread has finished!\")",
+        "body": {
+          "pl": "event wysyła komunikat The worker thread has finished! do dziennika UI. Ta linia jest poza with, więc wykona się po wyjściu z obserwowanego bloku.",
+          "en": "event sends The worker thread has finished! to the UI log. This line is outside with and runs after leaving the observed block."
+        }
+      }
+    ]
+  },
+  "1.create": {
+    "code": "worker_thread = threading.Thread(target=work)",
+    "body": {
+      "pl": "Thread tworzy obiekt. target=work przekazuje funkcję bez jej wywołania.",
+      "en": "Thread constructs an object. target=work passes the function without calling it."
+    },
+    "details": []
+  },
+  "1.start": {
+    "code": "worker_thread.start()",
+    "body": {
+      "pl": "start zleca wykonanie work w nowym wątku; główny wątek może iść dalej.",
+      "en": "start schedules work in a new thread; the main thread can continue."
+    },
+    "details": []
+  },
+  "1.join": {
+    "code": "with span(\"Main\", \"join: waiting\"):\n        worker_thread.join()",
+    "body": {
+      "pl": "span zapisuje przedział oczekiwania do UI. Właściwe czekanie wykonuje worker_thread.join().",
+      "en": "span records the wait interval for the UI. worker_thread.join() performs the actual waiting."
+    },
+    "details": [
+      {
+        "code": "with span(\"Main\", \"join: waiting\"):",
+        "body": {
+          "pl": "Otwieramy obserwowany przedział Main z etykietą join: waiting. Sam span rejestruje czas; nie czeka na zakończenie wątku.",
+          "en": "Open the observed interval Main labelled join: waiting. span itself records time; it does not wait for the thread to finish."
+        }
+      },
+      {
+        "code": "worker_thread.join()",
+        "body": {
+          "pl": "Właściwe oczekiwanie wykonuje worker_thread.join(). Wątek główny nie przejdzie za tę linię, dopóki worker_thread nie zakończy work.",
+          "en": "worker_thread.join() performs the actual wait. The main thread cannot pass this line until worker_thread finishes work."
+        }
+      }
+    ]
+  },
+  "2.args": {
+    "code": "for number in range(1, 6):\n        worker_thread = threading.Thread(target=greet, args=(number,))\n        threads.append(worker_thread)\n        worker_thread.start()",
+    "body": {
+      "pl": "range(1, 6) daje 1–5. args=(number,) przekazuje jeden argument. append zachowuje uchwyt; start rozpoczyna pracę.",
+      "en": "range(1, 6) yields 1–5. args=(number,) supplies one argument. append retains the handle; start begins work."
+    },
+    "details": [
+      {
+        "code": "for number in range(1, 6):",
+        "body": {
+          "pl": "range(1, 6) daje numery 1–5. W każdej iteracji zmienna number otrzymuje kolejną wartość.",
+          "en": "range(1, 6) yields 1–5. Each iteration assigns the next value to number."
+        }
+      },
+      {
+        "code": "worker_thread = threading.Thread(target=greet, args=(number,))",
+        "body": {
+          "pl": "Tworzymy Thread dla greet. args=(number,) przekazuje aktualny numer jako jeden argument; przecinek tworzy jednoelementową krotkę.",
+          "en": "Create a Thread for greet. args=(number,) passes the current number as one argument; the comma makes a one-item tuple."
+        }
+      },
+      {
+        "code": "threads.append(worker_thread)",
+        "body": {
+          "pl": "Dopisujemy obiekt worker_thread do listy threads, aby później móc poczekać na każdy utworzony wątek.",
+          "en": "Append worker_thread to threads so every created thread can be waited for later."
+        }
+      },
+      {
+        "code": "worker_thread.start()",
+        "body": {
+          "pl": "Uruchamiamy właśnie utworzony wątek. Kolejna iteracja może przygotować następny bez czekania na koniec greet.",
+          "en": "Start the newly created thread. The next iteration can prepare another without waiting for greet to finish."
+        }
+      }
+    ]
+  },
+  "2.join": {
+    "code": "for worker_thread in threads:\n        worker_thread.join()",
+    "body": {
+      "pl": "Pętla przechodzi przez zachowane obiekty i czeka na każdy z nich. Nie tworzy kolejnych wątków.",
+      "en": "The loop waits for each retained thread object. It does not create any more threads."
+    },
+    "details": [
+      {
+        "code": "for worker_thread in threads:",
+        "body": {
+          "pl": "Przechodzimy po zapisanych w liście threads obiektach. W tej pętli nie tworzymy nowych wątków.",
+          "en": "Iterate over thread objects retained in threads. This loop creates no new threads."
+        }
+      },
+      {
+        "code": "worker_thread.join()",
+        "body": {
+          "pl": "Czekamy na ten konkretny worker_thread. Jeśli już się skończył, join wróci od razu.",
+          "en": "Wait for this particular worker_thread. If it has already finished, join returns immediately."
+        }
+      }
+    ]
+  },
+  "3.sequential": {
+    "code": "def run_sequentially():\n        for number in range(1, 4):\n            fetch_data(number, \"Sequential\")",
+    "body": {
+      "pl": "Wywołujemy funkcję bez Thread. Następne pobranie zaczyna się dopiero po powrocie poprzedniego.",
+      "en": "Call the function without Thread. The next retrieval starts only after the previous call returns."
+    },
+    "details": [
+      {
+        "code": "def run_sequentially():",
+        "body": {
+          "pl": "Definiujemy pomocniczą funkcję run_sequentially. Jej ciało uruchomi późniejsze wywołanie; sama definicja jeszcze nie pobiera danych.",
+          "en": "Define the helper run_sequentially. A later call runs its body; defining it does not retrieve data."
+        }
+      },
+      {
+        "code": "for number in range(1, 4):",
+        "body": {
+          "pl": "Wybieramy kolejno identyfikatory 1, 2 i 3, bo górna granica range jest wyłączna.",
+          "en": "Select identifiers 1, 2 and 3; the upper bound of range is exclusive."
+        }
+      },
+      {
+        "code": "fetch_data(number, \"Sequential\")",
+        "body": {
+          "pl": "Bezpośrednio wywołujemy fetch_data z aktualnym number i etykietą Sequential. Ta linia wróci dopiero po zakończeniu wywołania.",
+          "en": "Call fetch_data directly with the current number and the Sekwencyjnie label. This line returns only when that call finishes."
+        }
+      }
+    ]
+  },
+  "3.concurrent": {
+    "code": "def run_concurrently():\n        threads = [\n            threading.Thread(target=fetch_data, args=(number, \"Threads\"))\n            for number in range(1, 4)\n        ]\n        for worker_thread in threads:\n            worker_thread.start()\n        for worker_thread in threads:\n            worker_thread.join()",
+    "body": {
+      "pl": "Lista tworzy trzy obiekty Thread. Osobna pętla startuje wszystkie, dopiero następna czeka.",
+      "en": "The list creates three Thread objects. One loop starts all of them; the next waits."
+    },
+    "details": [
+      {
+        "code": "def run_concurrently():",
+        "body": {
+          "pl": "Definiujemy variant run_concurrently. Ten nagłówek nie uruchamia jeszcze żadnego wątku.",
+          "en": "Define run_concurrently. This header does not start any threads."
+        }
+      },
+      {
+        "code": "threads = [\n            threading.Thread(target=fetch_data, args=(number, \"Threads\"))\n            for number in range(1, 4)\n        ]",
+        "body": {
+          "pl": "Wyrażenie listowe tworzy trzy obiekty Thread. Każdy dostaje fetch_data oraz krotkę: number i etykietę Threads. Lista threads zachowuje obiekty.",
+          "en": "The comprehension creates three Thread objects, each with fetch_data and a tuple containing the number and Wątki label. threads retains the objects."
+        }
+      },
+      {
+        "code": "for worker_thread in threads:",
+        "body": {
+          "pl": "Przechodzimy po całej liście, aby rozpocząć pracę każdego wątku.",
+          "en": "Iterate through the whole list to start every thread."
+        }
+      },
+      {
+        "code": "worker_thread.start()",
+        "body": {
+          "pl": "start uruchamia aktualny worker_thread. Nie czekamy tutaj na zakończenie pobierania.",
+          "en": "start launches the current worker_thread. We do not wait for retrieval to finish here."
+        }
+      },
+      {
+        "code": "for worker_thread in threads:",
+        "body": {
+          "pl": "Dopiero druga pętla przechodzi po wątkach w celu oczekiwania na ich zakończenie.",
+          "en": "Only the second loop iterates over threads to wait for completion."
+        }
+      },
+      {
+        "code": "worker_thread.join()",
+        "body": {
+          "pl": "join czeka na aktualny worker_thread. Wszystkie pozostałe zostały już uruchomione przez poprzednią pętlę.",
+          "en": "join waits for the current worker_thread. The previous loop has already started all the others."
+        }
+      }
+    ]
+  },
+  "4.append": {
+    "code": "for _ in range(100_000):\n        numbers.append(number)",
+    "body": {
+      "pl": "Sto tysięcy dopisań w każdym wątku realizuje treść zadania z listą. Sam poprawny wynik nie rozstrzyga o innych operacjach.",
+      "en": "One hundred thousand appends per thread implement the list exercise. A correct result says nothing about other operations."
+    },
+    "details": [
+      {
+        "code": "for _ in range(100_000):",
+        "body": {
+          "pl": "range(100_000) powtarza ciało 100 tysięcy razy. Nazwa _ oznacza, że nie wykorzystujemy numeru iteracji.",
+          "en": "range(100_000) repeats the body 100,000 times. _ indicates that the iteration number is unused."
+        }
+      },
+      {
+        "code": "numbers.append(number)",
+        "body": {
+          "pl": "Do wspólnej listy numbers dodajemy argument number tego wywołania, czyli 1 albo 2.",
+          "en": "Append this call’s number argument, either 1 or 2, to the shared numbers list."
+        }
+      }
+    ]
+  },
+  "4.read": {
+    "code": "previous = counter",
+    "body": {
+      "pl": "Każdy wątek kopiuje bieżący counter do własnej lokalnej zmiennej previous.",
+      "en": "Each thread copies the current counter to its own local variable previous."
+    },
+    "details": []
+  },
+  "4.barrier": {
+    "code": "barrier.wait()",
+    "body": {
+      "pl": "Barrier(2) czeka na obu uczestników. Dzięki temu żaden nie zapisze, zanim obaj odczytają zero.",
+      "en": "Barrier(2) waits for both participants so neither writes before both have read zero."
+    },
+    "details": []
+  },
+  "4.write": {
+    "code": "counter = previous + 1",
+    "body": {
+      "pl": "Każdy zapisuje własne previous + 1. Oba stare odczyty to zero, więc tracimy jeden przyrost.",
+      "en": "Each writes its own previous + 1. Both old reads are zero, so one increment is lost."
+    },
+    "details": []
+  },
+  "5.listlock": {
+    "code": "with lock:\n            numbers.append(number)",
+    "body": {
+      "pl": "with zdobywa wspólną blokadę na czas jednego append i automatycznie ją zwalnia.",
+      "en": "with acquires the shared lock for one append and releases it automatically."
+    },
+    "details": [
+      {
+        "code": "with lock:",
+        "body": {
+          "pl": "Wątek musi zdobyć wspólną blokadę lock, zanim wejdzie do wciętego bloku. Wyjście z with automatycznie ją zwalnia.",
+          "en": "The thread must acquire the shared lock before entering the indented block. Leaving with releases it automatically."
+        }
+      },
+      {
+        "code": "numbers.append(number)",
+        "body": {
+          "pl": "Wewnątrz posiadanej blokady dopisujemy jeden element number do listy numbers.",
+          "en": "While holding the lock, append one number item to the numbers list."
+        }
+      }
+    ]
+  },
+  "5.critical": {
+    "code": "with lock:\n        with span(f\"Thread {number}\", \"holding Lock\"):\n            previous = counter\n            event(\"log\", f\"Thread {number}\", f\"Read: {previous}\")\n            time.sleep(0.7)\n            counter = previous + 1\n            event(\"log\", f\"Thread {number}\", f\"Write: {counter}\")",
+    "body": {
+      "pl": "Blokada obejmuje odczyt, oczekiwanie i zapis. Drugi wątek wejdzie dopiero po wyjściu pierwszego.",
+      "en": "The lock covers read, wait and write. The second thread enters only after the first exits."
+    },
+    "details": [
+      {
+        "code": "with lock:",
+        "body": {
+          "pl": "Zdobywamy tę samą blokadę, której używają pozostałe wątki. Do jej zwolnienia inny wątek nie wejdzie do swojej sekcji chronionej.",
+          "en": "Acquire the same lock used by the other threads. Until it is released, another thread cannot enter its protected region."
+        }
+      },
+      {
+        "code": "with span(f\"Thread {number}\", \"holding Lock\"):",
+        "body": {
+          "pl": "span nadaje przedziałowi nazwę z numerem wątku i etykietę holding Lock. Jest wewnątrz blokady, więc mierzy czas jej posiadania.",
+          "en": "span names the interval using the thread number and the holding Lock label. It is inside the lock, so it measures lock-holding time."
+        }
+      },
+      {
+        "code": "previous = counter",
+        "body": {
+          "pl": "Odczytujemy counter do lokalnej previous, już przy posiadanej blokadzie. Odczyt nie może przeplatać się z chronioną aktualizacją drugiego wątku.",
+          "en": "Read counter into local previous while holding the lock. The read cannot interleave with another thread’s protected update."
+        }
+      },
+      {
+        "code": "time.sleep(0.7)",
+        "body": {
+          "pl": "Czekamy 0,7 s, nadal trzymając blokadę. To celowy dodatek pokazujący w UI, że drugi wątek musi poczekać.",
+          "en": "Wait 0.7 s while still holding the lock. This observation aid makes the second thread’s waiting visible."
+        }
+      },
+      {
+        "code": "counter = previous + 1",
+        "body": {
+          "pl": "Zapisujemy previous + 1 do licznika. Ponieważ odczyt i zapis są pod tą samą blokadą, drugi wątek później odczyta już zaktualizowaną wartość.",
+          "en": "Write previous + 1 to the counter. The same lock protects read and write, so the other thread later reads the updated value."
+        }
+      }
+    ]
+  },
+  "6.factorial": {
+    "code": "result = math.factorial(10)",
+    "body": {
+      "pl": "math.factorial(10) oblicza iloczyn liczb 1–10 i zwraca liczbę całkowitą.",
+      "en": "math.factorial(10) computes the product of integers 1–10 and returns an integer."
+    },
+    "details": []
+  },
+  "6.process": {
+    "code": "process = mp.Process(target=calculate_factorial)",
+    "body": {
+      "pl": "Process przechowuje funkcję do uruchomienia w potomku. To osobny process, nie Thread.",
+      "en": "Process holds the function to run in a child. This is a separate process, not a Thread."
+    },
+    "details": []
+  },
+  "6.guard": {
+    "code": "if __name__ == \"__main__\":\n    launch(main)",
+    "body": {
+      "pl": "__name__ ma wartość __main__ przy uruchomieniu pliku. Import w nowym interpreterze nie uruchomi launch ponownie.",
+      "en": "__name__ is __main__ when running the file. Importing it in a fresh interpreter does not launch it again."
+    },
+    "details": [
+      {
+        "code": "if __name__ == \"__main__\":",
+        "body": {
+          "pl": "Warunek jest prawdziwy przy uruchomieniu tego pliku jako programu. Przy imporcie modułu przez nowy interpreter ciało if nie zostanie wykonane.",
+          "en": "The condition is true when this file runs as a program. When a fresh interpreter imports the module, the if body is skipped."
+        }
+      },
+      {
+        "code": "launch(main)",
+        "body": {
+          "pl": "Wywołujemy pomocnik launch, przekazując funkcję main bez nawiasów. launch przygotuje dane i uruchomi main w tym procesie.",
+          "en": "Call launch, passing main without parentheses. launch prepares the inputs and calls main in this process."
+        }
+      }
+    ]
+  },
+  "7.worker": {
+    "code": "def calculate_power(number, exponent):\n    event(\"log\", \"Child\", f\"{number} ** {exponent} = {number ** exponent}\")",
+    "body": {
+      "pl": "Parametry number i exponent dostaną wartości z args. ** jest operatorem potęgowania.",
+      "en": "The parameters number and exponent receive values from args. ** is exponentiation."
+    },
+    "details": [
+      {
+        "code": "def calculate_power(number, exponent):",
+        "body": {
+          "pl": "Definiujemy calculate_power z dwoma parametrami: number i exponent. Wartości przyjdą z args procesu.",
+          "en": "Define calculate_power with two parameters, number and exponent. Their values come from the process args."
+        }
+      },
+      {
+        "code": "event(\"log\", \"Child\", f\"{number} ** {exponent} = {number ** exponent}\")",
+        "body": {
+          "pl": "f-string oblicza number ** exponent, wstawia podstawę, wykładnik i wynik do tekstu, a event wysyła ten tekst do UI. ** oznacza potęgowanie.",
+          "en": "The f-string evaluates number ** exponent, inserts base, exponent and result into text, and event sends that text to the UI. ** means exponentiation."
+        }
+      }
+    ]
+  },
+  "7.args": {
+    "code": "process = mp.Process(\n        target=calculate_power, args=(config.get(\"number\", 5), 3)\n    )",
+    "body": {
+      "pl": "config.get pobiera liczbę z formularza albo domyślne 5. Krotka (number, 3) wiąże dwa argumenty pozycyjne.",
+      "en": "config.get reads the form value or defaults to 5. The tuple (number, 3) binds two positional arguments."
+    },
+    "details": []
+  },
+  "8.put": {
+    "code": "message_queue.put(name)",
+    "body": {
+      "pl": "put umieszcza imię w kolejce międzyprocesowej. Rodzic otrzyma przesłaną wartość.",
+      "en": "put places the name in the interprocess queue. The parent receives the transferred value."
+    },
+    "details": []
+  },
+  "8.queue": {
+    "code": "message_queue = mp.Queue()",
+    "body": {
+      "pl": "mp.Queue tworzy kanał wiadomości, którego uchwyt przekażemy potomkowi.",
+      "en": "mp.Queue creates a message channel whose handle is passed to the child."
+    },
+    "details": []
+  },
+  "8.get": {
+    "code": "received = message_queue.get(timeout=10)",
+    "body": {
+      "pl": "get czeka najwyżej 10 sekund na jedną wiadomość. Timeout zgłosi wyjątek zamiast nieskończonego czekania.",
+      "en": "get waits up to 10 seconds for one message. Timeout raises an exception instead of waiting forever."
+    },
+    "details": []
+  },
+  "9.local": {
+    "code": "partial_sum = sum(chunk)",
+    "body": {
+      "pl": "sum czyta fragment listy i zapisuje wynik lokalnie. Nie zmienia wspólnego akumulatora.",
+      "en": "sum reads a list chunk and stores a local result. It does not change the shared accumulator."
+    },
+    "details": []
+  },
+  "9.merge": {
+    "code": "with lock:\n        total_sum += partial_sum",
+    "body": {
+      "pl": "with zdobywa blokadę na czas dodania partial_sum do wspólnej total_sum. Po wyjściu z tego bloku inny wątek może wykonać swoją aktualizację.",
+      "en": "with holds the lock while adding partial_sum to the shared total_sum. After the block another thread can perform its update."
+    },
+    "details": [
+      {
+        "code": "with lock:",
+        "body": {
+          "pl": "Zdobywamy blokadę przed krótką aktualizacją wspólnego akumulatora. Suma fragmentu jest już wcześniej obliczona.",
+          "en": "Acquire the lock before briefly updating the shared accumulator. The chunk sum has already been computed."
+        }
+      },
+      {
+        "code": "total_sum += partial_sum",
+        "body": {
+          "pl": "Dodajemy lokalny wynik partial_sum do total_sum. Ta aktualizacja odbywa się wewnątrz with lock.",
+          "en": "Add the local partial_sum result to total_sum. This update occurs inside with lock."
+        }
+      }
+    ]
+  },
+  "9.chunks": {
+    "code": "threads = [\n        threading.Thread(\n            target=sum_chunk, args=(data[i * n // 4 : (i + 1) * n // 4], i + 1)\n        )\n        for i in range(4)\n    ]",
+    "body": {
+      "pl": "Granice i*n//4 i (i+1)*n//4 dzielą dane także wtedy, gdy długość nie dzieli się przez 4. Wycinek listy tworzy kopię.",
+      "en": "The boundaries i*n//4 and (i+1)*n//4 also handle lengths not divisible by four. A list slice creates a copy."
+    },
+    "details": []
+  },
+  "10.tokens": {
+    "code": "tokens = re.findall(r\"\\w+\", file.read_text(encoding=\"utf-8\").casefold())",
+    "body": {
+      "pl": "read_text czyta UTF-8, casefold normalizuje litery, findall z wzorcem \\w+ zwraca listę słów.",
+      "en": "read_text reads UTF-8; casefold normalizes case; findall with \\w+ returns a list of words."
+    },
+    "details": []
+  },
+  "10.merge": {
+    "code": "with lock:\n            total += result",
+    "body": {
+      "pl": "Każdy plik ma lokalny result. Tylko dopisanie go do wspólnej sumy wymaga blokady.",
+      "en": "Each file has a local count. Only adding it to the shared total needs a lock."
+    },
+    "details": [
+      {
+        "code": "with lock:",
+        "body": {
+          "pl": "Blokujemy sekcję dodającą wynik pliku do wspólnej sumy, aby dwa wątki nie nadpisały swoich aktualizacji.",
+          "en": "Lock the region adding a file count to the shared sum so two threads cannot overwrite each other’s updates."
+        }
+      },
+      {
+        "code": "total += result",
+        "body": {
+          "pl": "Dodajemy wynik z tego pliku do wspólnej total. Czytanie i liczenie tekstu wykonano wcześniej, poza tą sekcją.",
+          "en": "Add this file’s result to the shared total. Reading and counting happened earlier, outside this region."
+        }
+      }
+    ]
+  },
+  "10.files": {
+    "code": "threads = [\n            threading.Thread(target=count_words, args=(p, word))\n            for p in Path(folder).glob(\"*.txt\")\n        ]",
+    "body": {
+      "pl": "glob wybiera pliki .txt w przygotowanym katalogu. Dla każdego tworzymy osobny wątek.",
+      "en": "glob selects .txt files in the prepared directory. Create one thread for each."
+    },
+    "details": []
+  },
+  "11.put": {
+    "code": "message_queue.put(number)",
+    "body": {
+      "pl": "Producent dodaje numer do bezpiecznej wątkowo queue.Queue; nie potrzebuje dodatkowego Lock dla samego put.",
+      "en": "The producer adds a number to a thread-safe queue.Queue; put needs no extra Lock."
+    },
+    "details": []
+  },
+  "11.get": {
+    "code": "element = message_queue.get()",
+    "body": {
+      "pl": "get blokuje konsumenta, gdy kolejka jest pusta. Zwraca jeden element, a nie całą kolejkę.",
+      "en": "get blocks the consumer when empty. It returns one item, not the entire queue."
+    },
+    "details": []
+  },
+  "11.shutdown": {
+    "code": "stop.set()",
+    "body": {
+      "pl": "Po 10 sekundach set ustawia Event. Producent oczekujący przy stop.wait(1) obudzi się z True i przerwie pętlę.",
+      "en": "After ten seconds set signals the Event. The producer waiting at stop.wait(1) wakes with True and breaks its loop."
+    },
+    "details": []
+  },
+  "11.sentinel": {
+    "code": "message_queue.put(None)",
+    "body": {
+      "pl": "None jest umownym końcem pracy. Konsument odbiera je przez get i wychodzi; task_done wykona się w finally również dla tego sygnału.",
+      "en": "None is the agreed shutdown marker. The consumer receives it with get and returns; finally also calls task_done for this marker."
+    },
+    "details": []
+  },
+  "12.cpu": {
+    "code": "result = sum(i * i for i in range(n))",
+    "body": {
+      "pl": "Generator produkuje i*i dla kolejnych i, a sum je sumuje. To rzeczywista praca CPU w Pythonie.",
+      "en": "The generator yields i*i for successive i, and sum adds them. This is real Python CPU work."
+    },
+    "details": []
+  },
+  "12.workers": {
+    "code": "tasks = [\n        worker_type(\n            target=calculate_squares, args=(n, f\"{worker_type.__name__} {i}\")\n        )\n        for i in (1, 2)\n    ]",
+    "body": {
+      "pl": "Parametr worker_type oznacza Thread albo Process. Ten sam kod organizuje dwa zadania z tym samym n.",
+      "en": "worker_type is Thread or Process. The same code organizes two tasks with the same n."
+    },
+    "details": []
+  },
+  "12.benchmark": {
+    "code": "measured(\n        \"Sequential\",\n        lambda: [calculate_squares(n, \"Sequential\") for _ in range(2)],\n    )",
+    "body": {
+      "pl": "measured używa perf_counter. Dwa wywołania w liście są sequential_results: nie tworzą dodatkowych wykonawców.",
+      "en": "measured uses perf_counter. The two calls in a list are sequential: they create no extra workers."
+    },
+    "details": []
+  },
+  "13.prime": {
+    "code": "def is_prime(n):\n    if n < 2:\n        return False\n    return all(n % divisor != 0 for divisor in range(2, int(n**0.5) + 1))",
+    "body": {
+      "pl": "Liczby <2 odrzucamy. all sprawdza brak dzielnika do pierwiastka włącznie i kończy po pierwszym False.",
+      "en": "Reject values below 2. all checks for no divisor through the square root and stops at the first False."
+    },
+    "details": [
+      {
+        "code": "def is_prime(n):",
+        "body": {
+          "pl": "Funkcja is_prime przyjmuje jedną liczbę n. Jej wynikiem będzie wartość logiczna.",
+          "en": "is_prime accepts one number n. Its result will be a Boolean."
+        }
+      },
+      {
+        "code": "if n < 2:",
+        "body": {
+          "pl": "Sprawdzamy przypadki n < 2 przed próbami dzielenia. Takie liczby nie są pierwsze.",
+          "en": "Check n < 2 before trying divisors. Such numbers are not prime."
+        }
+      },
+      {
+        "code": "return False",
+        "body": {
+          "pl": "Zwracamy False i natychmiast kończymy to wywołanie funkcji. Ta linia należy do warunku n < 2.",
+          "en": "Return False and immediately end this function call. This line belongs to the n < 2 condition."
+        }
+      },
+      {
+        "code": "return all(n % divisor != 0 for divisor in range(2, int(n**0.5) + 1))",
+        "body": {
+          "pl": "% oblicza resztę. all wymaga n % divisor != 0 dla dzielników od 2 do int(n**0.5) włącznie. Przy znalezionym dzielniku kończy z False.",
+          "en": "% computes a remainder. all requires n % divisor != 0 for divisors from 2 through int(n**0.5), inclusive. It stops with False when it finds a divisor."
+        }
+      }
+    ]
+  },
+  "13.pool": {
+    "code": "with mp.Pool(processes=2) as pool:\n        results = pool.map(check_number, data)",
+    "body": {
+      "pl": "Pool(2) tworzy dwóch wykonawców. map wysyła zadania i zbiera wyniki w kolejności wejścia. with zamyka pulę.",
+      "en": "Pool(2) creates two workers. map dispatches jobs and collects input-ordered results. with closes the pool."
+    },
+    "details": [
+      {
+        "code": "with mp.Pool(processes=2) as pool:",
+        "body": {
+          "pl": "Tworzymy pulę dwóch procesów i nadajemy jej nazwę pool. with zarządza jej zasobami przez czas wciętego bloku.",
+          "en": "Create a two-process pool called pool. with manages its resources for the indented block."
+        }
+      },
+      {
+        "code": "results = pool.map(check_number, data)",
+        "body": {
+          "pl": "pool.map zleca check_number dla każdej liczby z data i przypisuje listę wyników do results. Kolejność listy odpowiada kolejności data.",
+          "en": "pool.map submits check_number for each number in data and assigns the results list to results. Result order matches data."
+        }
+      }
+    ]
+  },
+  "14.copy": {
+    "code": "shutil.copy2(source, destination / source.name)",
+    "body": {
+      "pl": "copy2 kopiuje rzeczywistą zawartość do nowej ścieżki. Operator / na Path łączy katalog i nazwę.",
+      "en": "copy2 copies real content to a new path. The Path / operator joins a directory and name."
+    },
+    "details": []
+  },
+  "14.wait": {
+    "code": "for worker_thread in threads:\n            worker_thread.start()",
+    "body": {
+      "pl": "Ta pętla uruchamia każdy przygotowany wątek kopiowania. W tym fragmencie nie ma join: uruchomienie następnej kopii nie czeka na zakończenie poprzedniej.",
+      "en": "This loop starts each prepared copy thread. There is no join in this chunk: starting the next copy does not wait for the previous one to finish."
+    },
+    "details": [
+      {
+        "code": "for worker_thread in threads:",
+        "body": {
+          "pl": "Przechodzimy po gotowych obiektach threads, które reprezentują osobne kopie plików.",
+          "en": "Iterate over prepared threads objects representing separate file copies."
+        }
+      },
+      {
+        "code": "worker_thread.start()",
+        "body": {
+          "pl": "Uruchamiamy bieżący wątek kopiowania. To start, nie oczekiwanie; tutaj nie wywołujemy join.",
+          "en": "Start the current copy thread. This is startup, not waiting; join is not called here."
+        }
+      }
+    ]
+  },
+  "14.verify": {
+    "code": "copies_match = all(\n            hashlib.sha256(p.read_bytes()).digest()\n            == hashlib.sha256((dst / p.name).read_bytes()).digest()\n            for p in files\n        )",
+    "body": {
+      "pl": "all wymaga zgodności SHA256 każdej pary źródło–kopia. Porównanie następuje po join.",
+      "en": "all requires equal SHA256 for every source–copy pair. Comparison happens after join."
+    },
+    "details": []
+  },
+  "15.deduplicate": {
+    "code": "with lock:\n            if (\n                urlsplit(url).netloc == urlsplit(base_url).netloc\n                and url not in visited\n                and len(visited) < 50\n            ):\n                visited.add(url)\n                tasks.put(url)",
+    "body": {
+      "pl": "Jedna blokada chroni sprawdzenie domeny i limitu, sprawdzenie zbioru oraz rezerwację URL. Unikamy podwójnego dodania.",
+      "en": "One lock protects domain and limit checks, set lookup and URL reservation. This avoids duplicate insertion."
+    },
+    "details": [
+      {
+        "code": "with lock:",
+        "body": {
+          "pl": "Jedna blokada obejmie sprawdzenie adresu oraz jego zarezerwowanie. Inny crawler nie wejdzie równocześnie do tego bloku.",
+          "en": "One lock covers both checking and reserving a URL. Another crawler cannot enter this block at the same time."
+        }
+      },
+      {
+        "code": "if (\n                urlsplit(url).netloc == urlsplit(base_url).netloc\n                and url not in visited\n                and len(visited) < 50\n            ):",
+        "body": {
+          "pl": "Wszystkie trzy warunki muszą być prawdziwe: ta sama domena i port, brak URL w zbiorze oraz mniej niż 50 zarezerwowanych adresów.",
+          "en": "All three conditions must hold: the same domain and port, the URL absent from the set, and fewer than 50 reserved URLs."
+        }
+      },
+      {
+        "code": "visited.add(url)",
+        "body": {
+          "pl": "Od razu dodajemy URL do zbioru visited. To rezerwacja do pracy, a nie potwierdzenie udanego pobrania.",
+          "en": "Immediately add the URL to visited. This reserves the work; it does not confirm a successful fetch."
+        }
+      },
+      {
+        "code": "tasks.put(url)",
+        "body": {
+          "pl": "Zarezerwowany URL wkładamy do kolejki tasks, skąd odbierze go wolny crawler.",
+          "en": "Put the reserved URL into tasks for an available crawler to receive."
+        }
+      }
+    ]
+  },
+  "15.fetch": {
+    "code": "with urllib.request.urlopen(url, timeout=5) as response:\n                        parser = LinkParser()\n                        parser.feed(response.read().decode())",
+    "body": {
+      "pl": "urlopen wykonuje HTTP; with zamyka odpowiedź. Parser czyta HTML, ale nie wykonuje JavaScript.",
+      "en": "urlopen performs HTTP; with closes the response. The parser reads HTML but does not execute JavaScript."
+    },
+    "details": [
+      {
+        "code": "with urllib.request.urlopen(url, timeout=5) as response:",
+        "body": {
+          "pl": "urlopen otwiera odpowiedź HTTP dla url. timeout=5 ogranicza oczekiwanie operacji sieciowych, a with zamknie response po bloku.",
+          "en": "urlopen opens an HTTP response for url. timeout=5 bounds network-operation waits; with closes response after the block."
+        }
+      },
+      {
+        "code": "parser = LinkParser()",
+        "body": {
+          "pl": "Tworzymy nowy obiekt naszego parsera LinkParser i przypisujemy go do parser. Na tym etapie nie przekazujemy mu jeszcze HTML.",
+          "en": "Create a new instance of our LinkParser parser and assign it to parser. No HTML is supplied yet."
+        }
+      },
+      {
+        "code": "parser.feed(response.read().decode())",
+        "body": {
+          "pl": "Od środka: response.read pobiera bajty, decode zamienia je na tekst, parser.feed przekazuje tekst HTML do analizy i zbierania linków.",
+          "en": "Inside out: response.read retrieves bytes, decode converts them to text, and parser.feed parses that HTML and collects links."
+        }
+      }
+    ]
+  },
+  "15.drain": {
+    "code": "tasks.join()",
+    "body": {
+      "pl": "Queue.join czeka na task_done dla wszystkich zleconych elementów, także odkrytych w trakcie. To inny join niż Thread.join.",
+      "en": "Queue.join waits for task_done on all queued items, including newly discovered ones. This is different from Thread.join."
+    },
+    "details": []
+  },
+  "16.init_hash": {
+    "code": "digest = hashlib.sha256()",
+    "body": {
+      "pl": "hashlib.sha256() tworzy nowy stan obliczenia skrótu i przypisuje go do digest. Ta linia jeszcze nie czyta pliku.",
+      "en": "hashlib.sha256() creates a fresh digest state and assigns it to digest. This line does not read the file yet."
+    },
+    "details": []
+  },
+  "16.hash": {
+    "code": "with file.open(\"rb\") as data:\n            for chunk in iter(lambda: data.read(65_536), b\"\"):\n                digest.update(chunk)",
+    "body": {
+      "pl": "Otwieramy plik binarnie. iter wywołuje odczyt bloków aż do b'', a update dodaje bajty każdego bloku do istniejącego stanu digest.",
+      "en": "Open the file in binary mode. iter repeats chunk reads until b'', and update adds each chunk to the existing digest state."
+    },
+    "details": [
+      {
+        "code": "with file.open(\"rb\") as data:",
+        "body": {
+          "pl": "Otwieramy plik w trybie rb: odczyt binarny. as data nadaje uchwytowi nazwę; with zamknie plik po wyjściu.",
+          "en": "Open the file in rb mode: binary reading. as data names the handle; with closes the file on exit."
+        }
+      },
+      {
+        "code": "for chunk in iter(lambda: data.read(65_536), b\"\"):",
+        "body": {
+          "pl": "lambda odczytuje do 65 536 bajtów. iter powtarza jej wywołanie do b'', czyli końca pliku. Każdą niepustą porcję przypisuje do chunk.",
+          "en": "lambda reads up to 65,536 bytes. iter repeats the call until b'', the end-of-file marker. Each nonempty chunk is assigned to chunk."
+        }
+      },
+      {
+        "code": "digest.update(chunk)",
+        "body": {
+          "pl": "Dodajemy bajty chunk do istniejącego stanu digest. update nie zeruje obliczenia i nie tworzy osobnego skrótu dla każdej porcji.",
+          "en": "Add chunk bytes to the existing digest state. update does not reset the calculation or create a separate digest for each chunk."
+        }
+      }
+    ]
+  },
+  "16.digest": {
+    "code": "return file.name, digest.hexdigest()",
+    "body": {
+      "pl": "Zwracamy parę: nazwę pliku oraz digest.hexdigest(), czyli 64-znakowy zapis szesnastkowy wyliczonego SHA256.",
+      "en": "Return a pair: the file name and digest.hexdigest(), the 64-character hexadecimal representation of the computed SHA256."
+    },
+    "details": []
+  },
+  "16.map": {
+    "code": "with mp.Pool(processes=2) as pool:\n            results = dict(pool.map(hash_file, files))",
+    "body": {
+      "pl": "Funkcja zwraca parę (name, hash). dict zmienia listę takich par w słownik wyników.",
+      "en": "The worker returns a (name, hash) pair. dict converts the list of pairs into a results dictionary."
+    },
+    "details": [
+      {
+        "code": "with mp.Pool(processes=2) as pool:",
+        "body": {
+          "pl": "Tworzymy pulę dwóch procesów o nazwie pool. To te procesy wykonają funkcję hash_file we wciętym bloku.",
+          "en": "Create a two-process pool called pool. These processes execute hash_file within the indented block."
+        }
+      },
+      {
+        "code": "results = dict(pool.map(hash_file, files))",
+        "body": {
+          "pl": "map zwraca pary (name, hash) dla files. Zewnętrzne dict zamienia listę par w słownik; przypisujemy go do results.",
+          "en": "map returns (name, hash) pairs for files. The outer dict converts the pairs into a dictionary assigned to results."
+        }
+      }
+    ]
+  },
+  "17.receive": {
+    "code": "numbers = connection.recv()",
+    "body": {
+      "pl": "recv czeka na obiekt wysłany drugim końcem. Tu otrzymujemy listę liczb.",
+      "en": "recv waits for an object sent from the other end. Here it receives a list of numbers."
+    },
+    "details": []
+  },
+  "17.reply": {
+    "code": "connection.send((total, total / len(numbers)))",
+    "body": {
+      "pl": "send przesyła krotkę. Suma podzielona przez długość daje średnią; dlatego nie dopuszczamy pustej listy.",
+      "en": "send transfers a tuple. Sum divided by length gives the mean, so an empty list is rejected."
+    },
+    "details": []
+  },
+  "17.pipe": {
+    "code": "parent, child = mp.Pipe()",
+    "body": {
+      "pl": "Pipe tworzy dwa połączone końce. Jeden zostaje w rodzicu, drugi przekazujemy potomkowi.",
+      "en": "Pipe creates two connected endpoints. One stays with the parent; the other goes to the child."
+    },
+    "details": []
+  },
+  "18.deposit": {
+    "code": "with self.lock:\n            self.balance += amount\n            self.history.append(amount)\n            event(\"balance\", \"Account\", f\"+{amount}\", value=self.balance)",
+    "body": {
+      "pl": "Lock chroni razem saldo i historię. Najpierw zmieniamy saldo, następnie zapisujemy zaakceptowaną kwotę.",
+      "en": "Lock protects balance and history together. Update the balance, then record the accepted amount."
+    },
+    "details": [
+      {
+        "code": "with self.lock:",
+        "body": {
+          "pl": "Zdobywamy blokadę należącą do tego konta. Wpłata i inne operacje na tym koncie korzystają z tej samej self.lock.",
+          "en": "Acquire this account’s lock. Deposits and other operations on the account use the same self.lock."
+        }
+      },
+      {
+        "code": "self.balance += amount",
+        "body": {
+          "pl": "Zwiększamy saldo konta o dodatnią amount. Instrukcja jest chroniona zdobytą blokadą.",
+          "en": "Increase the account balance by positive amount. The held lock protects this statement."
+        }
+      },
+      {
+        "code": "self.history.append(amount)",
+        "body": {
+          "pl": "Zapisujemy tę samą dodatnią kwotę amount do historii zaakceptowanych zmian. Lista będzie potrzebna do sprawdzenia końcowego salda.",
+          "en": "Record that same positive amount in accepted-change history. This list is used to reconcile the final balance."
+        }
+      }
+    ]
+  },
+  "18.withdraw": {
+    "code": "with self.lock:\n            if self.balance >= amount:\n                self.balance -= amount\n                self.history.append(-amount)\n                event(\"balance\", \"Account\", f\"−{amount}\", value=self.balance)\n            else:\n                event(\"log\", \"Account\", f\"Declined: {amount}\")",
+    "body": {
+      "pl": "Warunek i odjęcie są wewnątrz tej samej blokady. else rejestruje odmowę, bez zmiany salda.",
+      "en": "The condition and subtraction share one lock. else records a decline without changing the balance."
+    },
+    "details": [
+      {
+        "code": "with self.lock:",
+        "body": {
+          "pl": "Zdobywamy blokadę konta przed sprawdzeniem środków. Chroni ona razem warunek i ewentualną wypłatę.",
+          "en": "Acquire the account lock before checking funds. It protects the condition and any resulting withdrawal together."
+        }
+      },
+      {
+        "code": "if self.balance >= amount:",
+        "body": {
+          "pl": "Sprawdzamy, czy saldo wystarcza na amount. Wcięte instrukcje wypłaty wykonają się wyłącznie przy prawdzie.",
+          "en": "Check whether balance covers amount. The indented withdrawal statements run only when this is true."
+        }
+      },
+      {
+        "code": "self.balance -= amount",
+        "body": {
+          "pl": "Odejmujemy amount od salda, nadal pod blokadą i dopiero po udanym sprawdzeniu warunku.",
+          "en": "Subtract amount from the balance, still under the lock and only after the condition passed."
+        }
+      },
+      {
+        "code": "self.history.append(-amount)",
+        "body": {
+          "pl": "Zapisujemy ujemną kwotę amount w historii, ponieważ wypłata faktycznie zmniejszyła balance. Odmowa nie trafia do tej listy.",
+          "en": "Record negative amount in history because the withdrawal actually reduced the balance. A decline is excluded from this list."
+        }
+      }
+    ]
+  },
+  "18.reconcile": {
+    "code": "metric(\"Reconciled balance\", 200 + sum(account.history))",
+    "body": {
+      "pl": "200 to saldo początkowe. sum(account.history) dodaje wyłącznie zaakceptowane wpłaty i wypłaty. metric pokazuje niezależnie wyliczone saldo kontrolne.",
+      "en": "200 is the opening balance. sum(account.history) adds accepted deposits and withdrawals only. metric displays this independently reconciled balance."
+    },
+    "details": []
+  },
+  "19.simulate": {
+    "code": "time.sleep(rng.uniform(0.5, 2.0))",
+    "body": {
+      "pl": "rng.uniform(0.5, 2.0) wybiera czas oczekiwania od 0,5 do 2 sekund. time.sleep usypia bieżący wątek na ten czas, symulując czekanie na API.",
+      "en": "rng.uniform(0.5, 2.0) selects a waiting time between 0.5 and 2 seconds. time.sleep pauses the current thread for that duration, simulating an API wait."
+    },
+    "details": []
+  },
+  "19.submit": {
+    "code": "futures = [\n                pool.submit(analyze_sentiment, task)\n                for task in enumerate(sentences, 1)\n            ]",
+    "body": {
+      "pl": "enumerate(sentences, 1) tworzy pary numer–zdanie. Dla każdej pary submit zleca analyze_sentiment i od razu zwraca Future. Lista futures zachowuje wszystkie te uchwyty.",
+      "en": "enumerate(sentences, 1) creates number–sentence pairs. For each pair submit schedules analyze_sentiment and immediately returns a Future. futures retains all those handles."
+    },
+    "details": []
+  },
+  "19.complete": {
+    "code": "for future in as_completed(futures):\n                result = future.result()\n                results.append(result)\n                event(\"log\", \"Response\", str(result))",
+    "body": {
+      "pl": "as_completed wybiera ukończone Future. result odbiera wynik lub wyjątek; append zachowuje odebrane dane.",
+      "en": "as_completed picks finished tasks. result retrieves the value or exception; append retains the received data."
+    },
+    "details": [
+      {
+        "code": "for future in as_completed(futures):",
+        "body": {
+          "pl": "as_completed udostępnia uchwyty Future w kolejności ukończenia. Pętla przypisuje kolejny gotowy uchwyt do future.",
+          "en": "as_completed yields Future handles in completion order. The loop assigns each ready handle to future."
+        }
+      },
+      {
+        "code": "result = future.result()",
+        "body": {
+          "pl": "Odbieramy wynik z gotowego Future i przypisujemy go do result. Jeżeli zadanie zgłosiło wyjątek, result zgłosi go tutaj.",
+          "en": "Retrieve the ready Future’s value and assign it to result. If the task raised an exception, result raises it here."
+        }
+      },
+      {
+        "code": "results.append(result)",
+        "body": {
+          "pl": "Dopisujemy odebraną parę zdanie–etykieta do results. Lista będzie miała kolejność odbierania, a nie pierwotną kolejność opinii.",
+          "en": "Append the received sentence–label pair to results. This list follows receipt order, not the original review order."
+        }
+      }
+    ]
+  },
+  "20.filter": {
+    "code": "return [[pixel * 1.1 for pixel in row] for row in image]",
+    "body": {
+      "pl": "Zagnieżdżone list comprehensions budują nowy image. Każdy piksel mnożymy przez 1.1; wejścia nie zmieniamy.",
+      "en": "Nested list comprehensions build a new image. Each pixel is multiplied by 1.1; the input is unchanged."
+    },
+    "details": []
+  },
+  "20.data": {
+    "code": "images = [\n        [[rng.random() for _ in range(side)] for _ in range(side)]\n        for _ in range(10)\n    ]",
+    "body": {
+      "pl": "Trzy poziomy list oznaczają: obrazy, wiersze i piksele. Losowanie wykonujemy przed pomiarem filtra.",
+      "en": "Three list levels mean images, rows and pixels. Random generation happens before filter timing."
+    },
+    "details": []
+  },
+  "20.pool": {
+    "code": "with mp.Pool(processes=2) as pool:\n            return pool.map(\n                apply_filter,\n                [(i, o, \"Processes\") for i, o in enumerate(images)],\n            )",
+    "body": {
+      "pl": "Pool(processes=2) tworzy pulę dwóch procesów. Dla każdego obrazu budujemy krotkę (number, image, etykieta), a map przekazuje ją do apply_filter. return zwraca listę przefiltrowanych obrazów.",
+      "en": "Pool(processes=2) creates a two-process pool. For each image we build a (number, image, label) tuple; map passes it to apply_filter. return returns the list of filtered images."
+    },
+    "details": [
+      {
+        "code": "with mp.Pool(processes=2) as pool:",
+        "body": {
+          "pl": "Tworzymy pulę dwóch procesów i zapisujemy jej uchwyt w pool. with obejmuje wywołanie map we wciętym bloku.",
+          "en": "Create a two-process pool and bind it as pool. with encloses the map call in its indented block."
+        }
+      },
+      {
+        "code": "return pool.map(\n                apply_filter,\n                [(i, o, \"Processes\") for i, o in enumerate(images)],\n            )",
+        "body": {
+          "pl": "enumerate numeruje obrazy, a lista buduje krotki (i, o, Processes). pool.map przekazuje je do apply_filter. return oddaje pełną listę otrzymanych obrazów.",
+          "en": "enumerate numbers the images and the list builds (i, o, Processes) tuples. pool.map passes them to apply_filter. return yields the full list of received images."
+        }
+      }
+    ]
+  }
+}
