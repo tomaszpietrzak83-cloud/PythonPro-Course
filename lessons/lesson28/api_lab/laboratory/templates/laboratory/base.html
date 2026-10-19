@@ -1,0 +1,9 @@
+{% load static %}
+<!doctype html>
+<html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}API Lab · Lekcja 28{% endblock %}</title>
+<link rel="stylesheet" href="{% static 'laboratory/lab.css' %}"></head>
+<body><div class="shell"><header><a class="brand" href="/">◈ API LAB <span>LEKCJA 28</span></a><nav aria-label="Dokumentacja"><a href="/api/schema/swagger-ui/" target="_blank" rel="noopener">Swagger UI ↗</a><a href="/api/schema/redoc/" target="_blank" rel="noopener">ReDoc ↗</a><a href="/api/schema/?format=json" target="_blank" rel="noopener">OpenAPI ↗</a></nav></header>
+{% block content %}{% endblock %}
+<footer>Django REST Framework + drf-spectacular · Laboratorium dokumentacji API</footer></div>
+<script src="{% static 'laboratory/lab.js' %}"></script></body></html>

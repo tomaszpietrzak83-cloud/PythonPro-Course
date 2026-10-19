@@ -1,0 +1,8 @@
+{% extends 'laboratory/base.html' %}
+{% block content %}<main>
+<p class="eyebrow">OD KODU LEKCJI DO DZIAŁAJĄCEGO API</p><h1>Odkryj, jak opisać API.</h1>
+<p class="lead">Osiem przykładów z lekcji 28. Przeczytaj objaśnienie, prześledź kod i sprawdź prawdziwą odpowiedź serwera.</p>
+<div class="note"><h2>Główny temat: jak kod zamienia się w dokumentację?</h2><p>Porównaj trzy działające wersje: sam kod → dopisany docstring → dopisany @extend_schema. Zobacz wygenerowaną instrukcję i Swagger UI w prezentacji, a następnie wykonaj GET, POST i DELETE, żeby sprawdzić ją w praktyce.</p><a class="primary" href="/examples/1/?section=documentation">Zobacz porównanie dokumentacji →</a></div>
+<div class="grid">{% for item in examples %}<a class="tile" href="{% url 'lesson' item.number %}"><span class="number">0{{ item.number }}</span><span class="arrow">{{ item.method }} ↗</span><h2>{{ item.title }}</h2><p>Rozdział {{ item.chapter }}</p></a>{% endfor %}</div>
+<div class="note"><strong>Jedna ścieżka nauki</strong><p>Wstęp → Zastosowania i demo → Krok po kroku → Cały kod → Pytania. Dostępny tryb slajdów oraz ciągły.</p><p>Produkty w przykładach korzystają ze wspólnej bazy tego laboratorium. Tworzenie i usuwanie zmieniają te dane.</p></div>
+</main>{% endblock %}
