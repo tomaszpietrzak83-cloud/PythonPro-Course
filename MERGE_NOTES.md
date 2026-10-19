@@ -4,7 +4,15 @@ Zmiany przygotowane 8 października 2026 mają umożliwić korzystanie z jednego
 
 ## Punkt wyjścia i zakres zmian
 
-Punkt wyjścia: gałąź `main`, commit `c20ab91380d3d45aaf324f42416af9a8989b0ebe`. Aktualnie wybrana gałąź to `shared-course-env`. Poprawki pozostają lokalne i nie zostały jeszcze zacommitowane ani wypchnięte.
+Punkt wyjścia: gałąź `main`, commit `c20ab91380d3d45aaf324f42416af9a8989b0ebe`. Aktualnie wybrana gałąź to `shared-course-env`. 19 października 2026 zmiany zapisano w osobnych commitach Conventional Commits: poprawki środowiska oraz laboratoria lekcji 28, 29 i 30. Status publikacji gałęzi należy sprawdzić w Git.
+
+## Powód osobnej gałęzi
+
+Gałąź `shared-course-env` zbiera zmiany wykonane na komputerze DELL, aby można je było przejrzeć i sprawdzić na drugim komputerze przed włączeniem do `main`. Na tym Windows występowała blokada biblioteki starego Pythona, a katalog kursu zawiera spacje. PostgreSQL znajduje się na drugim komputerze. Te różnice środowiska ujawniły problemy, których samo działanie aplikacji na drugim koncie nie wyklucza.
+
+Gałąź jest miejscem przeglądu i przyszłej integracji, nie docelową osobną wersją aplikacji dla jednego komputera. Zawiera kod, zależności i instrukcje odtworzenia środowiska. Nie należy commitować `.venv`, `.python-runtime`, haseł, plików `.env`, lokalnych baz ani dumpów PostgreSQL. Każdy komputer odtwarza własne `.venv` przez `setup_course.py` i zachowuje własną konfigurację połączeń.
+
+Przed scaleniem osoba rozwiązująca konflikty powinna potwierdzić poprawki na komputerze z dostępnym PostgreSQL, sprawdzić zgodność zależności i rozdzielić poprawki środowiska od nowych laboratoriów. Nie należy automatycznie wybierać całej wersji jednej strony konfliktu ani zmieniać PostgreSQL na SQLite tylko dlatego, że serwer nie działa lokalnie na DELL.
 
 Przed pracą w katalogu znajdowały się już nieśledzone pliki API Lab z lekcji 28 i projektu lekcji 29. Nie należy traktować wszystkich nieśledzonych plików jako nowych poprawek środowiska. Przejrzyj te projekty osobno przed dodaniem ich do commita. Lokalna zmiana w `lessons/lesson20/myproject/myproject/urls.py`, usuwająca komentarz początkowy, nie pochodzi z opisanej naprawy środowiska.
 
