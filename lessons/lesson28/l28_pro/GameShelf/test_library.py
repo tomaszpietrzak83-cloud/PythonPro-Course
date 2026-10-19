@@ -113,3 +113,63 @@ class OwnedActionTests(TestCase):
         response = client.post(self.url, {"csrfmiddlewaretoken": client.cookies["csrftoken"].value})
         self.assertEqual(response.status_code, 302)
         self.assertEqual(UserGame.objects.get().list_type, "owned")
+
+
+class WishlistActionTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = get_user_model().objects.create_user("wish_collector")
+        cls.other_user = get_user_model().objects.create_user("other_wish_collector")
+        cls.game = Game.objects.create(title="Future Worlds")
+
+    def setUp(self):
+        self.url = reverse("gameshelf:add_to_wishlist", args=[self.game.pk])
+
+    def test_anonymous_post_requires_login_without_writing(self):
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith(reverse("gameshelf:login")))
+        self.assertFalse(UserGame.objects.exists())
+
+    def test_authenticated_get_does_not_write(self):
+        self.client.force_login(self.user)
+        self.assertEqual(self.client.get(self.url).status_code, 405)
+        self.assertFalse(UserGame.objects.exists())
+
+    def test_repeated_posts_save_current_users_wishlist_and_preserve_other_user(self):
+        other = UserGame.objects.create(user=self.other_user, game=self.game, list_type="owned")
+        self.client.force_login(self.user)
+        for _ in range(2):
+            response = self.client.post(self.url, {"user": self.other_user.pk}, follow=True)
+            self.assertContains(response, "is now on your wishlist.")
+        entry = UserGame.objects.get(user=self.user, game=self.game)
+        other.refresh_from_db()
+        self.assertEqual(entry.list_type, "wishlist")
+        self.assertEqual(other.list_type, "owned")
+        self.assertEqual(UserGame.objects.count(), 2)
+
+    def test_owned_game_is_not_moved_to_wishlist(self):
+        entry = UserGame.objects.create(user=self.user, game=self.game, list_type="owned")
+        self.client.force_login(self.user)
+        response = self.client.post(self.url, follow=True)
+        entry.refresh_from_db()
+        self.assertEqual(entry.list_type, "owned")
+        self.assertEqual(UserGame.objects.count(), 1)
+        self.assertContains(response, "already owned")
+        self.assertNotContains(response, '>Add to wishlist</button>')
+
+    def test_missing_game_returns_404_without_writing(self):
+        self.client.force_login(self.user)
+        response = self.client.post(reverse("gameshelf:add_to_wishlist", args=[999999]))
+        self.assertEqual(response.status_code, 404)
+        self.assertFalse(UserGame.objects.exists())
+
+    def test_post_requires_csrf_token(self):
+        client = Client(enforce_csrf_checks=True)
+        client.force_login(self.user)
+        self.assertEqual(client.post(self.url).status_code, 403)
+        self.assertFalse(UserGame.objects.exists())
+        client.get(reverse("gameshelf:game_detail", args=[self.game.pk]))
+        response = client.post(self.url, {"csrfmiddlewaretoken": client.cookies["csrftoken"].value})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(UserGame.objects.get().list_type, "wishlist")

@@ -14,4 +14,5 @@ urlpatterns = [
     path("games/suggestions/", views.game_suggestions, name="game_suggestions"),
     path("games/<int:pk>/", views.game_detail, name="game_detail"),
     path("games/<int:pk>/owned/", views.add_to_owned, name="add_to_owned"),
+    path("games/<int:pk>/wishlist/", views.add_to_wishlist, name="add_to_wishlist"),
 ]

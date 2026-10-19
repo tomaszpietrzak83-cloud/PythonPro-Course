@@ -33,6 +33,12 @@
                         <button class="button" type="submit">Add to owned</button>
                     </form>
                 {% endif %}
+                {% if not library_entry %}
+                    <form method="post" action="{% url 'gameshelf:add_to_wishlist' game.pk %}">
+                        {% csrf_token %}
+                        <button class="button" type="submit">Add to wishlist</button>
+                    </form>
+                {% endif %}
             {% else %}
                 <p><a class="text-link" href="{% url 'gameshelf:login' %}?next={{ request.path|urlencode }}">Log in to save this game</a></p>
             {% endif %}

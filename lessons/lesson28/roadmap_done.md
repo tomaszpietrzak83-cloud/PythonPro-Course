@@ -202,6 +202,15 @@ Status: done.
 - All 41 tests pass, covering repeated requests, authentication, CSRF, 404s and user isolation.
 - Verified login with return to game details and adding a seeded game in the browser.
 
+## Version 0.2.3 - Add to Wishlist
+
+Status: done.
+
+- Added a login-protected, CSRF-protected POST action and wishlist button.
+- Repeated saves reuse the same entry and never change another user's collection.
+- Owned games stay owned: a wishlist request shows an explanation instead of moving them.
+- All 47 tests pass. Verified adding to wishlist and then moving to owned in the browser.
+
 ## Next Version
 
-Continue with: Version 0.2.3 - Add to Wishlist.
+Continue with: Version 0.2.4 - My Library.

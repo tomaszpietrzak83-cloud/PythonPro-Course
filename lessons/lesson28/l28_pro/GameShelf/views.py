@@ -85,3 +85,17 @@ def add_to_owned(request, pk):
     )
     messages.success(request, f"{game.title} is now in your owned games.")
     return redirect("gameshelf:game_detail", pk=game.pk)
+
+
+@login_required
+@require_POST
+def add_to_wishlist(request, pk):
+    game = get_object_or_404(Game, pk=pk)
+    entry, _ = UserGame.objects.get_or_create(
+        user=request.user, game=game, defaults={"list_type": UserGame.ListType.WISHLIST}
+    )
+    if entry.list_type == UserGame.ListType.OWNED:
+        messages.info(request, "This game is already owned. It stays in your owned games.")
+    else:
+        messages.success(request, f"{game.title} is now on your wishlist.")
+    return redirect("gameshelf:game_detail", pk=game.pk)
