@@ -1,0 +1,50 @@
+{% extends 'cache_demo/base.html' %}
+{% block content %}
+<nav class="task-nav mb-4" aria-label="Tasks">
+{% for item in tasks %}<a data-task-link="{{ item.number }}" class="{% if item.number == number %}active{% endif %}" href="http://127.0.0.1:{{ item.port }}/task/{{ item.number }}/">{{ item.number|stringformat:'02d' }}</a>{% endfor %}
+</nav>
+<section class="mb-4"><div class="eyebrow"><span data-i18n="task">TASK</span> {{ number|stringformat:'02d' }} · {{ backend }}</div><h1 id="task-title"></h1></section>
+<div class="row g-4">
+  <div class="col-lg-7">
+    <section class="panel mb-4">
+      <h2 data-i18n="demonstration">Interactive demonstration</h2>
+      <div class="row g-3 mb-3" id="lifetime-settings">
+        <div class="col-sm-6"><label class="form-label" for="scenario" data-i18n="scenario">Scenario</label><select id="scenario" class="form-select"><option value="quick" data-i18n="quick">Quick demo</option><option value="homework" data-i18n="homework">Homework settings</option></select></div>
+        <div class="col-sm-3"><label class="form-label" for="ttl" data-i18n="ttl">Cache time [s]</label><input id="ttl" type="number" min="1" max="3600" step="1" value="10" class="form-control"></div>
+        <div class="col-sm-3" id="detail-setting" hidden><label class="form-label" for="detail-ttl" data-i18n="detailTtl">Detail time [s]</label><input id="detail-ttl" type="number" min="1" max="3600" step="1" value="7" class="form-control"></div>
+      </div>
+      <p id="ttl-note" class="small"></p>
+      <!-- Button examples: https://getbootstrap.com/docs/5.3/components/buttons/ -->
+      <div class="d-flex flex-wrap gap-2 mb-3">
+        <button id="apply-settings" class="btn btn-outline-primary" data-i18n="apply">Apply & restart</button>
+        <button id="reset" class="btn btn-outline-primary" data-i18n="reset">Reset scenario</button>
+      </div>
+      <div class="guide mb-3"><span class="eyebrow" data-i18n="guided">GUIDED WALKTHROUGH</span><p id="step-description" class="mb-2"></p><div class="d-flex flex-wrap gap-2"><button id="previous-step" class="btn btn-outline-primary" data-i18n="previous">Previous step</button><button id="next-step" class="btn btn-primary" data-i18n="next">Next step</button></div></div>
+      <div id="manual-actions" class="d-flex flex-wrap gap-2 mb-3"></div>
+      <div id="error" class="alert alert-danger" role="alert" hidden></div>
+      <div id="feedback" class="small" role="status" aria-live="polite"></div>
+      <div class="metrics mt-3">
+        <div><span data-i18n="result">Result</span><strong id="result-status">—</strong></div>
+        <div><span data-i18n="duration">Server duration</span><strong id="duration">—</strong></div>
+        <div><span data-i18n="queries">SQL queries</span><strong id="queries">—</strong></div>
+      </div>
+      <div id="timers" class="mt-3"></div>
+      <h3 class="mt-4" data-i18n="response">Latest response</h3><pre id="response" class="response" aria-live="polite">{}</pre>
+      <div id="file-panel" hidden><h3 data-i18n="files">Actual cache files</h3><p id="cache-directory" class="small path"></p><pre id="cache-files" class="response"></pre></div>
+      <div id="redis-panel" class="mt-3" hidden><h3 data-i18n="redisDiagnostics">Redis diagnostics</h3><p class="small" data-i18n="redisMarker">Real PING and remaining TTL of a companion key with the response's lifetime.</p><pre id="redis-diagnostics" class="response"></pre></div>
+      {% if number == 2 %}<a class="btn btn-outline-primary mt-2" href="/api/products/?format=api" target="_blank" rel="noopener" data-i18n="openApi">Open original API / Debug Toolbar</a>{% endif %}
+    </section>
+    <section class="panel"><h2 data-i18n="history">Request history</h2><div class="table-responsive"><table class="table align-middle"><thead><tr><th>#</th><th data-i18n="action">Action</th><th data-i18n="result">Result</th><th>ms</th><th>SQL</th></tr></thead><tbody id="history"></tbody></table></div></section>
+  </div>
+  <div class="col-lg-5">
+    <section class="panel mb-4"><h2 data-i18n="original">Original homework</h2><pre id="requirements" class="requirements"></pre></section>
+    <!-- Bootstrap handles accordion opening; our modules handle demo requests.
+         Source: https://getbootstrap.com/docs/5.3/components/accordion/ -->
+    <div class="accordion mb-4" id="python-accordion"><div class="accordion-item"><h2 class="accordion-header"><button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#python-explanation" aria-expanded="true" aria-controls="python-explanation" data-i18n="python">What did Python do?</button></h2><div id="python-explanation" class="accordion-collapse collapse show"><div class="accordion-body"><p id="explanation"></p><p class="small" id="last-explanation"></p></div></div></div></div>
+    <section class="panel mb-4"><h2 data-i18n="practiceQuestions">Questions & answers</h2><p class="small" data-i18n="questionHint">Try answering first, then click the question to reveal its explanation.</p><div id="question-list"></div></section>
+    <section class="panel"><h2 data-i18n="yourCode">Your Python code</h2><p class="small" data-i18n="adapterNote">The demo adapter changes storage and lifetime. The core homework logic stays in the files below. The presentation engine is in cache_demo/engine.py.</p>
+    {% for source in sources %}<details class="source"><summary>{{ source.path }}</summary><pre><code>{{ source.code }}</code></pre></details>{% endfor %}
+    </section>
+  </div>
+</div>
+{% endblock %}

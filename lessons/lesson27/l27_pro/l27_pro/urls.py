@@ -8,6 +8,7 @@ router = DefaultRouter()
 router.register("clients", views.ClientViewSet, basename="client")
 
 urlpatterns = [
+    path("", include("cache_demo.urls")),
     path("admin/", admin.site.urls),
     path("api/products/", views.product_list, name="product_list"),
     path("api/task7/products-stats/", views.product_stats, name="product_stats"),

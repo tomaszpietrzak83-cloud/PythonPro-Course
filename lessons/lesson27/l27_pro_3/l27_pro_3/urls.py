@@ -8,6 +8,7 @@ router = DefaultRouter()
 router.register("products-viewset", views.ProductViewSet, basename="product")
 
 urlpatterns = [
+    path("", include("cache_demo.urls")),
     path("admin/", admin.site.urls),
     path("api/task10/", include("myapp3.urls")),
     path("api/task10/", include(router.urls)),

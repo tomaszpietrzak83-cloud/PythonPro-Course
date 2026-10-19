@@ -151,3 +151,10 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+# Load the shared presentation app from the lesson directory.
+# Each process still uses its own settings, database and default cache.
+import sys
+sys.path.insert(0, str(BASE_DIR.parent))
+from cache_demo.configuration import configure_demo
+configure_demo(globals())

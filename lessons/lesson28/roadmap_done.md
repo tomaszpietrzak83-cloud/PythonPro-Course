@@ -163,4 +163,6 @@ Status: done.
 
 ## Next Version
 
-Continue with: Version 0.2.0 - Authentication.
+Continue with: Version 0.1.4.1 - Faker Seeder: 100 FAKE Games.
+
+After that, continue with Version 0.2.0 - Authentication. The seeder is planned, not completed.

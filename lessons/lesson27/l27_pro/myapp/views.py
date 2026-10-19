@@ -35,9 +35,11 @@ def product_list(request):
     return Response({"count": len(data), "products": data})
 
 
-def get_complex_product_stats():
-    cache_key = "task7_complex_product_stats"
-    cached_stats = cache.get(cache_key)
+def get_complex_product_stats(cache_backend=None, timeout=7, cache_key="task7_complex_product_stats"):
+    # Optional arguments let the presentation reuse this calculation in its own cache.
+    # Regular homework requests still use the original backend, key and lifetime.
+    cache_backend = cache if cache_backend is None else cache_backend
+    cached_stats = cache_backend.get(cache_key)
 
     if cached_stats is not None:
         cached_stats["source"] = "cache"
@@ -58,9 +60,9 @@ def get_complex_product_stats():
         "most_expensive_product": products.order_by("-price").first().name
         if product_count
         else None,
-        "cache_time": 7,
+        "cache_time": timeout,
     }
-    cache.set(cache_key, stats, timeout=7)
+    cache_backend.set(cache_key, stats, timeout=timeout)
     return stats
 
 
@@ -88,22 +90,30 @@ class ClientViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.all().order_by("id")
     serializer_class = ClientSerializer
 
+    # These small extension points keep invalidation in the homework ViewSet.
+    # A demo subclass can change storage without duplicating perform_update.
+    detail_cache = cache
+    detail_timeout = CLIENT_DETAIL_CACHE_TIMEOUT
+
+    def detail_cache_key(self, client_id):
+        return get_client_detail_cache_key(client_id)
+
     @method_decorator(cache_page(60 * 10))
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
         client_id = kwargs.get(self.lookup_url_kwarg or self.lookup_field)
-        cache_key = get_client_detail_cache_key(client_id)
-        cached_data = cache.get(cache_key)
+        cache_key = self.detail_cache_key(client_id)
+        cached_data = self.detail_cache.get(cache_key)
 
         if cached_data is not None:
             return Response(cached_data)
 
         response = super().retrieve(request, *args, **kwargs)
-        cache.set(cache_key, dict(response.data), timeout=CLIENT_DETAIL_CACHE_TIMEOUT)
+        self.detail_cache.set(cache_key, dict(response.data), timeout=self.detail_timeout)
         return response
 
     def perform_update(self, serializer):
         client = serializer.save()
-        cache.delete(get_client_detail_cache_key(client.id))
+        self.detail_cache.delete(self.detail_cache_key(client.id))

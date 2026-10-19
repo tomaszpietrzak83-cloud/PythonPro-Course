@@ -37,7 +37,7 @@ Your application must include:
 - owned games and wishlist functionality for logged-in users,
 - a user dashboard or library page,
 - Django admin configuration,
-- test data generation using Faker or an external games API,
+- required test data generation using Faker: 100 imaginary games in the FAKE category (the existing Genre model) and with the FAKE tag,
 - a custom management command, for example:
 
 ```bash
@@ -45,7 +45,8 @@ python manage.py seed_db
 ```
 
 - basic unit tests,
-- image support for game covers,
+- image upload and display using `Game.cover` as an `ImageField`,
+- a required REST API documented with OpenAPI and Swagger UI,
 - a clean and usable interface.
 
 ## Suggested Models
@@ -167,15 +168,17 @@ Example admin ideas:
 
 ## Test Data
 
-You have two possible paths:
+Faker data generation is required. External game import is an optional later addition and does not replace the seeder.
 
-### Option A - Fake Data
+### Required - Fake Data
 
-Use Faker to create imaginary games, studios, genres, tags, and users.
+In version 0.1.4.1, use Faker and `python manage.py seed_db` to create 100 imaginary games by default, with fictional studios. Every seeded game belongs to a Genre named `FAKE` (slug `fake`) and has a Tag named `FAKE` (slug `fake`). Reuse the existing genre/tag filters to display this collection.
+
+Use stable seed identifiers and a reproducible Faker seed so repeat runs do not duplicate the 100 games or overwrite manually entered/imported games. Support `--games 100`. In version 0.5.0, extend the same command with test users and user library entries.
 
 This is easier and safer for the first working version.
 
-### Option B - External Game Data
+### Optional Later Addition - External Game Data
 
 Later in the project, you may import real PC game data from an external games API such as RAWG.
 
@@ -189,14 +192,17 @@ Do not start with the external API. First build a small local version that works
 
 ## Image Requirement
 
-The final project should support game covers.
+The final project must support uploaded game covers through `Game.cover` as a Django `ImageField`.
+
+Version 0.5.0.1 fulfills only this requirement: configure media storage, upload a local test image through admin, and display it in catalog/detail pages. Verify this before importing real covers. The database stores a file path; image files are stored in media storage.
 
 In early versions, you can use:
 
 - a default placeholder cover,
 - manually uploaded test covers,
-- Faker-generated image URLs,
-- later, covers imported from an external API.
+- later, real covers downloaded from an external API into media storage and assigned to `Game.cover`.
+
+Image URLs alone do not replace the required ImageField upload/display support.
 
 Do not block the whole project because of covers. A working catalog with placeholder images is better than a broken catalog waiting for perfect assets.
 
@@ -212,11 +218,11 @@ Near the end of the project, improve the frontend using a UI library or componen
 
 Use frontend helpers only after the backend works. The main goal is still Django, models, views, forms, authentication, and tests.
 
-## API Documentation Extension
+## Required API and Swagger Documentation
 
-Because Lesson 28 is about API documentation, add a small API part near the end of the project.
+Because Lesson 28 is about API documentation, include a small documented API as a required part of this project's final version.
 
-Suggested API endpoints:
+Base API in version 0.9.0:
 
 - list games,
 - show game details,
@@ -224,7 +230,9 @@ Suggested API endpoints:
 - list tags,
 - show current user's library.
 
-Use Django REST Framework and document the API with `drf-spectacular`.
+Use Django REST Framework. In version 0.9.0.1, configure `drf-spectacular`, an OpenAPI schema, Swagger UI, and ReDoc. OpenAPI describes the API contract; Swagger UI displays interactive documentation generated from that schema. Add explicit descriptions, query parameters, examples, authentication requirements, and actual error responses.
+
+In version 0.9.0.2, add authenticated POST, detail GET, PATCH, and DELETE endpoints for the current user's library. Reuse the HTML app's validation and ownership rules. Demonstrate in Swagger UI: find FAKE games, add one to wishlist, move it to owned, trigger a rating validation error, and remove it. Document the session authentication/CSRF flow needed for these requests.
 
 The API does not need to replace your HTML pages. Treat it as an additional feature.
 
@@ -240,9 +248,9 @@ Your final GameShelf project should have:
 - wishlist,
 - user library page,
 - admin panel,
-- seed command,
+- Faker seed command for 100 games with both FAKE genre and FAKE tag,
 - basic tests,
-- media/image support,
+- ImageField upload/display support verified before real cover import,
 - optional external game import,
 - optional improved frontend,
 - small documented API with Swagger UI.

@@ -1,0 +1,30 @@
+{% extends 'cache_demo/base.html' %}
+{% block content %}
+<section class="hero mb-4">
+  <div class="eyebrow" data-i18n="homeEyebrow">THREE BACKENDS · ONE LESSON</div>
+  <h1 data-i18n="homeTitle">See what your cache actually does.</h1>
+  <p class="lead" data-i18n="homeLead">Follow a request from your Python view to its cached response. Compare memory, files and Redis, one step at a time.</p>
+</section>
+<section class="panel mb-4">
+  <h2 data-i18n="howTitle">How this presentation works</h2>
+  <p data-i18n="howText">One launcher starts three independent Django processes on ports 8000, 8001 and 8002. Each keeps its own settings and database. All three load this shared presentation app. The links take you to the process that owns the task; Redis is an additional storage service on port 6379.</p>
+  <div class="row g-3" id="server-cards">
+    <div class="col-md-4"><div class="backend-card" data-port="8000" data-project="l27_pro"><strong>LocMemCache</strong><span>8000 · l27_pro</span><span class="health" data-i18n="checking">Checking…</span>{% if manager %}<span class="process-state"></span><button class="btn btn-primary process-toggle" disabled>runserver</button>{% endif %}</div></div>
+    <div class="col-md-4"><div class="backend-card" data-port="8001" data-project="l27_pro_2"><strong>FileBasedCache</strong><span>8001 · l27_pro_2</span><span class="health" data-i18n="checking">Checking…</span>{% if manager %}<span class="process-state"></span><button class="btn btn-primary process-toggle" disabled>runserver</button>{% endif %}</div></div>
+    <div class="col-md-4"><div class="backend-card" data-port="8002" data-project="l27_pro_3"><strong>Redis</strong><span>8002 · l27_pro_3</span><span class="health" data-i18n="checking">Checking…</span>{% if manager %}<span class="process-state"></span><button class="btn btn-primary process-toggle" disabled>runserver</button>{% endif %}</div></div>
+  </div>
+  <button id="refresh-health" class="btn btn-outline-primary mt-3" data-i18n="refreshStatus">Refresh status</button>
+  {% if manager %}<p class="small mt-3" data-i18n="controllerNote">Home remains available when all Django servers are stopped. Restarting a server clears its LocMem cache. Redis remains running independently.</p><div id="process-feedback" class="small" role="status" aria-live="polite"></div><div id="process-error" class="alert alert-danger mt-3" role="alert" hidden></div>{% endif %}
+  <p class="small mt-3 mb-0" data-i18n="isolation">Demo cache is separate from the homework cache. Reset starts a fresh task namespace. Quick settings use 7–10 seconds; Homework settings restore the original lifetimes. Editing updates only a dedicated demo client.</p>
+</section>
+<div class="d-flex justify-content-between align-items-center mb-3"><h2 data-i18n="chooseTask">Choose a task</h2><span class="muted">01 — 10</span></div>
+<nav class="row g-3" id="task-cards" aria-label="Tasks">
+{% for item in tasks %}
+  <div class="col-md-6 col-lg-4"><a class="task-card" data-task-link="{{ item.number }}" href="http://127.0.0.1:{{ item.port }}/task/{{ item.number }}/">
+    <span class="task-number">{{ item.number|stringformat:'02d' }}</span>
+    <h3 data-task-title="{{ item.number }}">{{ item.title.en }}</h3>
+    <span class="muted">{{ item.backend }} · :{{ item.port }}</span><span class="card-arrow">↗</span>
+  </a></div>
+{% endfor %}
+</nav>
+{% endblock %}

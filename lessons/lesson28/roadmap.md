@@ -2,6 +2,33 @@
 
 This roadmap is designed so that every version of the project is usable. Do not try to build everything at once. Finish one version, run the server, click through the app, and only then move to the next version.
 
+## Version 0.0.1 - Project Runs
+
+1. The Django project exists in `lessons/lesson28/l28_pro`.
+2. The `GameShelf` app is added to `INSTALLED_APPS`.
+3. Initial migrations were created and applied.
+4. The development server can start.
+5. Django system check passes.
+
+## Version 0.0.2 - First Real Page
+
+1. `GameShelf/urls.py` was created.
+2. A simple `home` view was added.
+3. `GameShelf.urls` is connected in the main project `urls.py`.
+4. A basic homepage template was created.
+5. The homepage includes a link to the admin page.
+
+## Version 0.0.3 - First Model
+
+1. The `Game` model was created with:
+   - `title`
+   - `description`
+   - `release_date`
+2. Model migrations were created and applied.
+3. `Game` was registered in Django admin.
+4. A superuser/admin creation helper exists as `create_admin.py`.
+5. Several games were added manually through the Django admin panel.
+
 ## Version 0.0.4 - Game Catalog
 
 Goal: show games from the database.
@@ -115,6 +142,26 @@ Tasks:
 Working result:
 
 - Users can search games by text.
+
+## Version 0.1.4.1 - Faker Seeder: 100 FAKE Games
+
+Goal: meet the Faker/Seeder and custom management command requirements, and provide a useful catalog for testing before authentication work.
+
+Tasks:
+
+1. Use Faker in a custom `seed_db` management command to generate 100 imaginary games by default, with fictional titles, descriptions, release dates, and studios.
+2. Create or reuse a `Genre` named `FAKE` with slug `fake`. This is the FAKE category in the existing catalog; no separate Category model is needed.
+3. Create or reuse a `Tag` named `FAKE` with slug `fake`.
+4. Assign both the FAKE genre and FAKE tag to every generated game. Show them in the existing catalog filters and game details.
+5. Mark generated games with a stable seed identifier so repeat runs reuse the same seed records. Running the default command twice must leave 100 seeded games, without changing manually entered or imported games.
+6. Support `--games 100` and a reproducible Faker seed. Report how many records were created or reused.
+7. Test the count, both FAKE assignments, repeat-run behavior, and preservation of existing games.
+
+Working result:
+
+- `python manage.py seed_db` generates 100 fictional games on the first run.
+- `/games/?genre=fake&tag=fake` displays the seeded collection.
+- Faker data generation and the management command requirements are fulfilled before importing real data.
 
 ## Version 0.2.0 - Authentication
 
@@ -257,13 +304,13 @@ Working result:
 
 ## Version 0.5.0 - Seed Command
 
-Goal: create test data automatically.
+Goal: extend the Faker command introduced in 0.1.4.1 with test users and personal libraries after those features exist.
 
 Tasks:
 
-1. Create management command folders.
-2. Add `seed_db`.
-3. Use Faker to create:
+1. Reuse the existing `seed_db` command and its stable seed identifiers.
+2. Keep the default collection of 100 fictional games, each in the FAKE genre and with the FAKE tag.
+3. Extend Faker data generation to include:
    - studios,
    - genres,
    - tags,
@@ -271,7 +318,7 @@ Tasks:
    - test users,
    - user library entries.
 4. Make the command safe to run more than once.
-5. Add command options such as `--games 50`.
+5. Retain `--games 100` and add explicit options for test users and library entries. Keep generated library entries consistent with the user/game uniqueness rule.
 
 Working result:
 
@@ -280,8 +327,26 @@ Working result:
 Suggested command:
 
 ```bash
-python manage.py seed_db --games 50
+python manage.py seed_db --games 100
 ```
+
+## Version 0.5.0.1 - ImageField Upload and Display
+
+Goal: fulfill only the image upload/display requirement before any real cover import.
+
+Tasks:
+
+1. Add optional `Game.cover` using Django `ImageField`, install Pillow if needed, and create/apply the migration.
+2. Configure `MEDIA_ROOT`, `MEDIA_URL`, and media serving for local development.
+3. Allow a test image to be uploaded through the existing Django admin game form.
+4. Display the uploaded image on catalog and detail pages. Handle an empty cover without accessing an unavailable file URL.
+5. Verify upload, file storage, and display with a locally prepared test image; test games without covers too.
+
+Working result:
+
+- An uploaded test image is saved as a media file and displayed by the app.
+- The database stores the image file path; the image itself lives in media storage.
+- This stage contains no real cover import, external image download, or additional catalog features.
 
 ## Version 0.6.0 - Cover Images
 
@@ -289,8 +354,8 @@ Goal: games have images.
 
 Tasks:
 
-1. Configure `MEDIA_URL` and `MEDIA_ROOT`.
-2. Add an image field for game covers.
+1. Reuse the media configuration completed in 0.5.0.1.
+2. Reuse `Game.cover` (`ImageField`); do not replace it with a URL-only field.
 3. Add a default placeholder cover.
 4. Show covers in catalog and detail pages.
 5. Make sure missing images do not break templates.
@@ -328,7 +393,7 @@ Tasks:
 3. Create an import management command.
 4. Start with one genre and a small limit.
 5. Save external ids to avoid duplicates.
-6. Save image URLs or download covers into media files.
+6. Download real covers into media storage and save their file paths through `Game.cover`, using the upload/display support verified in 0.5.0.1. A source image URL may also be stored as metadata.
 7. Handle API errors clearly.
 
 Working result:
@@ -343,21 +408,59 @@ python manage.py import_games --genre action --limit 10
 
 ## Version 0.9.0 - Small API
 
-Goal: connect the project with Lesson 28 API documentation.
+Goal: build the base REST API to be documented in the following stages.
 
 Tasks:
 
 1. Install and configure Django REST Framework.
 2. Create serializers for games, genres, tags, and user library entries.
-3. Create read-only endpoints for public catalog data.
-4. Create an endpoint for the logged-in user's library.
-5. Install and configure `drf-spectacular`.
-6. Add Swagger UI.
-7. Add descriptions to important endpoints.
+3. Create public GET endpoints: `/api/v1/games/`, `/api/v1/games/{id}/`, `/api/v1/genres/`, and `/api/v1/tags/`.
+4. Support game list query parameters `q`, `genre`, and `tag`, reusing the catalog's search/filter behavior.
+5. Create GET `/api/v1/library/` for the current user's entries only; require authentication and keep private notes out of public catalog responses.
+6. Test public access, filters, missing game IDs, authentication, and isolation between users' libraries.
 
 Working result:
 
-- The project has a small documented API.
+- The project has a working base API, ready for Swagger documentation.
+
+## Version 0.9.0.1 - OpenAPI and Swagger UI
+
+Goal: make automatic API documentation a required part of the final project.
+
+Tasks:
+
+1. Install/configure `drf-spectacular` and set it as the DRF schema generator.
+2. Add `/api/schema/` for the OpenAPI schema, `/api/schema/swagger-ui/` for Swagger UI, and `/api/schema/redoc/` for ReDoc.
+3. Generate the schema from the API views and serializers. Add summaries, descriptions, endpoint tags, and examples with `@extend_schema` where needed.
+4. Document `q`, `genre`, and `tag`, including examples filtering the Faker collection with `fake`.
+5. Describe authentication, request/response fields, and actual success/error responses. Document the configured session authentication and CSRF flow for testing authenticated requests.
+6. Validate the generated schema and test documentation routes. Use Swagger UI's Try it out to request the game list, filtered FAKE games, a game detail, and a missing game.
+
+Working result:
+
+- OpenAPI describes the API contract; Swagger UI presents it as interactive documentation.
+- Existing endpoints are visible and can be called from Swagger UI.
+- Documentation is required for version 1.0.0, and is updated whenever the API changes.
+
+## Version 0.9.0.2 - Additional API Endpoints and Swagger Demonstration
+
+Goal: demonstrate documented input, validation, authentication, and different HTTP methods using existing library functionality.
+
+Tasks:
+
+1. Add POST `/api/v1/library/` to add a game as owned or wishlist. Enforce the existing user/game uniqueness rule; document a duplicate request as a validation error (400).
+2. Add GET `/api/v1/library/{id}/` to retrieve one of the current user's entries.
+3. Add PATCH `/api/v1/library/{id}/` to update list type, play status, rating, or private note using the same business rules as the HTML app.
+4. Add DELETE `/api/v1/library/{id}/` to remove the current user's entry.
+5. Scope all entry lookups to the current user. Requests for another user's entry return 404; unauthenticated requests are rejected according to the configured authentication scheme.
+6. Extend the OpenAPI documentation with input/output serializers, examples, constraints, and actual response codes: 200, 201, 204, 400, 404, and the authentication/CSRF errors returned by the chosen configuration.
+7. Test valid operations, invalid ratings, duplicates, authentication, and user isolation.
+8. Demonstrate in Swagger UI: filter the 100 FAKE games, add one to wishlist (201), move it to owned (200), submit an invalid rating (400), and remove the entry (204).
+
+Working result:
+
+- Swagger UI demonstrates GET, POST, PATCH, and DELETE with documented examples and errors.
+- These endpoints reuse existing GameShelf features; Swagger UI documents and calls them, while their logic remains in the application.
 
 ## Version 0.10.0 - Frontend Polish
 
@@ -400,10 +503,11 @@ Tasks:
 6. Check that secret keys and API keys are not committed.
 7. Update README or project notes.
 8. Write a short summary of what the app does.
+9. Confirm that the 100-game FAKE seeder, ImageField upload/display, and documented API from 0.9.0.1 and 0.9.0.2 meet their acceptance criteria.
 
 Working result:
 
-- GameShelf is a complete Django project with a working catalog, user library, wishlist, admin, seed data, tests, and optional API documentation.
+- GameShelf is a complete Django project with a working catalog, user library, wishlist, admin, Faker seed data, ImageField media support, tests, and required API documentation with Swagger UI.
 
 ## Recommended Development Rule
 

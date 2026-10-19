@@ -1,5 +1,21 @@
 # Lesson Setup
 
+## Interactive Cache Lab
+
+Run all three projects and open the bilingual presentation with one command from the repository root:
+
+```powershell
+.\.venv\Scripts\python.exe lessons\lesson27\cache_demo\run_demo.py
+```
+
+Or open `cache_demo/start_app.py` in VS Code and press Play using the repository's
+`.venv` interpreter. The terminal prints the clickable control-panel link.
+
+Start Docker Desktop first for the Redis exercise. Open http://127.0.0.1:7999/.
+Home provides `runserver` / `Stop server` buttons for all three Django processes.
+See [cache_demo/README.md](cache_demo/README.md) for module explanations, scenarios,
+adjustable cache lifetimes, UI sources and testing instructions.
+
 This lesson uses the course-level virtual environment in the repository root.
 
 From the repository root, install the lesson dependencies with:

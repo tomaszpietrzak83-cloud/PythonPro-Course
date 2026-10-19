@@ -145,3 +145,10 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Load the shared presentation app from the lesson directory.
+# Each process still uses its own settings, database and default cache.
+import sys
+sys.path.insert(0, str(BASE_DIR.parent))
+from cache_demo.configuration import configure_demo
+configure_demo(globals())
