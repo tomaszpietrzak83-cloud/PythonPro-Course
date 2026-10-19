@@ -182,6 +182,16 @@ Status: done.
 - Registration creates a regular account and sends the user to login.
 - All 29 tests pass. Registered, logged in and logged out a local test account in the browser.
 
+## Version 0.2.1 - UserGame Model
+
+Status: done.
+
+- Added UserGame with user/game foreign keys and Owned/Wishlist choices.
+- Database constraints enforce one entry per user/game and reject invalid list types.
+- Registered entries in admin with search, filters and autocomplete.
+- Applied migration on PostgreSQL. All 35 tests pass, including uniqueness, user isolation,
+  cascade behavior and the admin list; the public homepage still loads in the browser.
+
 ## Next Version
 
-Continue with: Version 0.2.1 - UserGame Model.
+Continue with: Version 0.2.2 - Add to Owned.
