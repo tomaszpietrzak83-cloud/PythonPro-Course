@@ -1,0 +1,4 @@
+.runtime/
+media/
+log.txt
+__pycache__/
