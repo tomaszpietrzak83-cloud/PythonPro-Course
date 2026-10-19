@@ -1,4 +1,4 @@
-migrations = """
+migrations = r"""
 Tomek@Tomek MINGW64 ~/Documents/Developer/Lesson 19/mojprojekt (master)
 $ python manage.py makemigrations
 Migrations for 'announcements':

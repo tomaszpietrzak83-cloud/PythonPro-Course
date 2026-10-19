@@ -1,0 +1,2 @@
+# Wspolne zaleznosci calego kursu.
+-r ../../../requirements.txt

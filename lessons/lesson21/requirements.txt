@@ -1,1 +1,2 @@
-Django==5.2.17
+# Wspolne zaleznosci calego kursu.
+-r ../../requirements.txt

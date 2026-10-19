@@ -11,4 +11,7 @@ def average2(argsList):
 student1 = [2, 5, 6, 4, 3.5, 4.5, 1.5, 1, 2.5]
 
 print(average2(student1))
-average2([])
+try:
+    average2([])
+except AssertionError as error:
+    print(f"Expected validation error: {error}")

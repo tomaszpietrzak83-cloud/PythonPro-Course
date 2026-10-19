@@ -41,7 +41,7 @@ From the lesson folder, run:
 python run_before_checking_lesson.py
 ```
 
-The script creates a local `.venv` folder inside this lesson and installs the packages listed in `requirements.txt`. It does not use or modify virtual environments outside this lesson folder.
+The script prepares the shared `.venv` in the course root and installs the common course dependencies. Run activation commands from the course root.
 
 After setup, activate the environment:
 

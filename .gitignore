@@ -10,6 +10,8 @@ htmlcov/
 
 # Virtual environments
 .venv/
+.python312/
+.venv-uv-backup/
 venv/
 env/
 ENV/
@@ -31,3 +33,13 @@ my_acces_token.py
 *.sqlite3-journal
 django_cache/
 *.djcache
+
+# Local course runtime
+.python-runtime/
+.uv-cache/
+
+.audit-temp/
+
+audit-results.json
+startup-results.json
+celery-startup-results.json

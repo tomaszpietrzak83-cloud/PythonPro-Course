@@ -1,0 +1,52 @@
+# Wspolne zaleznosci lekcji; historyczne pliki lekcji maja sprzeczne wersje.
+openpyxl>=3.1,<4
+Flask>=3.1,<4
+Flask-SQLAlchemy>=3.1,<4
+Pygments>=2.19,<3
+SQLAlchemy>=2.0.49,<2.1
+alembic>=1.18,<2
+psycopg2-binary>=2.9,<3
+python-dotenv>=1.2,<2
+Pillow>=12,<13
+reportlab>=4,<5
+matplotlib>=3.10,<4
+numpy>=2,<3
+Django>=5.2.17,<5.3
+django-allauth>=65,<66
+Faker>=40,<41
+djangorestframework>=3.16,<3.17
+djangorestframework-simplejwt>=5.5,<6
+djoser>=2.3,<3
+django-debug-toolbar>=6,<8
+django-redis>=6,<8
+
+# Lekcje 21-24: dodatki Django.
+django-crispy-forms
+argon2-cffi
+django-admin-ai
+openai
+# Lekcje 28-29: OpenAPI i kolejki zadan.
+drf-spectacular[sidecar]>=0.28,<0.30
+celery[redis]>=5.4,<6
+requests>=2.32,<3
+beautifulsoup4>=4.12,<5
+flower>=2,<3
+# Lekcje 31-34: asyncio, REST i GraphQL.
+aiohttp
+aiofiles
+asyncpg
+aiomysql
+aiosqlite
+fastapi
+uvicorn[standard]
+pydantic>=2,<3
+strawberry-graphql[aiohttp]
+# Lekcje 35-38: AWS, monitoring i testy.
+boto3
+django-storages[s3]
+psutil
+pytest
+pytest-cov
+flake8
+gunicorn; sys_platform != "win32"
+pywin32; sys_platform == "win32"
