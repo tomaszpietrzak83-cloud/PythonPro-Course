@@ -78,8 +78,11 @@ with tempfile.TemporaryDirectory(prefix='course-audit-', dir=ROOT / '.audit-temp
         base=temp/original.relative_to(ROOT).parent
         source=(base/'manage.py').read_text(encoding='utf-8')
         settings=re.search(r'[\"\']([\w.]+\.settings)[\"\']',source).group(1)
-        (base/'audit_settings.py').write_text(f"from {settings} import *\nDATABASES = {{'default': {{'ENGINE': 'django.db.backends.sqlite3', 'NAME': ':memory:'}}}}\nALLOWED_HOSTS = ['localhost','127.0.0.1','testserver']\nCACHES = {{'default': {{'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'}}}}\n",encoding='utf-8')
-        r=command('Django tests '+str(original.relative_to(ROOT).parent),['manage.py','test','--noinput','--settings','audit_settings'],base,90)
+        (base/'audit_settings.py').write_text(f"from {settings} import *\nDATABASES = {{'default': {{'ENGINE': 'django.db.backends.sqlite3', 'NAME': ':memory:'}}}}\nALLOWED_HOSTS = ['localhost','127.0.0.1','testserver']\nCACHES = {{**globals().get('CACHES', {{}}), 'default': {{'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'}}}}\n",encoding='utf-8')
+        # The shared Cache Lab lives beside the projects, outside discovery's
+        # default directory. Include it explicitly while retaining project tests.
+        labels = ['.', 'cache_demo'] if (base.parent / 'cache_demo').is_dir() else []
+        r=command('Django tests '+str(original.relative_to(ROOT).parent),['manage.py','test',*labels,'--noinput','--settings','audit_settings'],base,90)
         results.append(r); print(r['test'],r['status'],flush=True)
     # CLI application imports, initialization and clean exit.
     for relative,exit_option in [('Raw SQL/app_raw_sql.py','7'),('SQL-Alchemy/app_orm.py','6'),('zadanie_08_raw_sql_klasy/app_raw_sql_class.py','7'),('zadanie_09_sqlalchemy_tagi/app_orm.py','7')]:
@@ -102,3 +105,4 @@ from collections import Counter
 print(dict(Counter(r['status'] for r in results)))
 for r in results:
     if r['status'] not in ('PASS','SKIP'): print(r['test'],r.get('output','')[-3500:])
+raise SystemExit(1 if any(r['status'] not in ('PASS', 'SKIP') for r in results) else 0)

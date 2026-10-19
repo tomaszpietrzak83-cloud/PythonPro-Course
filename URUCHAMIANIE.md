@@ -1,9 +1,24 @@
 # Uruchamianie całego kursu
 
 Wspólne środowisko znajduje się w `.venv` w głównym katalogu kursu.
-Na tym komputerze używa Python 3.12.14. Lokalna baza interpretera jest w
+Zestaw zależności jest przeznaczony dla Python 3.12. Lokalna baza interpretera jest w
 `.python-runtime`; oba katalogi są pomijane przez Git. Nie kopiuj `.venv`
 między komputerami. Na innym komputerze zainstaluj Python 3.12 i odtwórz środowisko.
+
+Przy integracji na drugim komputerze użyto Python 3.12.15. Poprzednie środowisko
+Python 3.14 zachowano lokalnie w `.venv-uv-backup` (katalog ignorowany przez Git).
+Nie używaj go do instalacji tego locka: przypięte `pydantic-core` i `jiter`
+nie mają gotowych pakietów dla Python 3.14 na Windows.
+`setup_course.py` korzysta z istniejącego `.venv`, więc samo uruchomienie go
+innym Pythonem nie zmieni wersji interpretera już utworzonego środowiska.
+
+Po scaleniu `shared-course-env` 19 października 2026 sprawdzono konfigurację
+14 projektów Django, start ich serwerów w kopiach testowych, API Lab i Celery Lab
+(rzeczywisty worker zwrócił `42`). Przeszło 19 testów GameShelf na osobnej bazie
+PostgreSQL. Połączenia lekcji 19 i GameShelf działają i nie mają zaległych migracji.
+Audyt obejmuje też współdzielone testy Cache Lab; test Redis pomija się przy braku
+tej usługi. Wszystkie 11 testów lekcji 30 przeszło przy ponownym uruchomieniu;
+pierwszy przebieg zgłosił pojedynczy timeout lokalnego crawlera w zadaniu 15.
 
 ## Przygotowanie
 
