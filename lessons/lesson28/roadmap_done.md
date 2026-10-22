@@ -243,6 +243,16 @@ Status: done.
 - PostgreSQL migration applied. All 64 tests pass, including privacy, CSRF and validation cases.
 - Verified saving Completed, 9/10 and a demo note through the browser.
 
+## Version 0.3.1 - Remove From Library
+
+Status: done.
+
+- Library cards link to a confirmation page; GET never deletes data.
+- A CSRF-protected POST removes only the current user's entry, then shows a success message.
+- Catalog games and other users' entries are preserved; cancellation keeps the entry and its notes.
+- All 71 tests pass, including deletion, user isolation, authentication and CSRF protection.
+- Verified the confirmation page and cancellation in the browser.
+
 ## Next Version
 
-Continue with: Version 0.3.1 - Remove From Library.
+Continue with: Version 0.4.0 - Better Admin.

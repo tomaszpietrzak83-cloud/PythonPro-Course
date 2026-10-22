@@ -133,3 +133,17 @@ def edit_library_entry(request, pk):
         messages.success(request, f"Your entry for {entry.game.title} has been updated.")
         return redirect("gameshelf:my_library")
     return render(request, "edit_library_entry.html", {"entry": entry, "form": form})
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def remove_library_entry(request, pk):
+    entry = get_object_or_404(
+        UserGame.objects.select_related("game"), pk=pk, user=request.user
+    )
+    if request.method == "POST":
+        title = entry.game.title
+        entry.delete()
+        messages.success(request, f"{title} has been removed from your library.")
+        return redirect("gameshelf:my_library")
+    return render(request, "remove_library_entry.html", {"entry": entry})

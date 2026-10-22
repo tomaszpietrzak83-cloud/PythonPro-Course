@@ -30,6 +30,7 @@
                         {% if entry.note %}<p class="private-note"><strong>Private note:</strong> {{ entry.note|truncatechars:160|linebreaksbr }}</p>{% endif %}
                         <a class="text-link" href="{% url 'gameshelf:edit_library_entry' entry.pk %}">Edit status, rating and note</a><br>
                         <a class="text-link" href="{% url 'gameshelf:game_detail' entry.game.pk %}">View details →</a>
+                        <br><a class="text-link" href="{% url 'gameshelf:remove_library_entry' entry.pk %}">Remove from library</a>
                     </div>
                 </article>
             {% endfor %}

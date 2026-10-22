@@ -142,6 +142,8 @@ nav {
 }
 .entry-form textarea { resize: vertical; }
 .private-note { overflow-wrap: anywhere; }
+.button-danger { background: #a52638; }
+.button-danger:hover { background: #801b2a; }
 .game-card .entry-meta { margin-top: 1rem; font-size: 0.9rem; }
 .auth-card .button { border: 0; font: inherit; cursor: pointer; }
 .auth-card .helptext { display: block; color: var(--muted); font-size: 0.85rem; }
