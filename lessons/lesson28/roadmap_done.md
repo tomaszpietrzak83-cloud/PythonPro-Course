@@ -264,6 +264,29 @@ Status: done.
 - All 77 tests pass, including aggregate counts, admin search/filtering and rating validation.
 - Verified the admin game search, saved-by count and library inline in the browser on a temporary admin.
 
+## Version 0.5.0 - Seed Command
+
+Status: done.
+
+- Extended `seed_db` with Faker-generated genres/tags, optional test users and personal libraries.
+- Kept the default 100 FAKE games and existing stable game seed identifiers.
+- Added `--users`, `--entries-per-user` and optional `--user-password-env` for NEW accounts.
+- Seeded users are regular accounts identified by a permission-free marker group and stable usernames.
+- Repeated runs preserve game edits, library notes/ratings and passwords; manual username collisions
+  roll back the entire command. Lower target counts never delete existing data.
+- Verified 100 existing games, 3 new users and 30 entries; the second run reused all of them.
+- Verified login and the generated library through the browser. Temporary UI-test accounts were cleaned up.
+- All 84 tests pass on PostgreSQL; system checks and migration consistency checks pass.
+- Added project README with setup, seeder options and learning notes.
+
+### Learning notes for versions 0.3.0-0.5.0
+
+- A ModelForm's `fields` list limits which values a submitted form can change.
+- Filter a private object by both its ID and `request.user` before editing or deleting it.
+- Field validators provide form errors; database constraints also protect direct ORM writes.
+- `annotate(Count(...))` calculates admin counters without a separate query for each row.
+- `transaction.atomic` rolls back the whole seeder when any validation or collision fails.
+
 ## Next Version
 
-Continue with: Version 0.5.0 - Seed Command.
+Continue with: Version 0.5.0.1 - ImageField Upload and Display.
