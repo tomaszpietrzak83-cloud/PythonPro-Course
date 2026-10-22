@@ -130,6 +130,19 @@ nav {
     border-radius: 0.5rem;
     font: inherit;
 }
+.entry-form { max-width: 680px; }
+.entry-form select, .entry-form textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--line);
+    border-radius: 0.5rem;
+    color: var(--ink);
+    background: var(--surface);
+    font: inherit;
+}
+.entry-form textarea { resize: vertical; }
+.private-note { overflow-wrap: anywhere; }
+.game-card .entry-meta { margin-top: 1rem; font-size: 0.9rem; }
 .auth-card .button { border: 0; font: inherit; cursor: pointer; }
 .auth-card .helptext { display: block; color: var(--muted); font-size: 0.85rem; }
 .auth-card ul { padding-left: 1.25rem; }

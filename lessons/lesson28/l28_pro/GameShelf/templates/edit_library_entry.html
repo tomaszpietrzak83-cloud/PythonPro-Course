@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Edit {{ entry.game.title }} | GameShelf{% endblock %}
+{% block content %}
+    <section class="auth-card entry-form">
+        <p class="eyebrow">Your personal game notes</p>
+        <h1>Edit library entry</h1>
+        <h2>{{ entry.game.title }}</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="button" type="submit">Save changes</button>
+        </form>
+        <p class="auth-switch"><a class="text-link" href="{% url 'gameshelf:my_library' %}">Cancel and return to library</a></p>
+    </section>
+{% endblock %}

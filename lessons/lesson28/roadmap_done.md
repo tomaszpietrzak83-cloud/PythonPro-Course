@@ -232,6 +232,17 @@ Status: done.
 - Django's `UserCreationForm` validates passwords and stores their hashes rather than plain text.
 - To regenerate the sample catalog safely: `python manage.py seed_db --games 100 --seed 28`.
 
+## Version 0.3.0 - Play Status, Rating, and Notes
+
+Status: done.
+
+- Added Not started/Playing/Completed/Abandoned statuses, optional ratings (1-10), and private notes.
+- A dedicated ModelForm edits only the current user's status, rating and note (up to 5000 characters).
+- Notes appear in the owner's library and edit form, never in the public catalog or game detail.
+- Database constraints enforce valid ratings/statuses; existing entries receive safe defaults.
+- PostgreSQL migration applied. All 64 tests pass, including privacy, CSRF and validation cases.
+- Verified saving Completed, 9/10 and a demo note through the browser.
+
 ## Next Version
 
-Continue with: Version 0.3.0 - Play Status, Rating, and Notes.
+Continue with: Version 0.3.1 - Remove From Library.

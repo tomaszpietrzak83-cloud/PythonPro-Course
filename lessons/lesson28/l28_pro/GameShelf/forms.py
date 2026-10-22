@@ -37,3 +37,18 @@ class LibraryFilterForm(forms.Form):
         choices=[("all", "All games"), *UserGame.ListType.choices],
         required=False,
     )
+
+
+class UserGameEditForm(forms.ModelForm):
+    class Meta:
+        model = UserGame
+        fields = ("play_status", "rating", "note")
+        labels = {"note": "Private note"}
+        help_texts = {
+            "rating": "Rate from 1 to 10, or leave blank.",
+            "note": "Only you can see this note in your library (up to 5000 characters).",
+        }
+        widgets = {
+            "rating": forms.NumberInput(attrs={"min": 1, "max": 10}),
+            "note": forms.Textarea(attrs={"rows": 5}),
+        }

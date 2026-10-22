@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
-from .forms import CatalogFilterForm, LibraryFilterForm
+from .forms import CatalogFilterForm, LibraryFilterForm, UserGameEditForm
 from .models import Game, UserGame
 
 
@@ -117,3 +117,19 @@ def my_library(request):
     return render(
         request, "my_library.html", {"entries": entries, "library_form": library_form}
     )
+
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def edit_library_entry(request, pk):
+    entry = get_object_or_404(
+        UserGame.objects.select_related("game"), pk=pk, user=request.user
+    )
+    form = UserGameEditForm(
+        request.POST if request.method == "POST" else None, instance=entry
+    )
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, f"Your entry for {entry.game.title} has been updated.")
+        return redirect("gameshelf:my_library")
+    return render(request, "edit_library_entry.html", {"entry": entry, "form": form})

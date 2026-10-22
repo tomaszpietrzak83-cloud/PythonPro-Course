@@ -29,6 +29,7 @@
                 {% if library_entry %}
                     <p>In your library: <strong>{{ library_entry.get_list_type_display }}</strong></p>
                     <a class="text-link" href="{% url 'gameshelf:my_library' %}">View my library</a>
+                    <a class="text-link" href="{% url 'gameshelf:edit_library_entry' library_entry.pk %}">Edit my entry</a>
                 {% endif %}
                 {% if library_entry.list_type != 'owned' %}
                     <form method="post" action="{% url 'gameshelf:add_to_owned' game.pk %}">

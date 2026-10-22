@@ -26,6 +26,9 @@
                         <h2><a href="{% url 'gameshelf:game_detail' entry.game.pk %}">{{ entry.game.title }}</a></h2>
                         {% if entry.game.studio %}<p>Studio: {{ entry.game.studio.name }}</p>{% endif %}
                         <p>{{ entry.game.description|truncatewords:24 }}</p>
+                        <p class="entry-meta">Status: {{ entry.get_play_status_display }} · Rating: {% if entry.rating %}{{ entry.rating }}/10{% else %}Not rated{% endif %}</p>
+                        {% if entry.note %}<p class="private-note"><strong>Private note:</strong> {{ entry.note|truncatechars:160|linebreaksbr }}</p>{% endif %}
+                        <a class="text-link" href="{% url 'gameshelf:edit_library_entry' entry.pk %}">Edit status, rating and note</a><br>
                         <a class="text-link" href="{% url 'gameshelf:game_detail' entry.game.pk %}">View details →</a>
                     </div>
                 </article>
