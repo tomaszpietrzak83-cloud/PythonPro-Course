@@ -1,0 +1,510 @@
+# Zadanie 17: Paginacja i stabilna kolejność
+
+page i limit określają okno danych. offset liczy pominięte rekordy; order_by stabilizuje kolejność.
+
+## Przebieg
+
+Start: blok `__main__` → `launch` → `asyncio.run(main())` → przygotowanie aplikacji → pokaz HTTP → router → handler → odpowiedź. Definicje funkcji i modeli są przygotowane przy ładowaniu modułu; ich ciała nie wykonują się wtedy.
+
+Po dodaniu Notebook i Pen strona 2 z limitem 1 zwraca Pen. Strona 0 daje 400.
+
+## Pełny kod
+
+```python
+import asyncio
+from aiohttp import web
+from lab_support import event, launch
+from api_support import demo
+
+from sqlalchemy import Integer, String, select
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from api_support import SESSION, database, object_json, product_fields, positive_id
+
+class Base(DeclarativeBase):
+    pass
+
+class Product(Base):
+    __tablename__ = "products"
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(String(100))
+    price: Mapped[int] = mapped_column(Integer)
+
+    def to_dict(self):
+        return {"id": self.id, "name": self.name, "price": self.price}
+
+async def create_product(request):
+    data = product_fields(await object_json(request))
+    async with request.app[SESSION]() as session:
+        async with session.begin():
+            product = Product(name=data["name"], price=data["price"])
+            session.add(product)
+            await session.flush()
+            result = product.to_dict()
+        event("log", "transaction", "COMMIT: product saved")
+    return web.json_response(result, status=201)
+
+async def list_products(request):
+    async with request.app[SESSION]() as session:
+        page = positive_id(request.query.get("page", "1"))
+        limit = positive_id(request.query.get("limit", "10"))
+        if limit > 100:
+            raise web.HTTPBadRequest(text="limit must not exceed 100")
+        offset = (page - 1) * limit
+        statement = select(Product).order_by(Product.id).offset(offset).limit(limit)
+        result = await session.execute(statement)
+        products = result.scalars().all()
+        return web.json_response([product.to_dict() for product in products])
+
+async def main():
+    async with database(Base) as factory:
+        app = web.Application()
+        app[SESSION] = factory
+        app.router.add_post("/products", create_product)
+        app.router.add_get("/products", list_products)
+        await demo(app, [
+            ('POST', '/products', {'name': 'Notebook', 'price': 1299}, 201),
+            ('GET', '/products', None, 200),
+            ('POST', '/products', {'name': 'Pen', 'price': 250}, 201),
+            ('GET', '/products?page=2&limit=1', None, 200),
+            ('GET', '/products?page=0', None, 400),
+        ])
+
+if __name__ == "__main__":
+    launch(lambda options: asyncio.run(main()))
+```
+
+## Linijka po linijce
+
+### L1
+
+```python
+import asyncio
+```
+
+Import z asyncio udostępnia narzędzia związane z pętlą zdarzeń, korutynami, sleep i gather. Import nie uruchamia main ani nie wysyła żądania.
+
+### L2
+
+```python
+from aiohttp import web
+```
+
+Import z aiohttp udostępnia narzędzia związane z asynchronicznym HTTP: web buduje serwer, ClientSession wysyła żądania. Import nie uruchamia main ani nie wysyła żądania.
+
+### L3
+
+```python
+from lab_support import event, launch
+```
+
+Import z lab_support udostępnia narzędzia związane z zdarzeniami i pomiarem czasu pokazu, niezależnymi od logiki API. Import nie uruchamia main ani nie wysyła żądania.
+
+### L4
+
+```python
+from api_support import demo
+```
+
+Import z api_support udostępnia narzędzia związane z lokalnym serwerem testowym, walidacją i izolowaną bazą; pełny kod jest w osobnym pliku. Import nie uruchamia main ani nie wysyła żądania.
+
+### L6
+
+```python
+from sqlalchemy import Integer, String, select
+```
+
+Import z sqlalchemy udostępnia narzędzia związane z typami kolumn i budowaniem zapytań SQL. Import nie uruchamia main ani nie wysyła żądania.
+
+### L7
+
+```python
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+```
+
+Import z sqlalchemy.orm udostępnia narzędzia związane z bazą modeli, adnotacjami Mapped i definicjami kolumn mapped_column. Import nie uruchamia main ani nie wysyła żądania.
+
+### L8
+
+```python
+from api_support import SESSION, database, object_json, product_fields, positive_id
+```
+
+Import z api_support udostępnia narzędzia związane z lokalnym serwerem testowym, walidacją i izolowaną bazą; pełny kod jest w osobnym pliku. Import nie uruchamia main ani nie wysyła żądania.
+
+### L10
+
+```python
+class Base(DeclarativeBase):
+```
+
+Definiujemy klasę Base. Dziedziczenie po DeclarativeBase tworzy rejestr modeli i metadata. To nie tabela biznesowa.
+
+### L11
+
+```python
+    pass
+```
+
+Pusta instrukcja w ciele Base. Nie potrzebujemy dodatkowych metod; zachowanie dostajemy przez dziedziczenie.
+
+### L13
+
+```python
+class Product(Base):
+```
+
+Definiujemy klasę Product. Dziedziczy po Base, więc SQLAlchemy zarejestruje jej tabelę. Sama definicja klasy jeszcze nie tworzy tabeli w PostgreSQL.
+
+### L14
+
+```python
+    __tablename__ = "products"
+```
+
+Określamy nazwę tabeli SQL jako "products". To nazwa w bazie, która może różnić się od nazwy klasy Pythona.
+
+### L15
+
+```python
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+```
+
+Pole id: Mapped opisuje typ atrybutu ORM, mapped_column definiuje kolumnę SQL. Klucz główny jednoznacznie identyfikuje rekord; PostgreSQL wygeneruje ID podczas INSERT.
+
+### L16
+
+```python
+    name: Mapped[str] = mapped_column(String(100))
+```
+
+Pole name: Mapped opisuje typ atrybutu ORM, mapped_column definiuje kolumnę SQL. String(100) ogranicza tekst do 100 znaków.
+
+### L17
+
+```python
+    price: Mapped[int] = mapped_column(Integer)
+```
+
+Pole price: Mapped opisuje typ atrybutu ORM, mapped_column definiuje kolumnę SQL. Integer przechowuje liczbę całkowitą; ceny i salda wyrażamy w groszach, żeby uniknąć błędów float.
+
+### L19
+
+```python
+    def to_dict(self):
+```
+
+Zwykła metoda modelu, bez async: zamieni już dostępne atrybuty self na słownik. Nie wykonuje zapytania SQL.
+
+### L20
+
+```python
+        return {"id": self.id, "name": self.name, "price": self.price}
+```
+
+self oznacza bieżący produkt. Tworzymy słownik z trzema wartościami, które można zapisać jako JSON. return oddaje go wywołującej funkcji i kończy metodę.
+
+### L22
+
+```python
+async def create_product(request):
+```
+
+Handler POST odbierze JSON, zwaliduje go, zapisze produkt w transakcji i zwróci JSON ze statusem 201.
+
+### L23
+
+```python
+    data = product_fields(await object_json(request))
+```
+
+Najpierw await object_json pobiera słownik z żądania. Potem product_fields sprawdza wymagane name i price: nazwę 1–100 znaków oraz nieujemną cenę w groszach typu int. Dopiero poprawny słownik trafia do data.
+
+### L24
+
+```python
+    async with request.app[SESSION]() as session:
+```
+
+request.app to aplikacja, która odebrała żądanie. [SESSION] pobiera fabrykę; () tworzy nową sesję. async with dopilnuje jej zamknięcia i zwrotu połączenia. Samo wejście nie oznacza zapisu danych.
+
+### L25
+
+```python
+        async with session.begin():
+```
+
+Rozpoczynamy zakres transakcji. Prawidłowe wyjście zatwierdzi zmiany przez COMMIT; wyjątek opuszczający blok uruchomi ROLLBACK. Wcięcie wskazuje, które instrukcje należą do tej transakcji.
+
+### L26
+
+```python
+            product = Product(name=data["name"], price=data["price"])
+```
+
+Tworzymy obiekt ORM z wartości ze słownika JSON, np. Notebook i 1299 groszy. To na razie obiekt Pythona, bez rekordu w bazie.
+
+### L27
+
+```python
+            session.add(product)
+```
+
+Dołączamy obiekt product do sesji. To zwykła metoda bez await: rejestruje plan zapisu w pamięci. INSERT zostanie wykonany podczas flush lub zatwierdzania.
+
+### L28
+
+```python
+            await session.flush()
+```
+
+flush wysyła oczekujące INSERT/UPDATE do PostgreSQL i czeka na odpowiedź. Nowy obiekt otrzymuje ID. To jeszcze nie COMMIT: późniejszy wyjątek nadal może wycofać tę zmianę.
+
+### L29
+
+```python
+            result = product.to_dict()
+```
+
+Metoda to_dict kopiuje id, name i price do zwykłego słownika result. Po flush ID już istnieje. Słownik nie zależy od otwartej sesji.
+
+### L30
+
+```python
+        event("log", "transaction", "COMMIT: product saved")
+```
+
+Rejestrujemy w dzienniku zakończenie transakcji. Wcięcie jest już poza session.begin, dlatego COMMIT nastąpił przed tym komunikatem. To obserwacja, a nie instrukcja wykonująca commit.
+
+### L31
+
+```python
+    return web.json_response(result, status=201)
+```
+
+Zwracamy odpowiedź JSON z wyrażenia result, status=201. json_response koduje wartości Pythona i ustawia Content-Type: application/json. Domyślny status to 200; status=201 oznacza utworzenie, a 400 błędne wejście. return kończy handler i oddaje odpowiedź aiohttp.
+
+### L33
+
+```python
+async def list_products(request):
+```
+
+Handler GET pobierze produkty. request daje dostęp do fabryki sesji i parametrów query. Wyniki przekształcimy na listę JSON.
+
+### L34
+
+```python
+    async with request.app[SESSION]() as session:
+```
+
+request.app to aplikacja, która odebrała żądanie. [SESSION] pobiera fabrykę; () tworzy nową sesję. async with dopilnuje jej zamknięcia i zwrotu połączenia. Samo wejście nie oznacza zapisu danych.
+
+### L35
+
+```python
+        page = positive_id(request.query.get("page", "1"))
+```
+
+Odczytujemy page z query jako tekst; przy braku używamy 1. positive_id zamienia go na dodatni int. Zero, liczby ujemne i nieliczbowe wartości dają 400.
+
+### L36
+
+```python
+        limit = positive_id(request.query.get("limit", "10"))
+```
+
+Odczytujemy limit z query jako tekst; przy braku używamy 10. positive_id zamienia go na dodatni int. Zero, liczby ujemne i nieliczbowe wartości dają 400.
+
+### L37
+
+```python
+        if limit > 100:
+```
+
+Ograniczamy wielkość jednej strony do 100, aby klient nie pobierał nieograniczonej listy.
+
+### L38
+
+```python
+            raise web.HTTPBadRequest(text="limit must not exceed 100")
+```
+
+Przerywamy handler wyjątkiem HTTPBadRequest. aiohttp zamieni go na odpowiedź HTTP 400 z podanym tekstem. Jeśli wyjątek wychodzi z session.begin, zmiany tej transakcji zostaną wycofane. Dalsze linie handlera nie wykonają się.
+
+### L39
+
+```python
+        offset = (page - 1) * limit
+```
+
+Obliczamy liczbę pomijanych rekordów. Dla page=2 i limit=1 offset wynosi 1. Strona pierwsza pomija 0; numerujemy strony od 1.
+
+### L40
+
+```python
+        statement = select(Product).order_by(Product.id).offset(offset).limit(limit)
+```
+
+Budujemy SELECT ze stałą kolejnością ID, pominięciem offset rekordów i maksymalnie limit wynikami. Dla strony 2, limitu 1 otrzymamy drugi produkt. Nadal nie wykonujemy I/O.
+
+### L41
+
+```python
+        result = await session.execute(statement)
+```
+
+Dopiero execute wysyła przygotowane statement do bazy. await odbiera wynik. result opakowuje wiersze; nie jest jeszcze listą słowników JSON.
+
+### L42
+
+```python
+        products = result.scalars().all()
+```
+
+Dla select(Product) scalars wyciąga obiekt Product z każdego wiersza, a all zbiera obiekty do listy. Wynik jest już pobrany, więc tutaj nie ma await.
+
+### L43
+
+```python
+        return web.json_response([product.to_dict() for product in products])
+```
+
+Zwracamy odpowiedź JSON z wyrażenia [product.to_dict() for product in products]. json_response koduje wartości Pythona i ustawia Content-Type: application/json. Domyślny status to 200; status=201 oznacza utworzenie, a 400 błędne wejście. return kończy handler i oddaje odpowiedź aiohttp.
+
+### L45
+
+```python
+async def main():
+```
+
+Czytaj przebieg: __main__ → launch → asyncio.run(main()) → przygotowanie aplikacji i tras → demo → klient HTTP → router → handler → odpowiedź → dziennik klienta. W zadaniach z bazą database(Base) przygotowuje fabrykę; handler tworzy własną sesję. Definicja handlera pojawia się wcześniej w pliku, ale jego ciało rusza dopiero po żądaniu. W zadaniu 18 main sam wysyła dwa żądania, aby pokazać ich nakładanie.
+
+### L45
+
+```python
+async def main():
+```
+
+Główna korutyna przygotowuje dane i uruchamia pokaz. Definicja nie wykonuje ciała; wykonanie zacznie się przez asyncio.run(main()).
+
+### L46
+
+```python
+    async with database(Base) as factory:
+```
+
+Wchodzimy do pomocnika database z api_support.py. Tworzy osobny schemat w bazie lesson32, tabele z Base.metadata i fabrykę AsyncSession. Przy wyjściu usuwa tylko schemat tego pokazu i zamyka silniki. To przygotowanie demonstracji, a nie kod handlera.
+
+### L47
+
+```python
+        app = web.Application()
+```
+
+Tworzymy aplikację aiohttp. Przechowa router i stan; ta linia jeszcze nie otwiera portu ani nie obsługuje żądania.
+
+### L48
+
+```python
+        app[SESSION] = factory
+```
+
+Pod kluczem SESSION zapisujemy fabrykę sesji, nie jedną wspólną sesję. Każdy handler utworzy własną AsyncSession, więc równoległe żądania nie dzielą transakcji.
+
+### L49
+
+```python
+        app.router.add_post("/products", create_product)
+```
+
+Rejestrujemy POST /products → create_product. Przekazujemy funkcję bez (), więc nie wywołujemy jej teraz. aiohttp zrobi to po dopasowaniu metody i ścieżki żądania.
+
+### L50
+
+```python
+        app.router.add_get("/products", list_products)
+```
+
+Rejestrujemy GET /products → list_products. Przekazujemy funkcję bez (), więc nie wywołujemy jej teraz. aiohttp zrobi to po dopasowaniu metody i ścieżki żądania.
+
+### L51
+
+```python
+        await demo(app, [
+```
+
+Uruchamiamy pomocnika pokazu: startuje prawdziwy serwer na wolnym porcie, klient wysyła wymienione żądania po kolei i porównuje statusy z oczekiwaniami. Każda krotka to (metoda, ścieżka, JSON, oczekiwany status). Dziennik pokazuje również body. Po pokazie serwer jest zamykany.
+
+### L52
+
+```python
+            ('POST', '/products', {'name': 'Notebook', 'price': 1299}, 201),
+```
+
+Przypadek pokazu: POST /products. Body: {'name': 'Notebook', 'price': 1299}; None oznacza brak danych. Oczekujemy statusu 201. Pomocnik wyśle to żądanie po zakończeniu poprzedniego i zapisze body odpowiedzi. Porównaj wartości z wcześniejszym stanem bazy.
+
+### L53
+
+```python
+            ('GET', '/products', None, 200),
+```
+
+Przypadek pokazu: GET /products. Body: None; None oznacza brak danych. Oczekujemy statusu 200. Pomocnik wyśle to żądanie po zakończeniu poprzedniego i zapisze body odpowiedzi. Porównaj wartości z wcześniejszym stanem bazy.
+
+### L54
+
+```python
+            ('POST', '/products', {'name': 'Pen', 'price': 250}, 201),
+```
+
+Przypadek pokazu: POST /products. Body: {'name': 'Pen', 'price': 250}; None oznacza brak danych. Oczekujemy statusu 201. Pomocnik wyśle to żądanie po zakończeniu poprzedniego i zapisze body odpowiedzi. Porównaj wartości z wcześniejszym stanem bazy.
+
+### L55
+
+```python
+            ('GET', '/products?page=2&limit=1', None, 200),
+```
+
+Przypadek pokazu: GET /products?page=2&limit=1. Body: None; None oznacza brak danych. Oczekujemy statusu 200. Pomocnik wyśle to żądanie po zakończeniu poprzedniego i zapisze body odpowiedzi. Porównaj wartości z wcześniejszym stanem bazy.
+
+### L56
+
+```python
+            ('GET', '/products?page=0', None, 400),
+```
+
+Przypadek pokazu: GET /products?page=0. Body: None; None oznacza brak danych. Oczekujemy statusu 400. Pomocnik wyśle to żądanie po zakończeniu poprzedniego i zapisze body odpowiedzi. Porównaj wartości z wcześniejszym stanem bazy.
+
+### L57
+
+```python
+        ])
+```
+
+Zamykamy listę przypadków ] i wywołanie demo ). To kontynuacja poprzedniej instrukcji, a nie osobne działanie. await zaczeka na cały pokaz.
+
+### L59
+
+```python
+if __name__ == "__main__":
+```
+
+Ten warunek jest prawdziwy przy uruchomieniu pliku jako skryptu. Import pliku nie uruchomi pokazu. Stąd przechodzimy do launch, asyncio.run i main.
+
+### L60
+
+```python
+    launch(lambda options: asyncio.run(main()))
+```
+
+launch dodaje zdarzenia START/END i pomiar czasu. lambda jest funkcją przekazaną do launch; options to dane wariantu, tutaj nieużywane. main() tworzy korutynę, a asyncio.run uruchamia ją w nowej pętli i zamyka pętlę po zakończeniu.
+
+## Sprawdź rozumienie
+
+Ile wynosi offset dla page=3 i limit=10?
+
+<details><summary>Odpowiedź</summary>
+
+(3 - 1) × 10 = 20; pomijamy pierwszych 20 rekordów.
+
+</details>
