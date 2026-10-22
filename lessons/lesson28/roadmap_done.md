@@ -253,6 +253,17 @@ Status: done.
 - All 71 tests pass, including deletion, user isolation, authentication and CSRF protection.
 - Verified the confirmation page and cancellation in the browser.
 
+## Version 0.4.0 - Better Admin
+
+Status: done.
+
+- Added searchable, ordered admin lists for all models with useful filters and autocomplete.
+- Studio/genre/tag lists show annotated game counts; games show how many users saved them.
+- Game forms include editable library entries; user game lists support inline progress/rating edits.
+- Read-only seed identifiers help distinguish generated games; private notes stay out of inline lists.
+- All 77 tests pass, including aggregate counts, admin search/filtering and rating validation.
+- Verified the admin game search, saved-by count and library inline in the browser on a temporary admin.
+
 ## Next Version
 
-Continue with: Version 0.4.0 - Better Admin.
+Continue with: Version 0.5.0 - Seed Command.
