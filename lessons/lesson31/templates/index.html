@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101013">
+  <title>Asyncio Studio · Lekcja 31</title>
+  <link rel="stylesheet" href="/static/studio.css?v={{ version }}">
+  <script src="/static/studio.js?v={{ version }}" defer></script>
+  <link rel="stylesheet" href="/static/theme.css?v={{ version }}">
+</head>
+<body>
+  <div class="ambient"></div>
+  <header class="topbar">
+    <a href="#" class="brand" aria-label="Lista zadań"><span class="mark">↻</span><span>ASYNCIO <b>STUDIO</b><small>PYTHON PRO COURSE / 31</small></span></a>
+    <div class="preferences">
+      <div class="segmented"><button data-lang="pl">PL</button><button data-lang="en">ENG</button></div>
+      <button id="mode" class="quiet"></button>
+      <button id="font" class="quiet" title="Rozmiar tekstu / text size">A+</button>
+      <button id="present" class="quiet" title="Pełny ekran / fullscreen">⛶</button>
+    </div>
+  </header>
+  <button id="rail" aria-label="Lista zadań / task list">☰</button>
+  <aside id="drawer" hidden><div class="drawer-heading"><strong id="drawer-title"></strong><button id="close-drawer">×</button></div><nav id="task-list"></nav></aside>
+  <main id="main"><p class="loading">Ładowanie lekcji… / Loading lesson…</p></main>
+  <div id="toast" role="status" hidden></div>
+  <footer class="site-footer"><span>20 eksperymentów · asyncio / aiohttp / aiofiles</span><a href="/api/resources" id="resources-link">Zasoby / Resources ↗</a></footer>
+  <dialog id="resource-dialog"><div class="drawer-heading"><h2>Zasoby / Resources</h2><button id="close-resources">×</button></div><div id="resources-body"></div></dialog>
+</body>
+</html>

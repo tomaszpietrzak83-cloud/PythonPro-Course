@@ -1,0 +1,611 @@
+[
+  {
+    "number": 1,
+    "title": "Pierwsza korutyna|First coroutine",
+    "intro": "Korutyna to funkcja opisana przez async def. Jej wywołanie tworzy obiekt z pracą do wykonania. Dopiero pętla zdarzeń wykonuje tę pracę.|An async def function creates a coroutine object when called. An event loop executes that work.",
+    "watch": "Przewidź: czy tekst pojawi się przed asyncio.run()? Uruchom i znajdź komunikat oraz czas całego programu.|Predict whether the greeting appears before asyncio.run(). Find the message and total duration.",
+    "takeaway": "Wywołanie main() przekazuje obiekt korutyny do asyncio.run(). Komunikat pochodzi z wnętrza uruchomionej korutyny.|main() supplies a coroutine object to asyncio.run(). The greeting comes from its executed body.",
+    "caveat": "Nie wywołuj asyncio.run() wewnątrz już działającej pętli zdarzeń tego samego wątku.|Do not call asyncio.run() inside an already running event loop in the same thread.",
+    "question": "Co zwraca main() zanim ruszy pętla zdarzeń?|What does main() return before the event loop starts?",
+    "answer": "Obiekt korutyny, a nie wynik jej wykonania. Jego kod jeszcze się nie wykonał.|A coroutine object, not its execution result. Its body has not run yet.",
+    "adaptation": "Dane są przygotowane do pokazu; komunikaty kodu są po angielsku.|Inputs are prepared for presentation; program messages are in English.",
+    "steps": [
+      {
+        "id": "main",
+        "start": 4,
+        "end": 5,
+        "code": "async def main():\n    event(\"log\", \"greeting\", \"Ready to learn asyncio!\")",
+        "body": "To wejście do programu asynchronicznego. async def definiuje funkcję, a event zapisuje komunikat widoczny w pokazie. Nie ma tu oczekiwania ani wielu zadań.|This is the async entry point. async def defines the function; event records the displayed greeting. There is no waiting or concurrency here."
+      }
+    ],
+    "source": "import asyncio\nfrom lab_support import event, launch\n\nasync def main():\n    event(\"log\", \"greeting\", \"Ready to learn asyncio!\")\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 2,
+    "title": "Licznik i oddawanie sterowania|Counter and yielding control",
+    "intro": "await oznacza: poczekaj na wynik obiektu awaitable. Gdy czekanie faktycznie zawiesza korutynę, event loop może obsłużyć inne gotowe zadania.|await waits for an awaitable result. When waiting suspends a coroutine, the loop can run other ready tasks.",
+    "watch": "Liczby 1, 2, 3 powinny pojawić się w odstępach około sekundy.|Numbers 1, 2, 3 should appear about one second apart.",
+    "takeaway": "Każda iteracja najpierw czeka sekundę, potem publikuje liczbę. Razem około 3 sekund.|Each iteration waits one second then publishes its number: about three seconds total.",
+    "caveat": "await nie musi zawsze zawieszać wykonania: gotowy wynik może być dostępny natychmiast. sleep(1) tutaj rzeczywiście zawiesza korutynę.|await need not always suspend execution: a result may already be ready. sleep(1) does suspend here.",
+    "question": "Dlaczego range(1, n + 1) zawiera n?|Why does range(1, n + 1) include n?",
+    "answer": "Prawa granica range jest wyłączona. Dla n=3 range(1,4) daje 1,2,3.|The upper bound is excluded. For n=3, range(1,4) yields 1,2,3.",
+    "adaptation": "Dane są przygotowane do pokazu; komunikaty kodu są po angielsku.|Inputs are prepared for presentation; program messages are in English.",
+    "steps": [
+      {
+        "id": "counter",
+        "start": 4,
+        "end": 7,
+        "code": "async def counter(n):\n    for number in range(1, n + 1):\n        await asyncio.sleep(1)\n        event(\"log\", \"counter\", str(number))",
+        "body": "n jest parametrem oznaczającym ostatnią liczbę. for bierze kolejne wartości z range. await sleep(1) zatrzymuje tylko tę korutynę; str(number) zmienia liczbę w tekst logu.|n is the final number. for takes values from range; await sleep(1) suspends this coroutine. str(number) converts the number to log text."
+      },
+      {
+        "id": "main",
+        "start": 9,
+        "end": 10,
+        "code": "async def main():\n    await counter(3)",
+        "body": "await counter(3) czeka na zakończenie wszystkich trzech iteracji. Nie uruchamiamy osobnego Task; wykonanie tej korutyny jest częścią oczekiwania main.|await counter(3) waits for all three iterations. No separate Task is created; this coroutine runs as part of main's await."
+      }
+    ],
+    "source": "import asyncio\nfrom lab_support import event, launch\n\nasync def counter(n):\n    for number in range(1, n + 1):\n        await asyncio.sleep(1)\n        event(\"log\", \"counter\", str(number))\n\nasync def main():\n    await counter(3)\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 3,
+    "title": "Dwa zadania po kolei|Two sequential operations",
+    "intro": "Dwa await zapisane kolejno oznaczają, że drugie wywołanie zacznie się po zakończeniu pierwszego.|Two sequential awaits mean the second call starts after the first finishes.",
+    "watch": "Sprawdź, czy B rozpoczyna się dopiero po końcu A. Oczekuj około 3 s.|Check that B starts after A ends. Expect about 3 s.",
+    "takeaway": "Czasy 2 s i 1 s sumują się. Samo async def nie spowodowało współbieżności.|The 2 s and 1 s waits add up. async def alone did not introduce concurrency.",
+    "caveat": "To symulacja oczekiwania na I/O. Paski obejmują czekanie; nie mierzą pracy procesora.|This simulates I/O waiting. Bars include waiting and do not measure CPU work.",
+    "question": "Co się stanie po zamianie gather na dwa kolejne await?|What happens if gather is replaced by two sequential awaits?",
+    "answer": "B wystartuje po A; czas wzrośnie z około 2 s do około 3 s.|B starts after A; time rises from about 2 s to about 3 s.",
+    "adaptation": "Dane są przygotowane do pokazu; komunikaty kodu są po angielsku.|Inputs are prepared for presentation; program messages are in English.",
+    "steps": [
+      {
+        "id": "operation",
+        "start": 4,
+        "end": 7,
+        "code": "async def operation(name, delay):\n    with span(name, \"operation\"):\n        await asyncio.sleep(delay)\n        event(\"log\", name, \"Completed\")",
+        "body": "name to podpis toru, delay to czas oczekiwania w sekundach. with span rejestruje początek i koniec nawet przy błędzie. sleep zawiesza korutynę; event publikuje zakończenie.|name labels the lane; delay is seconds to wait. with span records start and end even on errors. sleep suspends the coroutine; event publishes completion."
+      },
+      {
+        "id": "main",
+        "start": 9,
+        "end": 11,
+        "code": "async def main():\n    await operation(\"A\", 2)\n    await operation(\"B\", 1)",
+        "body": "Pierwszy await czeka 2 s na A. Dopiero po jego zakończeniu Python dochodzi do wywołania B i kolejnego await na 1 s. Prześledź tę kolejność na osi czasu.|The first await waits 2 s for A. Only then does Python call B and await it for 1 s. Trace that order on the timeline."
+      }
+    ],
+    "source": "import asyncio\nfrom lab_support import event, launch, span\n\nasync def operation(name, delay):\n    with span(name, \"operation\"):\n        await asyncio.sleep(delay)\n        event(\"log\", name, \"Completed\")\n\nasync def main():\n    await operation(\"A\", 2)\n    await operation(\"B\", 1)\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 4,
+    "title": "Dwa zadania współbieżnie|Two concurrent operations",
+    "intro": "gather planuje kilka korutyn i czeka na wszystkie. Okresy oczekiwania mogą się nakładać.|gather schedules several coroutines and waits for all of them. Their waits can overlap.",
+    "watch": "Porównaj tory A i B oraz czas z zadaniem 03. Oczekuj około 2 s zamiast 3 s.|Compare A and B and the duration with task 03. Expect about 2 s instead of 3 s.",
+    "takeaway": "A czeka 2 s, B 1 s. Łączny czas zbliża się do najdłuższego oczekiwania, z narzutem wykonania.|A waits 2 s and B 1 s. Total time approaches the longest wait plus overhead.",
+    "caveat": "To symulacja oczekiwania na I/O. Paski obejmują czekanie; nie mierzą pracy procesora.|This simulates I/O waiting. Bars include waiting and do not measure CPU work.",
+    "question": "Co się stanie po zamianie gather na dwa kolejne await?|What happens if gather is replaced by two sequential awaits?",
+    "answer": "B wystartuje po A; czas wzrośnie z około 2 s do około 3 s.|B starts after A; time rises from about 2 s to about 3 s.",
+    "adaptation": "Dane są przygotowane do pokazu; komunikaty kodu są po angielsku.|Inputs are prepared for presentation; program messages are in English.",
+    "steps": [
+      {
+        "id": "operation",
+        "start": 4,
+        "end": 7,
+        "code": "async def operation(name, delay):\n    with span(name, \"operation\"):\n        await asyncio.sleep(delay)\n        event(\"log\", name, \"Completed\")",
+        "body": "name to podpis toru, delay to czas oczekiwania w sekundach. with span rejestruje początek i koniec nawet przy błędzie. sleep zawiesza korutynę; event publikuje zakończenie.|name labels the lane; delay is seconds to wait. with span records start and end even on errors. sleep suspends the coroutine; event publishes completion."
+      },
+      {
+        "id": "main",
+        "start": 9,
+        "end": 10,
+        "code": "async def main():\n    await asyncio.gather(operation(\"A\", 2), operation(\"B\", 1))",
+        "body": "Dwa wywołania operation tworzą obiekty korutyn. gather planuje je współbieżnie, a await czeka na obie. Wyniki gather byłyby w kolejności A, B, nawet jeśli B skończy pierwsze.|The operation calls create coroutine objects. gather schedules both; await waits for both. Results would be in A, B input order even if B finishes first."
+      }
+    ],
+    "source": "import asyncio\nfrom lab_support import event, launch, span\n\nasync def operation(name, delay):\n    with span(name, \"operation\"):\n        await asyncio.sleep(delay)\n        event(\"log\", name, \"Completed\")\n\nasync def main():\n    await asyncio.gather(operation(\"A\", 2), operation(\"B\", 1))\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 5,
+    "title": "Wartość zwrócona przez korutynę|Returning a value",
+    "intro": "return przekazuje wartość do miejsca, które czeka przez await. await to wyrażenie: jego wynik można przypisać zmiennej.|return supplies a value to the awaiting caller. await is an expression whose result can be assigned.",
+    "watch": "Przed uruchomieniem oblicz 5³. Po 2 sekundach odczytaj wynik.|Calculate 5³ before running. Read the result after two seconds.",
+    "takeaway": "power zwraca 125, a main odbiera tę liczbę do result. Oczekiwanie nie wykonuje potęgowania szybciej.|power returns 125; main receives it in result. Waiting does not speed up exponentiation.",
+    "caveat": "sleep jest sztucznym opóźnieniem zgodnym z zadaniem. Operator ** wykonuje zwykłe obliczenie CPU.|sleep is the artificial delay required by the task. ** performs ordinary CPU computation.",
+    "question": "Czym różni się print od return?|How does print differ from return?",
+    "answer": "print pokazuje tekst; return daje wynik wywołującemu. W aplikacji metric pokazuje odebraną wartość.|print displays text; return passes a value to the caller. metric displays that received value here.",
+    "adaptation": "Dane są przygotowane do pokazu; komunikaty kodu są po angielsku.|Inputs are prepared for presentation; program messages are in English.",
+    "steps": [
+      {
+        "id": "power",
+        "start": 4,
+        "end": 7,
+        "code": "async def power(number, exponent):\n    with span(\"power\", \"calculate\"):\n        await asyncio.sleep(2)\n        return number ** exponent",
+        "body": "number=5 i exponent=3 są argumentami. ** oznacza potęgowanie, nie mnożenie. return kończy funkcję i oddaje 125; wyjście z with nadal rejestruje koniec toru.|number=5 and exponent=3 are arguments. ** is exponentiation. return ends the function with 125; leaving with still records the lane end."
+      },
+      {
+        "id": "main",
+        "start": 9,
+        "end": 11,
+        "code": "async def main():\n    result = await power(5, 3)\n    metric(\"5 ** 3\", result)",
+        "body": "Prawa strona przypisania musi się zakończyć przed nadaniem wartości result. await odbiera liczbę, nie obiekt korutyny. metric pokazuje ją na karcie wyników.|The right-hand expression completes before result is assigned. await receives a number, not a coroutine object. metric displays it on a result card."
+      }
+    ],
+    "source": "import asyncio\nfrom lab_support import launch, metric, span\n\nasync def power(number, exponent):\n    with span(\"power\", \"calculate\"):\n        await asyncio.sleep(2)\n        return number ** exponent\n\nasync def main():\n    result = await power(5, 3)\n    metric(\"5 ** 3\", result)\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 6,
+    "title": "Słownik danych pogodowych|Weather dictionary",
+    "intro": "Słownik przechowuje pary klucz–wartość. Korutyna może zwrócić cały słownik, tak jak zwykła funkcja.|A dictionary stores key–value pairs. A coroutine can return a dictionary just like an ordinary function.",
+    "watch": "Po około 1,5 s odczytaj miasto, temperaturę i stan pogody.|After about 1.5 s, read the city, temperature and condition.",
+    "takeaway": "gather zwraca listę słowników w kolejności wejściowej. Wszystkie fikcyjne odczyty mają tę samą temperaturę.|gather returns dictionaries in input order. All fictional readings have the same temperature.",
+    "caveat": "Pogoda jest fikcyjna: nie wysyłamy zapytań do serwisu pogodowego.|Weather is fictional: no weather service is contacted.",
+    "question": "Co oznacza weather['temperature']?|What does weather['temperature'] mean?",
+    "answer": "Odczyt wartości spod klucza temperature. Brak klucza spowodowałby KeyError.|Retrieve the value under the temperature key. A missing key would raise KeyError.",
+    "adaptation": "Dane są przygotowane do pokazu; komunikaty kodu są po angielsku.|Inputs are prepared for presentation; program messages are in English.",
+    "steps": [
+      {
+        "id": "fetch_weather",
+        "start": 4,
+        "end": 7,
+        "code": "async def fetch_weather(city):\n    with span(city, \"weather\"):\n        await asyncio.sleep(1.5)\n        return {\"city\": city, \"temperature\": 25, \"condition\": \"sunny\"}",
+        "body": "city trafia do wartości klucza city. Po await sleep powstaje nowy słownik; return oddaje go wywołującemu. Nawiasy {} tworzą słownik, a dwukropek wiąże klucz z wartością.|city becomes the city key's value. After sleep a new dictionary is created and returned. Braces create a dictionary; colons associate keys with values."
+      },
+      {
+        "id": "main",
+        "start": 9,
+        "end": 12,
+        "code": "async def main():\n    weather = await fetch_weather(\"Warsaw\")\n    event(\"log\", \"weather\", str(weather))\n    metric(\"Temperature\", weather[\"temperature\"], \"°C\")",
+        "body": "fetch_weather otrzymuje napis Warsaw. await oddaje gotowy słownik do weather. weather['temperature'] odczytuje 25, a metric dopisuje jednostkę °C.|fetch_weather receives Warsaw. await supplies its dictionary to weather. weather['temperature'] retrieves 25; metric adds the °C unit."
+      }
+    ],
+    "source": "import asyncio\nfrom lab_support import event, launch, metric, span\n\nasync def fetch_weather(city):\n    with span(city, \"weather\"):\n        await asyncio.sleep(1.5)\n        return {\"city\": city, \"temperature\": 25, \"condition\": \"sunny\"}\n\nasync def main():\n    weather = await fetch_weather(\"Warsaw\")\n    event(\"log\", \"weather\", str(weather))\n    metric(\"Temperature\", weather[\"temperature\"], \"°C\")\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 7,
+    "title": "Pogoda dla wielu miast|Weather for several cities",
+    "intro": "Lista comprehension buduje korutyny dla miast, a * rozpakowuje je na argumenty gather.|A comprehension creates city coroutines and * unpacks them into gather arguments.",
+    "watch": "Trzy tory powinny nakładać się przez około 1,5 s. Znajdź dane wszystkich miast w dzienniku.|Three lanes should overlap for about 1.5 s. Find every city's data in the log.",
+    "takeaway": "gather zwraca listę słowników w kolejności wejściowej. Wszystkie fikcyjne odczyty mają tę samą temperaturę.|gather returns dictionaries in input order. All fictional readings have the same temperature.",
+    "caveat": "Pogoda jest fikcyjna: nie wysyłamy zapytań do serwisu pogodowego.|Weather is fictional: no weather service is contacted.",
+    "question": "Co oznacza weather['temperature']?|What does weather['temperature'] mean?",
+    "answer": "Odczyt wartości spod klucza temperature. Brak klucza spowodowałby KeyError.|Retrieve the value under the temperature key. A missing key would raise KeyError.",
+    "adaptation": "Dane są przygotowane do pokazu; komunikaty kodu są po angielsku.|Inputs are prepared for presentation; program messages are in English.",
+    "steps": [
+      {
+        "id": "fetch_weather",
+        "start": 4,
+        "end": 7,
+        "code": "async def fetch_weather(city):\n    with span(city, \"weather\"):\n        await asyncio.sleep(1.5)\n        return {\"city\": city, \"temperature\": 25, \"condition\": \"sunny\"}",
+        "body": "city trafia do wartości klucza city. Po await sleep powstaje nowy słownik; return oddaje go wywołującemu. Nawiasy {} tworzą słownik, a dwukropek wiąże klucz z wartością.|city becomes the city key's value. After sleep a new dictionary is created and returned. Braces create a dictionary; colons associate keys with values."
+      },
+      {
+        "id": "main",
+        "start": 9,
+        "end": 14,
+        "code": "async def main():\n    cities = [\"Warsaw\", \"Krakow\", \"Gdansk\"]\n    results = await asyncio.gather(*(fetch_weather(city) for city in cities))\n    for weather in results:\n        event(\"log\", weather[\"city\"], str(weather))\n    metric(\"Cities\", len(results))",
+        "body": "cities to lista trzech napisów. Generator tworzy po jednej korutynie na miasto; * podaje je jako oddzielne argumenty. gather zbiera listę wyników, a for wydobywa każdy słownik weather i pokazuje jego dane.|cities contains three strings. The generator creates one coroutine per city; * passes them as separate arguments. gather collects results; for displays each weather dictionary."
+      }
+    ],
+    "source": "import asyncio\nfrom lab_support import event, launch, metric, span\n\nasync def fetch_weather(city):\n    with span(city, \"weather\"):\n        await asyncio.sleep(1.5)\n        return {\"city\": city, \"temperature\": 25, \"condition\": \"sunny\"}\n\nasync def main():\n    cities = [\"Warsaw\", \"Krakow\", \"Gdansk\"]\n    results = await asyncio.gather(*(fetch_weather(city) for city in cities))\n    for weather in results:\n        event(\"log\", weather[\"city\"], str(weather))\n    metric(\"Cities\", len(results))\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 8,
+    "title": "Pięć symulowanych pingów|Five simulated pings",
+    "intro": "Losowe opóźnienia sprawiają, że kolejność zakończenia bywa inna od kolejności wejściowej.|Random delays can make completion order differ from input order.",
+    "watch": "Znajdź najkrótszy i najdłuższy tor. Porównaj kolejność odpowiedzi w logu z listą wyników.|Find the shortest and longest lane. Compare completion logs with the result list.",
+    "takeaway": "gather zachowuje kolejność hostów. Log odpowiedzi pokazuje faktyczną kolejność zakończenia.|gather retains host order. Response logs show actual completion order.",
+    "caveat": "To symulacja bez pakietów ICMP. Stałe ziarno losowania daje powtarzalne dane, nie gwarantuje identycznych czasów wykonania.|This simulates ping without ICMP packets. A fixed seed repeats inputs, not exact execution timings.",
+    "question": "Czy pierwszy element results zawsze odpowie pierwszy?|Does the first results element always finish first?",
+    "answer": "Nie. Pozycja wynika z kolejności argumentów gather.|No. Its position follows gather argument order.",
+    "adaptation": "Dane są przygotowane do pokazu; komunikaty kodu są po angielsku.|Inputs are prepared for presentation; program messages are in English.",
+    "steps": [
+      {
+        "id": "ping",
+        "start": 5,
+        "end": 10,
+        "code": "async def ping(host, delay):\n    with span(host, \"ping\"):\n        await asyncio.sleep(delay)\n        result = f\"Host {host} responds\"\n        event(\"log\", host, result)\n        return result",
+        "body": "host jest nazwą serwera, delay wylosowanym opóźnieniem. f-string podstawia host do tekstu. return oddaje odpowiedź, a event wcześniej zapisuje chwilę jej otrzymania.|host is a server name; delay is a sampled wait. The f-string inserts host into text. return supplies the response; event first records its arrival."
+      },
+      {
+        "id": "main",
+        "start": 12,
+        "end": 19,
+        "code": "async def main():\n    rng = random.Random(31)\n    hosts = [f\"server-{number}\" for number in range(1, 6)]\n    results = await asyncio.gather(\n        *(ping(host, rng.uniform(0.1, 1.0)) for host in hosts)\n    )\n    event(\"log\", \"results\", str(results))\n    metric(\"Responses\", len(results))",
+        "body": "Random(31) tworzy osobny generator. uniform(0.1,1.0) wybiera czas dla każdego hosta przed wykonaniem ping. range(1,6) daje pięć numerów. gather oddaje pięć odpowiedzi w kolejności hosts.|Random(31) creates a private generator. uniform samples each host's wait before ping executes. range(1,6) gives five numbers. gather returns five responses in hosts order."
+      }
+    ],
+    "source": "import asyncio\nimport random\nfrom lab_support import event, launch, metric, span\n\nasync def ping(host, delay):\n    with span(host, \"ping\"):\n        await asyncio.sleep(delay)\n        result = f\"Host {host} responds\"\n        event(\"log\", host, result)\n        return result\n\nasync def main():\n    rng = random.Random(31)\n    hosts = [f\"server-{number}\" for number in range(1, 6)]\n    results = await asyncio.gather(\n        *(ping(host, rng.uniform(0.1, 1.0)) for host in hosts)\n    )\n    event(\"log\", \"results\", str(results))\n    metric(\"Responses\", len(results))\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 9,
+    "title": "Prawdziwe statusy HTTP|Real HTTP status codes",
+    "intro": "ClientSession zarządza połączeniami HTTP. async with pilnuje zamknięcia sesji i odpowiedzi również po błędzie.|ClientSession manages HTTP connections. async with closes sessions and responses even on errors.",
+    "watch": "Uruchom trzy lokalne zapytania. Odczytaj rzeczywiste statusy 200, 404 i 503.|Run three local requests and read real 200, 404 and 503 status codes.",
+    "takeaway": "Status HTTP to odpowiedź serwera, nie wyjątek połączenia. Bez raise_for_status kod 404 nadal jest odczytywany jako liczba.|An HTTP status is a server response, not a connection error. Without raise_for_status, 404 is read as a number.",
+    "caveat": "Rzeczywiste HTTP działa na loopback, bez Internetu. Port jest dobierany przez system. Sztuczne 0,2 s opóźnienia serwera ułatwia obserwację.|Real HTTP uses loopback without Internet. The OS chooses a port. An artificial 0.2 s server delay aids observation.",
+    "question": "Dlaczego jedna sesja dla trzech żądań?|Why share one session across three requests?",
+    "answer": "Sesja zarządza pulą połączeń. Tworzenie nowej dla każdego URL marnuje zasoby.|A session manages a connection pool. Recreating it per URL wastes resources.",
+    "adaptation": "Lista URL wskazuje kontrolowany lokalny serwer zamiast publicznych witryn. To nadal prawdziwe aiohttp i HTTP. Obsługujemy statusy 200/404/503 oraz błędy i timeout.|URLs point to a controlled local server rather than public sites. This still uses real aiohttp and HTTP, with 200/404/503 responses, errors and timeouts.",
+    "steps": [
+      {
+        "id": "respond",
+        "start": 6,
+        "end": 8,
+        "code": "async def respond(request):\n    await asyncio.sleep(0.2)\n    return web.Response(status=int(request.match_info[\"status\"]))",
+        "body": "To lokalny serwer testowy. Router przekazuje część URL w match_info['status']; int zamienia napis na liczbę statusu. web.Response buduje prawdziwą odpowiedź HTTP.|This is a local test server. The router puts the URL segment in match_info['status']; int converts it to a status number. web.Response creates a real HTTP response."
+      },
+      {
+        "id": "fetch_status",
+        "start": 10,
+        "end": 18,
+        "code": "async def fetch_status(session, url):\n    with span(url.rsplit(\"/\", 1)[-1], \"HTTP\"):\n        try:\n            async with session.get(url) as response:\n                event(\"log\", \"HTTP\", f\"{url} -> {response.status}\")\n                return response.status\n        except (aiohttp.ClientError, asyncio.TimeoutError) as error:\n            event(\"log\", \"HTTP\", str(error))\n            return None",
+        "body": "session.get rozpoczyna GET. async with czeka na odpowiedź i gwarantuje jej zwolnienie. response.status jest liczbą, np. 404. except przechwytuje problemy sieciowe i timeout; wtedy return None oznacza brak odpowiedzi.|session.get starts a GET. async with awaits the response and releases it. response.status is a number such as 404. except catches network failures and timeout; None means no response."
+      },
+      {
+        "id": "main",
+        "start": 20,
+        "end": 39,
+        "code": "async def main():\n    application = web.Application()\n    application.router.add_get(\"/{status}\", respond)\n    runner = web.AppRunner(application)\n    await runner.setup()\n    try:\n        server = await asyncio.get_running_loop().create_server(\n            runner.server, \"127.0.0.1\", 0\n        )\n        async with server:\n            port = server.sockets[0].getsockname()[1]\n            urls = [f\"http://127.0.0.1:{port}/{s}\" for s in (200, 404, 503)]\n            timeout = aiohttp.ClientTimeout(total=3)\n            async with aiohttp.ClientSession(timeout=timeout) as session:\n                statuses = await asyncio.gather(\n                    *(fetch_status(session, url) for url in urls)\n                )\n            metric(\"HTTP statuses\", str(statuses))\n    finally:\n        await runner.cleanup()",
+        "body": "Najpierw tworzymy kontrolowany serwer, potem klienta. create_server z portem 0 prosi system o wolny port; getsockname odbiera jego numer. ClientTimeout ogranicza każde żądanie. gather zbiera statusy. finally sprząta serwer, nawet jeśli zapytanie zawiedzie.|First build a controlled server, then a client. create_server with port 0 requests a free port; getsockname retrieves it. ClientTimeout bounds each request. gather collects statuses; finally cleans up the server even on failure."
+      }
+    ],
+    "source": "import asyncio\nimport aiohttp\nfrom aiohttp import web\nfrom lab_support import event, launch, metric, span\n\nasync def respond(request):\n    await asyncio.sleep(0.2)\n    return web.Response(status=int(request.match_info[\"status\"]))\n\nasync def fetch_status(session, url):\n    with span(url.rsplit(\"/\", 1)[-1], \"HTTP\"):\n        try:\n            async with session.get(url) as response:\n                event(\"log\", \"HTTP\", f\"{url} -> {response.status}\")\n                return response.status\n        except (aiohttp.ClientError, asyncio.TimeoutError) as error:\n            event(\"log\", \"HTTP\", str(error))\n            return None\n\nasync def main():\n    application = web.Application()\n    application.router.add_get(\"/{status}\", respond)\n    runner = web.AppRunner(application)\n    await runner.setup()\n    try:\n        server = await asyncio.get_running_loop().create_server(\n            runner.server, \"127.0.0.1\", 0\n        )\n        async with server:\n            port = server.sockets[0].getsockname()[1]\n            urls = [f\"http://127.0.0.1:{port}/{s}\" for s in (200, 404, 503)]\n            timeout = aiohttp.ClientTimeout(total=3)\n            async with aiohttp.ClientSession(timeout=timeout) as session:\n                statuses = await asyncio.gather(\n                    *(fetch_status(session, url) for url in urls)\n                )\n            metric(\"HTTP statuses\", str(statuses))\n    finally:\n        await runner.cleanup()\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 10,
+    "title": "Trzy odliczania|Three countdowns",
+    "intro": "Każde wywołanie korutyny ma własne zmienne lokalne. Trzy liczniki nie nadpisują sobie remaining.|Each coroutine call has its own local variables. The three counters do not overwrite remaining.",
+    "watch": "Oczekuj końców po około 3, 5 i 7 s. Sprawdź wspólny czas około 7 s.|Expect finishes around 3, 5 and 7 s and total time near 7 s.",
+    "takeaway": "Jedna pętla zdarzeń przełącza gotowe korutyny. Nie powstały trzy wątki.|One event loop switches ready coroutines. Three threads were not created.",
+    "caveat": "Kolejność logów o tym samym nominalnym czasie nie jest istotną gwarancją programu.|The order of logs at the same nominal time is not an essential program guarantee.",
+    "question": "Co oznacza trzeci argument -1 w range?|What does range's third argument -1 do?",
+    "answer": "Zmniejsza wartość o jeden w każdej iteracji. range(start,0,-1) kończy na 1.|It decreases the value by one per iteration. range(start,0,-1) ends at 1.",
+    "adaptation": "Dane są przygotowane do pokazu; komunikaty kodu są po angielsku.|Inputs are prepared for presentation; program messages are in English.",
+    "steps": [
+      {
+        "id": "countdown",
+        "start": 4,
+        "end": 9,
+        "code": "async def countdown(name, start):\n    with span(name, \"countdown\"):\n        for remaining in range(start, 0, -1):\n            event(\"log\", name, f\"{remaining} seconds left\")\n            await asyncio.sleep(1)\n        event(\"log\", name, \"Finished\")",
+        "body": "start wyznacza pierwszą wartość. range(start,0,-1) odlicza do 1, bez zera. Najpierw logujemy remaining, potem czekamy sekundę. Finished pojawia się dopiero po ostatnim oczekiwaniu.|start sets the first value. range(start,0,-1) counts down to 1. We log remaining before waiting a second. Finished appears after the last wait."
+      },
+      {
+        "id": "main",
+        "start": 11,
+        "end": 14,
+        "code": "async def main():\n    await asyncio.gather(\n        countdown(\"A\", 5), countdown(\"B\", 3), countdown(\"C\", 7)\n    )",
+        "body": "gather dostaje trzy oddzielne obiekty korutyn z różnymi argumentami. await kończy się, gdy wszystkie trzy zakończą odliczanie; C wyznacza najdłuższy czas.|gather receives three separate coroutine objects with different arguments. await completes when all three countdowns finish; C determines the longest duration."
+      }
+    ],
+    "source": "import asyncio\nfrom lab_support import event, launch, span\n\nasync def countdown(name, start):\n    with span(name, \"countdown\"):\n        for remaining in range(start, 0, -1):\n            event(\"log\", name, f\"{remaining} seconds left\")\n            await asyncio.sleep(1)\n        event(\"log\", name, \"Finished\")\n\nasync def main():\n    await asyncio.gather(\n        countdown(\"A\", 5), countdown(\"B\", 3), countdown(\"C\", 7)\n    )\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 11,
+    "title": "Dziesięć wyników i suma|Ten results and their sum",
+    "intro": "gather zbiera wartości return. Dopiero gotową listę liczb można przekazać do sum.|gather collects return values. The finished list of numbers can then be passed to sum.",
+    "watch": "Porównaj 10 liczb z kartą sumy. Tory mają losowe długości od 2 do 5 s.|Compare the ten numbers with the sum card. Lanes last from 2 to 5 s.",
+    "takeaway": "Czas zbliża się do najdłuższego czekania. Wynik sumy nie zależy od kolejności zakończenia.|Time approaches the longest wait. The sum does not depend on completion order.",
+    "caveat": "To symulowane długie obliczenia: sleep nie obciąża CPU. Dane losowane są z ustalonym ziarnem.|These are simulated long calculations: sleep does not load the CPU. Inputs use a fixed random seed.",
+    "question": "Dlaczego sum wywołujemy dopiero po await gather?|Why call sum only after await gather?",
+    "answer": "Wcześniej mielibyśmy korutyny, a nie zwrócone przez nie liczby.|Before that we would have coroutines rather than returned numbers.",
+    "adaptation": "Dane są przygotowane do pokazu; komunikaty kodu są po angielsku.|Inputs are prepared for presentation; program messages are in English.",
+    "steps": [
+      {
+        "id": "calculate",
+        "start": 5,
+        "end": 9,
+        "code": "async def calculate(name, delay, value):\n    with span(name, \"calculate\"):\n        await asyncio.sleep(delay)\n        event(\"log\", name, str(value))\n        return value",
+        "body": "value jest przygotowaną liczbą 1–100. Po czekaniu return oddaje ją jako wynik tej korutyny. name pozwala przypisać wynik do toru.|value is a prepared number from 1 to 100. After waiting, return supplies it as this coroutine's result. name identifies its lane."
+      },
+      {
+        "id": "main",
+        "start": 11,
+        "end": 18,
+        "code": "async def main():\n    rng = random.Random(31)\n    jobs = [calculate(f\"job-{i}\", rng.uniform(2, 5), rng.randint(1, 100))\n            for i in range(10)]\n    results = await asyncio.gather(*jobs)\n    event(\"log\", \"results\", str(results))\n    metric(\"Sum\", sum(results))\n    metric(\"Count\", len(results))",
+        "body": "randint obejmuje obie granice 1 i 100. Lista jobs zawiera 10 korutyn, nie 10 wyników. *jobs rozpakowuje listę. await gather zastępuje oczekiwanie gotową listą liczb w results; sum je dodaje, len liczy.|randint includes both bounds. jobs contains ten coroutines, not results. *jobs unpacks the list. await gather produces the numbers in results; sum adds them and len counts them."
+      }
+    ],
+    "source": "import asyncio\nimport random\nfrom lab_support import event, launch, metric, span\n\nasync def calculate(name, delay, value):\n    with span(name, \"calculate\"):\n        await asyncio.sleep(delay)\n        event(\"log\", name, str(value))\n        return value\n\nasync def main():\n    rng = random.Random(31)\n    jobs = [calculate(f\"job-{i}\", rng.uniform(2, 5), rng.randint(1, 100))\n            for i in range(10)]\n    results = await asyncio.gather(*jobs)\n    event(\"log\", \"results\", str(results))\n    metric(\"Sum\", sum(results))\n    metric(\"Count\", len(results))\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 12,
+    "title": "Pierwszy wynik i sprzątanie|First result and cleanup",
+    "intro": "Task jest uchwytem do zaplanowanej korutyny. wait może zwrócić dwie grupy: zakończone done i jeszcze działające pending.|A Task is a handle to a scheduled coroutine. wait returns finished done and unfinished pending sets.",
+    "watch": "Znajdź zwycięzcę i komunikaty anulowania. Cały program nie powinien czekać na najwolniejszy tor.|Find the winner and cancellation messages. The program should not wait for the slowest lane.",
+    "takeaway": "FIRST_COMPLETED wraca po pierwszym zakończeniu. Pozostałe zadania prosimy o anulowanie i czekamy na ich sprzątanie.|FIRST_COMPLETED returns on first completion. Remaining tasks are cancelled and awaited for cleanup.",
+    "caveat": "done jest zbiorem: przy bliskich zakończeniach może zawierać więcej niż jedno zadanie. cancel to prośba, a nie natychmiastowe zabicie.|done is a set and can contain multiple near-simultaneous completions. cancel requests cancellation rather than killing immediately.",
+    "question": "Po co gather po cancel?|Why gather after cancel?",
+    "answer": "Aby zadania mogły obsłużyć CancelledError i zakończyć sprzątanie przed wyjściem.|So tasks can handle CancelledError and finish cleanup before exit.",
+    "adaptation": "Dane są przygotowane do pokazu; komunikaty kodu są po angielsku.|Inputs are prepared for presentation; program messages are in English.",
+    "steps": [
+      {
+        "id": "contender",
+        "start": 5,
+        "end": 12,
+        "code": "async def contender(name, delay):\n    with span(name, \"race\"):\n        try:\n            await asyncio.sleep(delay)\n            return delay\n        except asyncio.CancelledError:\n            event(\"log\", name, \"Cancelled; cleanup complete\")\n            raise",
+        "body": "try otacza miejsce możliwego anulowania. Gdy sleep otrzyma CancelledError, except zapisuje sprzątanie, a samo raise ponownie zgłasza ten sam wyjątek. Dzięki temu Task zachowuje stan anulowany.|try surrounds the cancellation point. If sleep receives CancelledError, except records cleanup and bare raise propagates the same exception, preserving cancelled status."
+      },
+      {
+        "id": "main",
+        "start": 14,
+        "end": 25,
+        "code": "async def main():\n    rng = random.Random(31)\n    tasks = [asyncio.create_task(contender(f\"job-{i}\", rng.uniform(1, 10)))\n             for i in range(5)]\n    done, pending = await asyncio.wait(\n        tasks, return_when=asyncio.FIRST_COMPLETED\n    )\n    for task in pending:\n        task.cancel()\n    await asyncio.gather(*pending, return_exceptions=True)\n    metric(\"First completed delay\", min(task.result() for task in done), \"s\")\n    metric(\"Cancelled tasks\", len(pending))",
+        "body": "create_task planuje każdą korutynę. wait wymaga tu Task, nie surowych korutyn. Przypisanie done,pending rozpakowuje parę zbiorów. cancel zgłasza żądanie. gather(return_exceptions=True) odbiera zakończenia bez przerywania sprzątania przez wyjątki anulowania. result odczytuje wynik już ukończonego Task.|create_task schedules each coroutine. wait requires Tasks here. done,pending unpacks two sets. cancel requests cancellation. gather(return_exceptions=True) collects cleanup outcomes without cancellation exceptions interrupting it. result reads an already completed Task."
+      }
+    ],
+    "source": "import asyncio\nimport random\nfrom lab_support import event, launch, metric, span\n\nasync def contender(name, delay):\n    with span(name, \"race\"):\n        try:\n            await asyncio.sleep(delay)\n            return delay\n        except asyncio.CancelledError:\n            event(\"log\", name, \"Cancelled; cleanup complete\")\n            raise\n\nasync def main():\n    rng = random.Random(31)\n    tasks = [asyncio.create_task(contender(f\"job-{i}\", rng.uniform(1, 10)))\n             for i in range(5)]\n    done, pending = await asyncio.wait(\n        tasks, return_when=asyncio.FIRST_COMPLETED\n    )\n    for task in pending:\n        task.cancel()\n    await asyncio.gather(*pending, return_exceptions=True)\n    metric(\"First completed delay\", min(task.result() for task in done), \"s\")\n    metric(\"Cancelled tasks\", len(pending))\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 13,
+    "title": "Serwer TCP echo|TCP echo server",
+    "intro": "TCP przesyła strumień bajtów. Ustalamy prosty protokół: jedna wiadomość kończy się znakiem nowej linii.|TCP carries a byte stream. Our protocol ends one message with a newline.",
+    "watch": "Wbudowany klient wyśle Hello asyncio i odbierze tę samą wiadomość. Porównaj bajty na karcie wyniku.|The built-in client sends Hello asyncio and receives it back. Compare the result bytes.",
+    "takeaway": "To prawdziwe połączenie TCP na loopback. Serwer odsyła otrzymane bajty i zamyka połączenie.|This is a real loopback TCP connection. The server echoes received bytes and closes the connection.",
+    "caveat": "Domyślny port 0 unika konfliktów; wariant 8888 realizuje port z polecenia. Jedna linia to celowy protokół demonstracyjny.|Port 0 avoids conflicts by default; the 8888 preset uses the specified port. One line is a deliberate demo protocol.",
+    "question": "Dlaczego samo writer.write nie wystarcza?|Why isn't writer.write alone enough?",
+    "answer": "write przekazuje dane do bufora. await drain obsługuje kontrolę przepływu; zamknięcie wymaga close i wait_closed.|write buffers bytes. await drain handles flow control; closing uses close and wait_closed.",
+    "adaptation": "Pokaz ma automatycznego klienta i kończy serwer po wymianie wiadomości. Domyślnie system wybiera wolny port; dostępny jest wariant localhost:8888.|The demo includes a client and stops its server after the exchange. The OS selects a free port by default; localhost:8888 is also available.",
+    "steps": [
+      {
+        "id": "handle_client",
+        "start": 4,
+        "end": 13,
+        "code": "async def handle_client(reader, writer):\n    with span(\"server\", \"echo\"):\n        try:\n            data = await reader.readline()\n            writer.write(data)\n            await writer.drain()\n            event(\"log\", \"server\", repr(data))\n        finally:\n            writer.close()\n            await writer.wait_closed()",
+        "body": "start_server wywołuje tę korutynę dla nowego klienta i daje reader oraz writer. readline czeka na bajty do znaku \\n. write odsyła je bez zmiany. finally zamyka writer także po błędzie.|start_server calls this coroutine for each client with reader and writer. readline waits for bytes through a newline. write echoes them unchanged. finally closes the writer even on errors."
+      },
+      {
+        "id": "main",
+        "start": 15,
+        "end": 30,
+        "code": "async def main():\n    port = config().get(\"port\", 0)\n    server = await asyncio.start_server(handle_client, \"127.0.0.1\", port)\n    async with server:\n        actual_port = server.sockets[0].getsockname()[1]\n        reader, writer = await asyncio.open_connection(\"127.0.0.1\", actual_port)\n        try:\n            message = b\"Hello asyncio!\\n\"\n            writer.write(message)\n            await writer.drain()\n            reply = await asyncio.wait_for(reader.readline(), timeout=3)\n            metric(\"Echo matches input\", reply == message)\n            event(\"log\", \"client\", repr(reply))\n        finally:\n            writer.close()\n            await writer.wait_closed()",
+        "body": "config.get wybiera port, domyślnie 0. async with server utrzymuje nasłuchiwanie w bloku. open_connection tworzy klienta. b przed napisem oznacza bytes. wait_for chroni odczyt przed wiecznym czekaniem; == sprawdza zgodność odpowiedzi.|config.get selects the port, default 0. async with server keeps it listening within the block. open_connection creates a client. b denotes bytes. wait_for bounds the read; == checks response equality."
+      }
+    ],
+    "source": "import asyncio\nfrom lab_support import config, event, launch, metric, span\n\nasync def handle_client(reader, writer):\n    with span(\"server\", \"echo\"):\n        try:\n            data = await reader.readline()\n            writer.write(data)\n            await writer.drain()\n            event(\"log\", \"server\", repr(data))\n        finally:\n            writer.close()\n            await writer.wait_closed()\n\nasync def main():\n    port = config().get(\"port\", 0)\n    server = await asyncio.start_server(handle_client, \"127.0.0.1\", port)\n    async with server:\n        actual_port = server.sockets[0].getsockname()[1]\n        reader, writer = await asyncio.open_connection(\"127.0.0.1\", actual_port)\n        try:\n            message = b\"Hello asyncio!\\n\"\n            writer.write(message)\n            await writer.drain()\n            reply = await asyncio.wait_for(reader.readline(), timeout=3)\n            metric(\"Echo matches input\", reply == message)\n            event(\"log\", \"client\", repr(reply))\n        finally:\n            writer.close()\n            await writer.wait_closed()\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 14,
+    "title": "Producent, kolejka, konsumenci|Producer, queue and consumers",
+    "intro": "Queue rozdziela produkowanie danych od ich przetwarzania. get czeka na element, a task_done potwierdza jego obsłużenie.|Queue separates production from processing. get waits for an item; task_done acknowledges its processing.",
+    "watch": "Obserwuj 20 liczb i nazwy konsumentów. Program trwa co najmniej 10 s, bo producent dodaje co 0,5 s.|Watch twenty numbers and consumer names. The producer adds every 0.5 s, taking at least ten seconds.",
+    "takeaway": "Każda liczba jest odebrana raz. queue.join czeka na potwierdzenia task_done, nie tylko na pusty magazyn.|Each number is received once. queue.join waits for task_done acknowledgements, not merely an empty queue.",
+    "caveat": "Kto odbierze konkretną liczbę zależy od planowania. None jest sygnałem końca, nie liczbą do przetworzenia.|Which consumer receives a particular number depends on scheduling. None marks shutdown rather than work.",
+    "question": "Dlaczego potrzebujemy dwóch None?|Why do we need two None markers?",
+    "answer": "Są dwaj konsumenci. Każdy musi dostać własny sygnał zakończenia.|There are two consumers and each needs its own shutdown signal.",
+    "adaptation": "Dodano jawne zakończenie przez dwa None, kontrolę przetworzonych liczb i 0,7 s symulowanego przetwarzania. Produkcja zachowuje 20 liczb oraz odstęp 0,5 s.|Two None markers stop consumers; processing is checked and includes a simulated 0.7 s delay. Production retains twenty items at 0.5 s intervals.",
+    "steps": [
+      {
+        "id": "producer",
+        "start": 4,
+        "end": 10,
+        "code": "async def producer(queue):\n    for number in range(1, 21):\n        await asyncio.sleep(0.5)\n        await queue.put(number)\n        event(\"put\", \"producer\", str(number))\n    for _ in range(2):\n        await queue.put(None)",
+        "body": "queue.put dodaje liczbę; przy pełnej kolejce czeka na miejsce. range(1,21) daje 20 liczb. Dwie wartości None wysyłamy po danych. _ to nazwa zmiennej, której wartości tu nie używamy.|queue.put adds a number and waits if full. range(1,21) yields twenty numbers. Two None markers follow the data. _ names an unused loop variable."
+      },
+      {
+        "id": "consumer",
+        "start": 12,
+        "end": 24,
+        "code": "async def consumer(name, queue, processed):\n    while True:\n        number = await queue.get()\n        try:\n            if number is None:\n                return\n            event(\"get\", name, str(number))\n            with span(name, f\"item-{number}\"):\n                await asyncio.sleep(0.7)\n                processed.append(number)\n                event(\"log\", name, f\"Processed {number}\")\n        finally:\n            queue.task_done()",
+        "body": "while True powtarza pobieranie. get usuwa jeden element z kolejki. is None rozpoznaje sygnał końca. finally gwarantuje jedno task_done dla każdego pobrania, także przy return. append dodaje przetworzoną liczbę do listy.|while True repeats retrieval. get removes one item. is None recognizes shutdown. finally guarantees one task_done per retrieval even on return. append records processed numbers."
+      },
+      {
+        "id": "main",
+        "start": 26,
+        "end": 35,
+        "code": "async def main():\n    queue = asyncio.Queue(maxsize=4)\n    processed = []\n    consumers = [asyncio.create_task(consumer(name, queue, processed))\n                 for name in (\"consumer-A\", \"consumer-B\")]\n    await producer(queue)\n    await queue.join()\n    await asyncio.gather(*consumers)\n    metric(\"Processed items\", len(processed))\n    metric(\"Exactly 1..20\", sorted(processed) == list(range(1, 21)))",
+        "body": "maxsize=4 ogranicza liczbę oczekujących elementów. Dwa Task zaczynają obsługiwać dane, gdy main oddaje sterowanie. Po produkcji join czeka na wszystkie potwierdzenia, gather na zakończenie konsumentów. sorted pozwala porównać zawartość niezależnie od kolejności.|maxsize=4 bounds waiting items. Two Tasks process data when main yields. After production, join waits for acknowledgements and gather for consumer exit. sorted compares contents regardless of order."
+      }
+    ],
+    "source": "import asyncio\nfrom lab_support import event, launch, metric, span\n\nasync def producer(queue):\n    for number in range(1, 21):\n        await asyncio.sleep(0.5)\n        await queue.put(number)\n        event(\"put\", \"producer\", str(number))\n    for _ in range(2):\n        await queue.put(None)\n\nasync def consumer(name, queue, processed):\n    while True:\n        number = await queue.get()\n        try:\n            if number is None:\n                return\n            event(\"get\", name, str(number))\n            with span(name, f\"item-{number}\"):\n                await asyncio.sleep(0.7)\n                processed.append(number)\n                event(\"log\", name, f\"Processed {number}\")\n        finally:\n            queue.task_done()\n\nasync def main():\n    queue = asyncio.Queue(maxsize=4)\n    processed = []\n    consumers = [asyncio.create_task(consumer(name, queue, processed))\n                 for name in (\"consumer-A\", \"consumer-B\")]\n    await producer(queue)\n    await queue.join()\n    await asyncio.gather(*consumers)\n    metric(\"Processed items\", len(processed))\n    metric(\"Exactly 1..20\", sorted(processed) == list(range(1, 21)))\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 15,
+    "title": "Wspólny plik i Lock|Shared file and Lock",
+    "intro": "Lock chroni sekcję, w której tylko jedna korutyna ma pracować naraz. aiofiles udostępnia await dla operacji plikowych delegowanych do puli wątków.|Lock protects a section used by one coroutine at a time. aiofiles provides awaitable file operations delegated to a thread pool.",
+    "watch": "Odczytaj pięć pełnych wierszy z prawdziwego pliku. Tory oczekiwania mogą się nakładać, sekcje zapisu mają osobne podpisy.|Read five complete lines from a real file. Waiting can overlap; write sections are labelled separately.",
+    "takeaway": "Lock obejmuje otwarcie, dopisanie i zamknięcie pliku. Wynik odczytujemy dopiero po zakończeniu wszystkich autorów.|Lock covers opening, appending and closing. The file is read after all writers finish.",
+    "caveat": "aiofiles używa wątków pomocniczych; nie każda operacja async wykonuje się wyłącznie w jednym wątku. Plik demonstracyjny jest tymczasowy.|aiofiles uses helper threads; not every async operation runs exclusively on one thread. The demo file is temporary.",
+    "question": "Dlaczego jeden wspólny Lock, a nie pięć różnych?|Why one shared Lock instead of five separate locks?",
+    "answer": "Osobne blokady nie koordynowałyby dostępu do tego samego pliku.|Separate locks would not coordinate access to the same file.",
+    "adaptation": "Dane są przygotowane do pokazu; komunikaty kodu są po angielsku.|Inputs are prepared for presentation; program messages are in English.",
+    "steps": [
+      {
+        "id": "write_log",
+        "start": 7,
+        "end": 13,
+        "code": "async def write_log(number, path, lock):\n    with span(f\"writer-{number}\", \"generate\"):\n        await asyncio.sleep(0.1)\n    async with lock:\n        with span(f\"writer-{number}\", \"write\"):\n            async with aiofiles.open(path, \"a\", encoding=\"utf-8\") as output:\n                await output.write(f\"Log from coroutine {number}\\n\")",
+        "body": "Każdy autor dostaje ten sam path i lock. async with lock czeka na wyłączny dostęp i zwalnia go automatycznie. Tryb a dopisuje zamiast kasować dane. await write przekazuje pełną linię do pliku; zamknięcie kończy zapis przed oddaniem blokady.|Each writer shares path and lock. async with lock acquires exclusive access and releases it automatically. Mode a appends. await write writes one full line; closing finishes before the lock is released."
+      },
+      {
+        "id": "main",
+        "start": 15,
+        "end": 26,
+        "code": "async def main():\n    with tempfile.TemporaryDirectory() as directory:\n        path = Path(directory) / \"logs.txt\"\n        lock = asyncio.Lock()\n        await asyncio.gather(*(write_log(i, path, lock) for i in range(1, 6)))\n        async with aiofiles.open(path, encoding=\"utf-8\") as source:\n            text = await source.read()\n        event(\"log\", \"file\", text)\n        lines = text.splitlines()\n        metric(\"Complete lines\", len(lines))\n        expected = {f\"Log from coroutine {i}\" for i in range(1, 6)}\n        metric(\"All records intact\", set(lines) == expected and len(lines) == 5)",
+        "body": "TemporaryDirectory tworzy prywatny katalog i usuwa go po bloku. Operator / na Path buduje ścieżkę. Po gather otwieramy plik do odczytu. splitlines dzieli tekst na wiersze bez znaków końca linii; zbiór set sprawdza treść, len także liczbę wpisów.|TemporaryDirectory creates and later removes a private directory. Path / builds a path. After gather we read the file. splitlines returns lines without newline characters; set checks content and len also checks the record count."
+      }
+    ],
+    "source": "import asyncio\nimport tempfile\nfrom pathlib import Path\nimport aiofiles\nfrom lab_support import event, launch, metric, span\n\nasync def write_log(number, path, lock):\n    with span(f\"writer-{number}\", \"generate\"):\n        await asyncio.sleep(0.1)\n    async with lock:\n        with span(f\"writer-{number}\", \"write\"):\n            async with aiofiles.open(path, \"a\", encoding=\"utf-8\") as output:\n                await output.write(f\"Log from coroutine {number}\\n\")\n\nasync def main():\n    with tempfile.TemporaryDirectory() as directory:\n        path = Path(directory) / \"logs.txt\"\n        lock = asyncio.Lock()\n        await asyncio.gather(*(write_log(i, path, lock) for i in range(1, 6)))\n        async with aiofiles.open(path, encoding=\"utf-8\") as source:\n            text = await source.read()\n        event(\"log\", \"file\", text)\n        lines = text.splitlines()\n        metric(\"Complete lines\", len(lines))\n        expected = {f\"Log from coroutine {i}\" for i in range(1, 6)}\n        metric(\"All records intact\", set(lines) == expected and len(lines) == 5)\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 16,
+    "title": "Rate limiter: pięć na sekundę|Rate limiter: five per second",
+    "intro": "Limit szybkości dotyczy liczby startów w czasie. Semafor ogranicza liczbę operacji jednocześnie; to inny warunek.|A rate limit bounds starts over time. A semaphore bounds simultaneous operations, which is a different condition.",
+    "watch": "Obserwuj 40 zezwoleń: 20 zadań prosi po dwa razy. Sprawdź grupy najwyżej pięciu startów na sekundę.|Watch forty grants: twenty tasks request twice each. Check groups of at most five starts per second.",
+    "takeaway": "Kolejka przechowuje chwile udzielonych zezwoleń. Zanim przyznamy nowe, usuwamy te starsze niż sekundę.|A deque retains grant times. Before granting another, timestamps at least one second old are removed.",
+    "caveat": "To limit w kroczącym oknie 1 s jednego procesu. Nie gwarantuje sprawiedliwości między zadaniami ani limitu wspólnego dla wielu serwerów.|This limits a rolling one-second window in one process. It guarantees neither fairness nor a shared limit across servers.",
+    "question": "Dlaczego zegar pętli zamiast aktualnej daty?|Why use loop time rather than the current date?",
+    "answer": "To zegar monotoniczny do odstępów; zmiana zegara systemowego nie cofa obliczanego czasu.|It is a monotonic interval clock; wall-clock adjustments do not reverse elapsed time.",
+    "adaptation": "20 zadań wykonuje po dwie iteracje, łącznie 40 acquire, aby pokaz był skończony. Limit wynosi 5 na kroczącą sekundę.|Twenty tasks perform two iterations each, totalling forty acquire calls, so the demo terminates. The limit is five per rolling second.",
+    "steps": [
+      {
+        "id": "RateLimiter",
+        "start": 5,
+        "end": 23,
+        "code": "class RateLimiter:\n    def __init__(self, limit):\n        if limit < 1:\n            raise ValueError(\"Limit must be positive\")\n        self.limit = limit\n        self.timestamps = deque()\n        self.lock = asyncio.Lock()\n\n    async def acquire(self):\n        loop = asyncio.get_running_loop()\n        async with self.lock:\n            while True:\n                now = loop.time()\n                while self.timestamps and now - self.timestamps[0] >= 1:\n                    self.timestamps.popleft()\n                if len(self.timestamps) < self.limit:\n                    self.timestamps.append(now)\n                    return now\n                await asyncio.sleep(max(0, 1 - (now - self.timestamps[0])))",
+        "body": "Klasa łączy stan i zachowanie. self oznacza konkretny obiekt limitera. __init__ zapisuje limit, pustą deque i wspólną blokadę. Metoda acquire przyzna zezwolenie albo zaczeka.|The class groups state and behavior. self is this limiter instance. __init__ stores the limit, an empty deque and a shared lock. acquire grants permission or waits."
+      },
+      {
+        "id": "__init__",
+        "start": 6,
+        "end": 11,
+        "code": "    def __init__(self, limit):\n        if limit < 1:\n            raise ValueError(\"Limit must be positive\")\n        self.limit = limit\n        self.timestamps = deque()\n        self.lock = asyncio.Lock()",
+        "body": "limit musi być dodatni. self.limit pamięta n; timestamps zawiera wyłącznie chwile przyznanych zezwoleń. deque pozwala tanio usuwać najstarszy wpis z lewej strony.|limit must be positive. self.limit stores n; timestamps holds granted times only. deque efficiently removes the oldest entry from the left."
+      },
+      {
+        "id": "acquire",
+        "start": 13,
+        "end": 23,
+        "code": "    async def acquire(self):\n        loop = asyncio.get_running_loop()\n        async with self.lock:\n            while True:\n                now = loop.time()\n                while self.timestamps and now - self.timestamps[0] >= 1:\n                    self.timestamps.popleft()\n                if len(self.timestamps) < self.limit:\n                    self.timestamps.append(now)\n                    return now\n                await asyncio.sleep(max(0, 1 - (now - self.timestamps[0])))",
+        "body": "Lock chroni wspólne sprawdzenie i dopisanie czasu. Wewnętrzne while usuwa stare wpisy przez popleft. Jeśli jest miejsce, append zapisuje now, return kończy metodę i zwalnia blokadę. W przeciwnym razie sleep czeka do wygaśnięcia najstarszego wpisu; pętla sprawdza warunek ponownie. Trzymanie Lock podczas sleep celowo ustawia kolejkę oczekujących; event loop nadal może wykonywać inne zadania.|Lock protects checking and appending together. The inner while removes old entries with popleft. If capacity exists, append stores now and return releases the lock. Otherwise sleep waits until the oldest expires and the loop rechecks. Holding Lock during sleep deliberately queues waiters; the event loop can still run other tasks."
+      },
+      {
+        "id": "request",
+        "start": 25,
+        "end": 30,
+        "code": "async def request(name, limiter, grants):\n    for attempt in range(2):\n        with span(name, f\"wait-{attempt}\"):\n            granted = await limiter.acquire()\n        grants.append(granted)\n        event(\"log\", name, f\"Granted attempt {attempt + 1}\")",
+        "body": "Każde z 20 zadań ma dwie próby. await acquire dostaje czas zezwolenia. Paski pokazują oczekiwanie na limit, a lista grants służy późniejszej kontroli.|Each of twenty tasks makes two attempts. await acquire receives a grant time. Bars show waiting for permission; grants supports verification."
+      },
+      {
+        "id": "main",
+        "start": 32,
+        "end": 39,
+        "code": "async def main():\n    limiter = RateLimiter(5)\n    grants = []\n    await asyncio.gather(*(request(f\"job-{i}\", limiter, grants) for i in range(20)))\n    times = sorted(grants)\n    valid = all(times[i] - times[i - 5] >= 1 for i in range(5, len(times)))\n    metric(\"Granted requests\", len(times))\n    metric(\"Rolling window respected\", valid)",
+        "body": "Tworzymy jeden wspólny limiter, nie osobny dla każdego zadania. Kontrola porównuje i-te zezwolenie z tym pięć miejsc wcześniej: odstęp musi wynosić co najmniej sekundę.|Create one shared limiter, not one per task. Verification compares each grant with the one five positions earlier: they must be at least a second apart."
+      }
+    ],
+    "source": "import asyncio\nfrom collections import deque\nfrom lab_support import event, launch, metric, span\n\nclass RateLimiter:\n    def __init__(self, limit):\n        if limit < 1:\n            raise ValueError(\"Limit must be positive\")\n        self.limit = limit\n        self.timestamps = deque()\n        self.lock = asyncio.Lock()\n\n    async def acquire(self):\n        loop = asyncio.get_running_loop()\n        async with self.lock:\n            while True:\n                now = loop.time()\n                while self.timestamps and now - self.timestamps[0] >= 1:\n                    self.timestamps.popleft()\n                if len(self.timestamps) < self.limit:\n                    self.timestamps.append(now)\n                    return now\n                await asyncio.sleep(max(0, 1 - (now - self.timestamps[0])))\n\nasync def request(name, limiter, grants):\n    for attempt in range(2):\n        with span(name, f\"wait-{attempt}\"):\n            granted = await limiter.acquire()\n        grants.append(granted)\n        event(\"log\", name, f\"Granted attempt {attempt + 1}\")\n\nasync def main():\n    limiter = RateLimiter(5)\n    grants = []\n    await asyncio.gather(*(request(f\"job-{i}\", limiter, grants) for i in range(20)))\n    times = sorted(grants)\n    valid = all(times[i] - times[i - 5] >= 1 for i in range(5, len(times)))\n    metric(\"Granted requests\", len(times))\n    metric(\"Rolling window respected\", valid)\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 17,
+    "title": "Łańcuch zależności|Dependency chain",
+    "intro": "Nie da się pobrać postów bez ID użytkownika. Gdy mamy listę postów, komentarze do różnych postów mogą być pobierane współbieżnie.|Posts need a user ID. Once post IDs are known, their comments can be fetched concurrently.",
+    "watch": "Znajdź dwa pojedyncze etapy po 1 s, a potem trzy nakładające się pobrania komentarzy.|Find two sequential one-second stages, then three overlapping comment fetches.",
+    "takeaway": "Około 3 s: 1 s użytkownik + 1 s posty + około 1 s wspólnego czekania na komentarze.|About three seconds: one for user, one for posts and one overlapping wait for comments.",
+    "caveat": "Baza i API są symulowane. Nie nakładamy etapów, które potrzebują wyniku poprzedniego.|Database and API are simulated. Stages needing previous results cannot overlap here.",
+    "question": "Dlaczego nie gather dla całego łańcucha?|Why not gather the entire chain?",
+    "answer": "Argument user_id nie istnieje przed pierwszym wynikiem, a post_ids przed drugim.|user_id is unavailable before the first result, and post_ids before the second.",
+    "adaptation": "Dane są przygotowane do pokazu; komunikaty kodu są po angielsku.|Inputs are prepared for presentation; program messages are in English.",
+    "steps": [
+      {
+        "id": "fetch_user_id",
+        "start": 4,
+        "end": 8,
+        "code": "async def fetch_user_id(username):\n    with span(\"user\", \"lookup\"):\n        await asyncio.sleep(1)\n        event(\"log\", \"user\", f\"{username} -> 42\")\n        return 42",
+        "body": "username jest wejściowym napisem Anna. Po symulowanym wyszukaniu zwracamy ID 42, które main przypisze do user_id.|username is the input Anna. After a simulated lookup we return ID 42, which main assigns to user_id."
+      },
+      {
+        "id": "fetch_posts",
+        "start": 10,
+        "end": 13,
+        "code": "async def fetch_posts(user_id):\n    with span(\"posts\", \"lookup\"):\n        await asyncio.sleep(1)\n        return [user_id * 10 + i for i in range(3)]",
+        "body": "user_id=42 pozwala przygotować ID 420,421,422. Comprehension buduje nową listę; return oddaje ją jako całość.|user_id=42 produces IDs 420,421,422. The comprehension creates a list and return supplies it as a whole."
+      },
+      {
+        "id": "fetch_comments",
+        "start": 15,
+        "end": 18,
+        "code": "async def fetch_comments(post_id):\n    with span(f\"post-{post_id}\", \"comments\"):\n        await asyncio.sleep(1)\n        return [f\"Comment on post {post_id}\"]",
+        "body": "Każdy post_id daje osobne pobranie. Wynik to lista z jednym komentarzem, dlatego gather w main zwróci listę list.|Each post_id gets its own fetch. Its result is a one-comment list, so gather in main produces a list of lists."
+      },
+      {
+        "id": "main",
+        "start": 20,
+        "end": 25,
+        "code": "async def main():\n    user_id = await fetch_user_id(\"Anna\")\n    post_ids = await fetch_posts(user_id)\n    comments = await asyncio.gather(*(fetch_comments(post) for post in post_ids))\n    event(\"log\", \"comments\", str(comments))\n    metric(\"Posts\", len(post_ids))",
+        "body": "Czytaj od góry: najpierw ID, potem posty dla tego ID. Dopiero teraz tworzymy korutyny komentarzy. * rozpakowuje trzy korutyny, a gather planuje je razem. Zagnieżdżona lista odzwierciedla trzy posty.|Read top to bottom: user ID, then posts for that ID. Only then are comment coroutines created. * unpacks three coroutines; gather schedules them together. The nested result reflects three posts."
+      }
+    ],
+    "source": "import asyncio\nfrom lab_support import event, launch, metric, span\n\nasync def fetch_user_id(username):\n    with span(\"user\", \"lookup\"):\n        await asyncio.sleep(1)\n        event(\"log\", \"user\", f\"{username} -> 42\")\n        return 42\n\nasync def fetch_posts(user_id):\n    with span(\"posts\", \"lookup\"):\n        await asyncio.sleep(1)\n        return [user_id * 10 + i for i in range(3)]\n\nasync def fetch_comments(post_id):\n    with span(f\"post-{post_id}\", \"comments\"):\n        await asyncio.sleep(1)\n        return [f\"Comment on post {post_id}\"]\n\nasync def main():\n    user_id = await fetch_user_id(\"Anna\")\n    post_ids = await fetch_posts(user_id)\n    comments = await asyncio.gather(*(fetch_comments(post) for post in post_ids))\n    event(\"log\", \"comments\", str(comments))\n    metric(\"Posts\", len(post_ids))\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 18,
+    "title": "Anulowanie i sprzątanie|Cancellation and cleanup",
+    "intro": "cancel prosi o dostarczenie CancelledError przy najbliższej okazji. Korutyna może wtedy zwolnić zasoby i przekazać anulowanie dalej.|cancel requests delivery of CancelledError at the next opportunity. The coroutine can clean up and propagate cancellation.",
+    "watch": "Przez około 5 s zobaczysz Working. Potem komunikat sprzątania i potwierdzenie stanu Task.|See Working for about five seconds, then cleanup and confirmation of Task status.",
+    "takeaway": "main nie kończy się od razu po cancel: await task czeka na obsługę anulowania.|main does not exit immediately after cancel: await task waits for cancellation handling.",
+    "caveat": "Liczba logów blisko granicy 5 s zależy od planowania. Nie ignorujemy CancelledError wewnątrz worker.|Logs near the five-second boundary depend on scheduling. worker does not swallow CancelledError.",
+    "question": "Po co raise wewnątrz except?|Why raise inside except?",
+    "answer": "Przekazuje anulowanie dalej po sprzątaniu. Bez niego Task mógłby zakończyć się normalnie.|It propagates cancellation after cleanup. Without it the Task could finish normally.",
+    "adaptation": "Dane są przygotowane do pokazu; komunikaty kodu są po angielsku.|Inputs are prepared for presentation; program messages are in English.",
+    "steps": [
+      {
+        "id": "worker",
+        "start": 4,
+        "end": 12,
+        "code": "async def worker():\n    with span(\"worker\", \"lifetime\"):\n        try:\n            while True:\n                event(\"log\", \"worker\", \"Working...\")\n                await asyncio.sleep(1)\n        except asyncio.CancelledError:\n            event(\"log\", \"worker\", \"Cancelled; cleaning up...\")\n            raise",
+        "body": "while True nie ma naturalnego końca. sleep oddaje sterowanie co sekundę i jest miejscem dostarczenia anulowania. except sprząta, a raise nie ukrywa faktu anulowania. with span zapisuje też koniec przerwanej pracy.|while True has no natural end. sleep yields every second and receives cancellation. except cleans up and raise preserves cancellation. with span records the interrupted work's end."
+      },
+      {
+        "id": "main",
+        "start": 14,
+        "end": 22,
+        "code": "async def main():\n    task = asyncio.create_task(worker())\n    await asyncio.sleep(5)\n    task.cancel()\n    try:\n        await task\n    except asyncio.CancelledError:\n        event(\"log\", \"main\", \"Cancellation acknowledged\")\n    metric(\"Task cancelled\", task.cancelled())",
+        "body": "create_task zwraca uchwyt task. Podczas sleep(5) worker działa. cancel zgłasza prośbę, await task odbiera CancelledError. main obsługuje go jako oczekiwane zakończenie. cancelled sprawdza końcowy stan.|create_task returns the task handle. worker runs during sleep(5). cancel requests interruption; await task receives CancelledError. main handles it as an expected outcome. cancelled checks final status."
+      }
+    ],
+    "source": "import asyncio\nfrom lab_support import event, launch, metric, span\n\nasync def worker():\n    with span(\"worker\", \"lifetime\"):\n        try:\n            while True:\n                event(\"log\", \"worker\", \"Working...\")\n                await asyncio.sleep(1)\n        except asyncio.CancelledError:\n            event(\"log\", \"worker\", \"Cancelled; cleaning up...\")\n            raise\n\nasync def main():\n    task = asyncio.create_task(worker())\n    await asyncio.sleep(5)\n    task.cancel()\n    try:\n        await task\n    except asyncio.CancelledError:\n        event(\"log\", \"main\", \"Cancellation acknowledged\")\n    metric(\"Task cancelled\", task.cancelled())\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 19,
+    "title": "Asynchroniczny generator liczb pierwszych|Async prime generator",
+    "intro": "yield produkuje pojedynczą wartość i zachowuje stan generatora. async for prosi o następne wartości, czekając na nie asynchronicznie.|yield produces one value and preserves generator state. async for requests successive values asynchronously.",
+    "watch": "Sprawdź liczby 2,3,5…97, liczbę wyników 25 i największą liczbę 97.|Check 2,3,5…97, the count 25 and the largest prime 97.",
+    "takeaway": "Generator daje wartości stopniowo, bez przygotowania całej listy z góry. Odbiorca dopisuje je do results.|The generator yields incrementally without preparing the whole list. The consumer appends to results.",
+    "caveat": "sleep(0.1) ilustruje produkowanie z opóźnieniem. Sprawdzanie pierwszości nadal jest synchronicznym obliczeniem CPU; tu zakres jest mały.|sleep(0.1) illustrates delayed production. Primality checking remains synchronous CPU work; the range is small here.",
+    "question": "Czym yield różni się od return?|How does yield differ from return?",
+    "answer": "yield przekazuje jeden element i pozwala wznowić generator; return kończy jego działanie.|yield supplies one item and permits resumption; return ends the generator.",
+    "adaptation": "Generator ma jawny limit 100 i kończy się sam. Liczby są pierwsze nie większe niż 100, a nie równe 100.|The generator has an explicit limit of 100 and stops itself. It yields primes no greater than 100, not a prime equal to 100.",
+    "steps": [
+      {
+        "id": "is_prime",
+        "start": 4,
+        "end": 8,
+        "code": "def is_prime(number):\n    if number < 2:\n        return False\n    return all(number % divisor != 0\n               for divisor in range(2, int(number ** 0.5) + 1))",
+        "body": "Liczby <2 nie są pierwsze. % to reszta z dzielenia; !=0 oznacza brak dzielnika. Wystarczy badać dzielniki do pierwiastka: number**0.5. all wymaga True dla każdego testu. Dla 2 lista testów jest pusta, a all zwraca True.|Numbers below 2 are not prime. % gives a remainder; !=0 means no divisor. Testing through the square root is sufficient. all requires every test to be True. For 2 there are no tests and all returns True."
+      },
+      {
+        "id": "primes",
+        "start": 10,
+        "end": 14,
+        "code": "async def primes(limit):\n    for number in range(2, limit + 1):\n        if is_prime(number):\n            await asyncio.sleep(0.1)\n            yield number",
+        "body": "async def z yield tworzy asynchroniczny generator. Po znalezieniu liczby pierwszej czekamy 0,1 s i yield oddaje jeden element odbiorcy. Następne żądanie kontynuuje za yield.|async def containing yield defines an async generator. On finding a prime we wait 0.1 s and yield one item. The next request resumes after yield."
+      },
+      {
+        "id": "main",
+        "start": 16,
+        "end": 22,
+        "code": "async def main():\n    results = []\n    async for number in primes(100):\n        results.append(number)\n        event(\"log\", \"prime\", str(number))\n    metric(\"Prime count\", len(results))\n    metric(\"Largest prime\", max(results))",
+        "body": "async for obsługuje protokół asynchronicznego iteratora: prosi o kolejny element, czeka i powtarza. Nie używamy await primes(100), bo to generator, nie korutyna zwracająca listę. len liczy zebrane liczby, max wybiera największą.|async for handles the async iteration protocol: request, await, repeat. We do not await primes(100), which is a generator, not a list-returning coroutine. len counts results and max picks the largest."
+      }
+    ],
+    "source": "import asyncio\nfrom lab_support import event, launch, metric\n\ndef is_prime(number):\n    if number < 2:\n        return False\n    return all(number % divisor != 0\n               for divisor in range(2, int(number ** 0.5) + 1))\n\nasync def primes(limit):\n    for number in range(2, limit + 1):\n        if is_prime(number):\n            await asyncio.sleep(0.1)\n            yield number\n\nasync def main():\n    results = []\n    async for number in primes(100):\n        results.append(number)\n        event(\"log\", \"prime\", str(number))\n    metric(\"Prime count\", len(results))\n    metric(\"Largest prime\", max(results))\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  },
+  {
+    "number": 20,
+    "title": "Timeout: wynik albo przekroczenie czasu|Timeout: result or deadline",
+    "intro": "wait_for ogranicza czas oczekiwania. Gdy czas minie, anuluje oczekiwaną operację i zgłasza TimeoutError.|wait_for bounds waiting. On expiry it cancels the operation and raises TimeoutError.",
+    "watch": "Uruchom oba warianty: 1 s daje wynik przed limitem 3 s; 5 s prowadzi do timeout. Dostępne jest też losowanie 1–5 s.|Try both presets: 1 s returns within the 3 s limit; 5 s times out. Random 1–5 s is also available.",
+    "takeaway": "Przekroczenie limitu to obsłużona sytuacja pokazu. Odczytaj kartę Timeout oraz komunikat sprzątania.|A deadline expiry is an expected demo outcome. Read the Timeout card and cleanup message.",
+    "caveat": "wait_for czeka także na zakończenie anulowania, więc łączny czas może przekroczyć timeout. asyncio.TimeoutError jest aliasem wbudowanego TimeoutError we współczesnym Pythonie.|wait_for also waits for cancellation cleanup, so total time can exceed the timeout. asyncio.TimeoutError aliases built-in TimeoutError in modern Python.",
+    "question": "Czy timeout gwarantuje zakończenie programu dokładnie po 3 s?|Does timeout guarantee exit at exactly 3 s?",
+    "answer": "Nie: dochodzi narzut planowania i sprzątanie anulowanej korutyny.|No: scheduling overhead and cancellation cleanup also take time.",
+    "adaptation": "Domyślny wariant 1 s oraz wariant 5 s pozwalają pewnie pokazać oba wyniki. Osobny wariant losuje czas 1–5 s zgodnie z poleceniem.|Deterministic 1 s and 5 s presets demonstrate both outcomes. A separate random preset samples 1–5 s as required.",
+    "steps": [
+      {
+        "id": "operation",
+        "start": 5,
+        "end": 11,
+        "code": "async def operation(delay):\n    with span(\"operation\", \"deadline\"):\n        try:\n            await asyncio.sleep(delay)\n            return \"Completed in time\"\n        finally:\n            event(\"log\", \"operation\", \"Cleanup complete\")",
+        "body": "delay to czas potrzebny na operację. Jeśli sleep skończy, return oddaje komunikat. finally działa zarówno przy wyniku, jak i przy anulowaniu przez wait_for: tu symuluje sprzątanie.|delay is the operation duration. If sleep finishes, return supplies a message. finally runs on success or cancellation by wait_for and represents cleanup."
+      },
+      {
+        "id": "main",
+        "start": 13,
+        "end": 24,
+        "code": "async def main():\n    delay = config().get(\"delay\", 1)\n    if delay == \"random\":\n        delay = random.uniform(1, 5)\n    metric(\"Requested delay\", round(delay, 3), \"s\")\n    try:\n        result = await asyncio.wait_for(operation(delay), timeout=3)\n        event(\"log\", \"result\", result)\n        metric(\"Timeout\", False)\n    except asyncio.TimeoutError:\n        event(\"log\", \"result\", \"Time limit of 3 seconds exceeded\")\n        metric(\"Timeout\", True)",
+        "body": "config.get wybiera wariant. Dla random losujemy czas przez uniform. wait_for planuje operation i czeka najwyżej 3 s przed rozpoczęciem anulowania. Sukces daje result; przekroczenie limitu przechodzi do except. metric pokazuje True albo False.|config.get selects a preset; uniform samples random delay. wait_for schedules operation and waits up to 3 s before starting cancellation. Success supplies result; expiry goes to except. metric displays True or False."
+      }
+    ],
+    "source": "import asyncio\nimport random\nfrom lab_support import config, event, launch, metric, span\n\nasync def operation(delay):\n    with span(\"operation\", \"deadline\"):\n        try:\n            await asyncio.sleep(delay)\n            return \"Completed in time\"\n        finally:\n            event(\"log\", \"operation\", \"Cleanup complete\")\n\nasync def main():\n    delay = config().get(\"delay\", 1)\n    if delay == \"random\":\n        delay = random.uniform(1, 5)\n    metric(\"Requested delay\", round(delay, 3), \"s\")\n    try:\n        result = await asyncio.wait_for(operation(delay), timeout=3)\n        event(\"log\", \"result\", result)\n        metric(\"Timeout\", False)\n    except asyncio.TimeoutError:\n        event(\"log\", \"result\", \"Time limit of 3 seconds exceeded\")\n        metric(\"Timeout\", True)\n\nif __name__ == \"__main__\":\n    launch(lambda options: asyncio.run(main()))\n"
+  }
+]
