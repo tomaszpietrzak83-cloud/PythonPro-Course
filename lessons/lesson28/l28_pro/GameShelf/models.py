@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.templatetags.static import static
 
 
 class Studio(models.Model):
@@ -46,6 +47,13 @@ class Game(models.Model):
     )
     genres = models.ManyToManyField(Genre, blank=True, related_name="games")
     tags = models.ManyToManyField(Tag, blank=True, related_name="games")
+
+    @property
+    def cover_url(self):
+        """Use a static cover when no file was uploaded or the file is missing."""
+        if self.cover and self.cover.storage.exists(self.cover.name):
+            return self.cover.url
+        return static("GameShelf/cover-placeholder.svg")
 
     def __str__(self):
         return self.title

@@ -6,9 +6,7 @@
     <a class="text-link" href="{% url 'gameshelf:game_list' %}">← Back to game catalog</a>
 
     <article class="detail-card">
-        {% if game.cover %}
-            <img class="game-cover detail-cover" src="{{ game.cover.url }}" alt="Cover of {{ game.title }}">
-        {% endif %}
+        <img class="game-cover detail-cover" src="{{ game.cover_url }}" alt="Cover of {{ game.title }}" width="480" height="640">
         <p class="eyebrow">Game details</p>
         <h2>{{ game.title }}</h2>
         {% if game.studio %}<p>Studio: {{ game.studio.name }}</p>{% endif %}

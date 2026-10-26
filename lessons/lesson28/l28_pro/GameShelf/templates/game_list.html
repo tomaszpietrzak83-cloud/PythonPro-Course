@@ -39,9 +39,7 @@
         <section class="game-grid" aria-label="Games">
             {% for game in games %}
                 <article class="game-card">
-                    {% if game.cover %}
-                        <img class="game-cover" src="{{ game.cover.url }}" alt="Cover of {{ game.title }}" loading="lazy">
-                    {% endif %}
+                    <img class="game-cover" src="{{ game.cover_url }}" alt="Cover of {{ game.title }}" loading="lazy" width="480" height="640">
                     <div class="game-card-content">
                         <p class="card-number">{{ forloop.counter|stringformat:'02d' }}</p>
                         <h2>

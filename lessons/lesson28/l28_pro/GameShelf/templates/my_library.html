@@ -21,6 +21,7 @@
         <section class="game-grid" aria-label="My saved games">
             {% for entry in entries %}
                 <article class="game-card">
+                    <img class="game-cover" src="{{ entry.game.cover_url }}" alt="Cover of {{ entry.game.title }}" loading="lazy" width="480" height="640">
                     <div class="game-card-content">
                         <p class="library-badge">{{ entry.get_list_type_display }}</p>
                         <h2><a href="{% url 'gameshelf:game_detail' entry.game.pk %}">{{ entry.game.title }}</a></h2>

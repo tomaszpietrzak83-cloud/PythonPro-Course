@@ -4,11 +4,13 @@ from tempfile import TemporaryDirectory
 
 from PIL import Image
 from django.contrib.auth import get_user_model
+from django.contrib.staticfiles import finders
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
+from django.templatetags.static import static
 from django.urls import reverse
 
-from .models import Game
+from .models import Game, UserGame
 
 
 def uploaded_cover(name="test-cover.png"):
@@ -87,3 +89,36 @@ class CoverUploadTests(TestCase):
         self.assertEqual(response.status_code, 302)
         game.refresh_from_db()
         self.assertFalse(game.cover)
+
+    def test_placeholder_asset_exists_and_empty_cover_uses_it(self):
+        game = Game.objects.create(title="Empty image")
+        self.assertIsNotNone(finders.find("GameShelf/cover-placeholder.svg"))
+        self.assertEqual(game.cover_url, static("GameShelf/cover-placeholder.svg"))
+
+    def test_missing_file_uses_placeholder_and_keeps_stored_reference(self):
+        game = Game.objects.create(title="Deleted image", cover=uploaded_cover())
+        stored_name = game.cover.name
+        game.cover.storage.delete(stored_name)
+        game.refresh_from_db()
+        self.assertEqual(game.cover.name, stored_name)
+        self.assertEqual(game.cover_url, static("GameShelf/cover-placeholder.svg"))
+        response = self.client.get(reverse("gameshelf:game_detail", args=[game.pk]))
+        self.assertContains(response, game.cover_url)
+        self.assertNotContains(response, "/media/" + stored_name)
+
+    def test_existing_image_is_preferred_to_placeholder(self):
+        game = Game.objects.create(title="Image present", cover=uploaded_cover())
+        self.assertEqual(game.cover_url, game.cover.url)
+
+    def test_catalog_detail_and_library_show_uploaded_cover_and_placeholder(self):
+        with_cover = Game.objects.create(title="Has image", cover=uploaded_cover())
+        without_cover = Game.objects.create(title="Needs placeholder")
+        for game in (with_cover, without_cover):
+            UserGame.objects.create(user=self.admin, game=game)
+        for name in ("game_list", "my_library"):
+            response = self.client.get(reverse(f"gameshelf:{name}"))
+            self.assertContains(response, with_cover.cover_url)
+            self.assertContains(response, without_cover.cover_url)
+        for game in (with_cover, without_cover):
+            response = self.client.get(reverse("gameshelf:game_detail", args=[game.pk]))
+            self.assertContains(response, game.cover_url)

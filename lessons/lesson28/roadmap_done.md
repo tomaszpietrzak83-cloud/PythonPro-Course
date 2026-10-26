@@ -297,6 +297,16 @@ Status: done.
 - Applied migration on PostgreSQL. All 89 tests pass, including real PNG upload and invalid-file rejection.
 - Uploaded a local PNG through admin and verified the actual image loads on its public detail page.
 
+## Version 0.6.0 - Cover Images
+
+Status: done.
+
+- Kept Game.cover and local media storage; added a project-owned SVG placeholder.
+- Game.cover_url selects the actual uploaded file or the placeholder, including stale file references.
+- Catalog, details and personal libraries display consistent cover images with fixed aspect ratios.
+- All 93 tests pass; no additional migration is needed.
+- Verified that both the uploaded PNG and SVG placeholder load correctly in the browser.
+
 ## Next Version
 
-Continue with: Version 0.6.0 - Cover Images.
+Continue with: Version 0.7.0 - Tests.
