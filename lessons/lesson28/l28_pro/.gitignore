@@ -1,0 +1,2 @@
+# Local uploaded covers; the database stores their paths, not their bytes.
+media/

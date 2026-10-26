@@ -287,6 +287,16 @@ Status: done.
 - `annotate(Count(...))` calculates admin counters without a separate query for each row.
 - `transaction.atomic` rolls back the whole seeder when any validation or collision fails.
 
+## Version 0.5.0.1 - ImageField Upload and Display
+
+Status: done.
+
+- Added optional Game.cover (ImageField), MEDIA_ROOT/MEDIA_URL and DEBUG-only local media routes.
+- Admin validates image uploads; catalog and detail pages display uploaded covers without requiring one.
+- Uploaded files stay under media/covers and are ignored by Git; the database stores relative paths.
+- Applied migration on PostgreSQL. All 89 tests pass, including real PNG upload and invalid-file rejection.
+- Uploaded a local PNG through admin and verified the actual image loads on its public detail page.
+
 ## Next Version
 
-Continue with: Version 0.5.0.1 - ImageField Upload and Display.
+Continue with: Version 0.6.0 - Cover Images.

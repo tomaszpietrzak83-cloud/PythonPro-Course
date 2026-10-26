@@ -300,6 +300,21 @@ h1 {
     padding: 1.5rem;
 }
 
+.game-cover {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    background: #efedff;
+    border-radius: 1rem 1rem 0 0;
+}
+.detail-cover {
+    max-width: 300px;
+    height: auto;
+    margin-bottom: 2rem;
+    border-radius: 0.65rem;
+}
+
 .game-card h2 a {
     text-decoration: none;
 }
