@@ -1,10 +1,12 @@
 from io import BytesIO
 from pathlib import Path
 from tempfile import TemporaryDirectory
+from types import ModuleType
 
 from PIL import Image
 from django.contrib.auth import get_user_model
 from django.contrib.staticfiles import finders
+from django.conf.urls.static import static as media_patterns
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.templatetags.static import static
@@ -122,3 +124,14 @@ class CoverUploadTests(TestCase):
         for game in (with_cover, without_cover):
             response = self.client.get(reverse("gameshelf:game_detail", args=[game.pk]))
             self.assertContains(response, game.cover_url)
+
+    def test_development_media_route_serves_actual_uploaded_bytes(self):
+        game = Game.objects.create(title="Served image", cover=uploaded_cover())
+        urls = ModuleType("cover_test_media_urls")
+        with override_settings(DEBUG=True, ROOT_URLCONF=urls):
+            urls.urlpatterns = media_patterns("/media/", document_root=self.media.name)
+            response = self.client.get(game.cover.url)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response["Content-Type"], "image/png")
+            with Image.open(BytesIO(b"".join(response.streaming_content))) as image:
+                self.assertEqual(image.size, (240, 360))

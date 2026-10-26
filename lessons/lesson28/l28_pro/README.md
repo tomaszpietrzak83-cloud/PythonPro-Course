@@ -1,9 +1,11 @@
-# GameShelf 0.5.0
+# GameShelf 0.7.0
 
 Katalog gier z rejestracją i prywatną biblioteką użytkownika. Gra może należeć
 do posiadanych albo wishlisty. W bibliotece można edytować status rozgrywki,
 opcjonalną ocenę 1–10 i prywatną notatkę oraz usunąć wpis po potwierdzeniu.
 Usunięcie wpisu nie usuwa gry z katalogu.
+Gry obsługują okładki przesyłane przez admina; przy braku obrazu lub pliku
+wyświetlany jest domyślny placeholder.
 
 ## Uruchamianie
 
@@ -62,6 +64,41 @@ python manage.py test GameShelf
 python manage.py check
 python manage.py makemigrations --check --dry-run
 ```
+
+Testy obejmują modele, rejestrację i sesje, filtrowanie, podpowiedzi, oba rodzaje
+list, unikalność, prywatność, edycję, usuwanie, admina, seeder i okładki. Testy
+całych przepływów używają `Client(enforce_csrf_checks=True)`. Uploady testowe
+trafiają do katalogów tymczasowych, a test serwowania mediów odczytuje prawdziwy PNG.
+
+## Okładki i media
+
+Pole `Game.cover` to `ImageField`. W adminie wybierz plik obrazu i zapisz grę.
+Plik trafia do `media/covers/`; w bazie znajduje się jego względna ścieżka.
+`media/` jest ignorowane przez Git. Kopia bazy nie zastępuje kopii samych obrazów.
+Przy lokalnym `DEBUG=True` Django udostępnia pliki pod `/media/`; konfiguracja
+produkcyjnego serwowania mediów będzie osobnym elementem wdrożenia.
+
+`Game.cover_url` zwraca URL istniejącego pliku lub statycznego SVG, gdy okładki
+nie ma albo plik zniknął ze storage. Korzystają z niego katalog, szczegóły i biblioteka.
+
+## Dokumentacja PL aktualizowana z kodu
+
+W folderze lekcji znajdują się: `taskPL.md`, `roadmapPL.md`, `lesson-28-DONE.md`
+i `most_interesting.md`. Generator bierze statusy z `roadmap_done.md`, polskie
+opisy z `docs_pl_data.py`, a bloki kodu i numery linii bezpośrednio ze źródeł.
+
+Z głównego folderu kursu:
+
+```powershell
+python lessons/lesson28/update_docs.py
+python lessons/lesson28/update_docs.py --check
+```
+
+Helper `python runserver.py` odświeża te cztery pliki przy każdym uruchomieniu.
+Instrukcje `../AGENTS.md` wymagają odświeżenia ich przy następnych zmianach;
+test dokumentacji wykrywa nieaktualne pliki. Zwykłe `manage.py runserver` nie
+uruchamia generatora. Opis nowego etapu lub nowego ciekawego bloku dopisz
+do `docs_pl_data.py`; nie poprawiaj ręcznie wygenerowanych kopii kodu.
 
 Warto prześledzić `UserGameEditForm` (lista dozwolonych pól), widoki biblioteki
 (`user=request.user`), ograniczenia bazy w `UserGame.Meta` i różnicę między

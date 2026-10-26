@@ -307,6 +307,22 @@ Status: done.
 - All 93 tests pass; no additional migration is needed.
 - Verified that both the uploaded PNG and SVG placeholder load correctly in the browser.
 
+## Version 0.7.0 - Tests
+
+Status: done.
+
+- Reviewed model creation, public pages, login requirements, uniqueness and ownership tests.
+- Added connected player workflows with real registration, sessions and enforced CSRF.
+- Verified the wishlist-to-owned-to-edit-to-remove flow and two independent users' privacy.
+- Added a development media response test that decodes the actual served PNG bytes.
+- Added automatic freshness checks for the four generated Polish learning documents.
+- Added taskPL.md, roadmapPL.md, lesson-28-DONE.md (red status comments) and most_interesting.md.
+- update_docs.py extracts current code/line numbers and completion states; runserver.py refreshes the guides.
+- The lesson's AGENTS.md requires documentation regeneration and verification with every future change.
+- All 97 tests pass on PostgreSQL. Python application branch/statement coverage is 99%
+  (tests and migrations excluded); system checks and migration consistency checks pass.
+- Browser checks confirmed PNG upload, loaded placeholder images and a 390px layout without overflow.
+
 ## Next Version
 
-Continue with: Version 0.7.0 - Tests.
+Continue with: Version 0.8.0 - Optional External Import.
