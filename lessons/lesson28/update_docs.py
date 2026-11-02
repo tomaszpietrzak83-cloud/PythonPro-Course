@@ -8,7 +8,6 @@ from pathlib import Path
 
 from docs_pl_data import INTERESTING, STAGES
 
-
 ROOT = Path(__file__).resolve().parent
 APP = ROOT / "l28_pro" / "GameShelf"
 BANNER = (
@@ -25,7 +24,8 @@ def read(path):
 def completed_versions():
     sections = re.finditer(
         r"^## Version ([\d.]+) - [^\n]+\n(.*?)(?=^## |\Z)",
-        read("roadmap_done.md"), re.MULTILINE | re.DOTALL,
+        read("roadmap_done.md"),
+        re.MULTILINE | re.DOTALL,
     )
     return {match[1] for match in sections if "Status: done." in match[2]}
 
@@ -37,9 +37,18 @@ def source_block(location):
         return path, 1, source
     node = ast.parse(source)
     for part in symbol.split("."):
-        node = next(child for child in node.body if getattr(child, "name", None) == part)
-    start = min([node.lineno] + [item.lineno for item in getattr(node, "decorator_list", [])])
-    return path, start, "\n".join(source.splitlines()[start - 1:node.end_lineno])
+        node = next(
+            child for child in node.body if getattr(child, "name", None) == part
+        )
+    start = min(
+        [node.lineno]
+        + [item.lineno for item in getattr(node, "decorator_list", [])]
+    )
+    return (
+        path,
+        start,
+        "\n".join(source.splitlines()[start - 1 : node.end_lineno]),
+    )
 
 
 def location_link(location):
@@ -57,7 +66,8 @@ def stage_map():
 
 def defined_test_count():
     return sum(
-        isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name.startswith("test_")
+        isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        and node.name.startswith("test_")
         for path in APP.glob("test*.py")
         for node in ast.walk(ast.parse(path.read_text(encoding="utf-8")))
     )
@@ -201,7 +211,10 @@ def roadmap_pl(done):
     for version, title, goal, tasks, location in STAGES:
         text += f"## Wersja {version} — {title}\n\n"
         text += f"**Stan: {'wykonane' if version in done else 'zaplanowane'}.** Cel: {goal}\n\n"
-        text += "\n".join(f"{index}. {task}." for index, task in enumerate(tasks.split("|"), 1))
+        text += "\n".join(
+            f"{index}. {task}."
+            for index, task in enumerate(tasks.split("|"), 1)
+        )
         text += f"\n\n{'Implementacja' if version in done else 'Miejsce do rozbudowy'}: {location_link(location)}.\n\n"
     text += """## Reguła po każdej wersji
 
@@ -220,7 +233,9 @@ Po zmianach uruchom `python lessons/lesson28/update_docs.py` z katalogu kursu.
 def lesson_done(done):
     latest = max(done, key=lambda item: tuple(map(int, item.split("."))))
     text = "# Lekcja 28 — materiał z komentarzami o realizacji\n\n" + BANNER
-    text += red(f"Ukończono GameShelf do {latest}. W kodzie zdefiniowano {defined_test_count()} testów; wynik ich wykonania opisuje roadmap_done.md.")
+    text += red(
+        f"Ukończono GameShelf do {latest}. W kodzie zdefiniowano {defined_test_count()} testów; wynik ich wykonania opisuje roadmap_done.md."
+    )
     text += "\n## Zrealizowane etapy i miejsca w kodzie\n\n"
     for version, title, _, _, location in STAGES:
         if version in done:
@@ -236,16 +251,31 @@ def lesson_done(done):
     swagger_ready = "0.9.0.1" in done
     comments = {
         "1": "Dokumentacja projektu i cztery pliki PL są generowane przez update_docs.py. Nie oznacza to jeszcze ukończenia dokumentacji REST API.",
-        "2": ("Etap OpenAPI i Swagger jest zapisany jako wykonany; sprawdź routing i ustawienia projektu."
-              if swagger_ready else "OpenAPI i Swagger w aplikacji GameShelf są jeszcze zaplanowane (0.9.0.1). Nie należy mylić plików Markdown ani JSON-owych podpowiedzi z dokumentacją Swagger."),
-        "3": ("Integracja dokumentacji API: etap 0.9.0.1 wykonany; konfiguracja w l28_pro/l28_pro/settings.py i urls.py."
-              if swagger_ready else "Ten fragment jest materiałem do późniejszego etapu 0.9.0.1. Obecne INSTALLED_APPS i routing nie konfigurują jeszcze DRF, schematu OpenAPI, Swagger UI ani ReDoc."),
-        "4": ("Opis parametrów i odpowiedzi API należy utrzymywać razem ze schematem; zobacz etap 0.9.0.1."
-              if swagger_ready else "extend_schema, OpenApiParameter i OpenApiResponse nie są jeszcze użyte w GameShelf. Filtry HTML są już w forms.py i filtered_games w views.py; ich dokumentacja API powstanie później."),
-        "5": ("API ma własne widoki i serializery — ich opisy należy aktualizować z kodem."
-              if api_ready else "Docstringi są już w kodzie Python, np. Game.cover_url i filtered_games. Pokazany niżej APIView pozostaje przykładem lekcyjnym; nie jest obecnym widokiem GameShelf."),
-        "6": ("Dekoratory dokumentacji należy porównać z rzeczywistymi kodami odpowiedzi i walidacją."
-              if swagger_ready else "Przykłady @extend_schema są planem do 0.9.0.1–0.9.0.2. Aktualne aplikacyjne POST-y biblioteki są zwykłymi widokami Django w GameShelf/views.py i korzystają z sesji oraz CSRF."),
+        "2": (
+            "Etap OpenAPI i Swagger jest zapisany jako wykonany; sprawdź routing i ustawienia projektu."
+            if swagger_ready
+            else "OpenAPI i Swagger w aplikacji GameShelf są jeszcze zaplanowane (0.9.0.1). Nie należy mylić plików Markdown ani JSON-owych podpowiedzi z dokumentacją Swagger."
+        ),
+        "3": (
+            "Integracja dokumentacji API: etap 0.9.0.1 wykonany; konfiguracja w l28_pro/l28_pro/settings.py i urls.py."
+            if swagger_ready
+            else "Ten fragment jest materiałem do późniejszego etapu 0.9.0.1. Obecne INSTALLED_APPS i routing nie konfigurują jeszcze DRF, schematu OpenAPI, Swagger UI ani ReDoc."
+        ),
+        "4": (
+            "Opis parametrów i odpowiedzi API należy utrzymywać razem ze schematem; zobacz etap 0.9.0.1."
+            if swagger_ready
+            else "extend_schema, OpenApiParameter i OpenApiResponse nie są jeszcze użyte w GameShelf. Filtry HTML są już w forms.py i filtered_games w views.py; ich dokumentacja API powstanie później."
+        ),
+        "5": (
+            "API ma własne widoki i serializery — ich opisy należy aktualizować z kodem."
+            if api_ready
+            else "Docstringi są już w kodzie Python, np. Game.cover_url i filtered_games. Pokazany niżej APIView pozostaje przykładem lekcyjnym; nie jest obecnym widokiem GameShelf."
+        ),
+        "6": (
+            "Dekoratory dokumentacji należy porównać z rzeczywistymi kodami odpowiedzi i walidacją."
+            if swagger_ready
+            else "Przykłady @extend_schema są planem do 0.9.0.1–0.9.0.2. Aktualne aplikacyjne POST-y biblioteki są zwykłymi widokami Django w GameShelf/views.py i korzystają z sesji oraz CSRF."
+        ),
         "7": "Analiza sentymentu to przykład możliwości API, a nie ukończona funkcja ani obowiązkowy zakres GameShelf. Nie dodawano tu usługi AI.",
         "8": f"Aktualny stan: do {latest}. Szczegóły wersji są w roadmapPL.md i roadmap_done.md; wybrane rzeczywiste bloki kodu objaśnia most_interesting.md.",
     }
@@ -271,21 +301,31 @@ def interesting():
 
 
 def generated_documents():
-    english_versions = re.findall(r"^## Version ([\d.]+) -", read("roadmap.md"), re.MULTILINE)
+    english_versions = re.findall(
+        r"^## Version ([\d.]+) -", read("roadmap.md"), re.MULTILINE
+    )
     if english_versions != [stage[0] for stage in STAGES]:
-        raise ValueError("Zaktualizuj opisy etapów w docs_pl_data.py zgodnie z roadmap.md.")
+        raise ValueError(
+            "Zaktualizuj opisy etapów w docs_pl_data.py zgodnie z roadmap.md."
+        )
     done = completed_versions()
     if not done or not done.issubset(stage_map()):
         raise ValueError("Brak statusów lub nieznana wersja w roadmap_done.md.")
     return {
-        "taskPL.md": task_pl(done), "roadmapPL.md": roadmap_pl(done),
-        "lesson-28-DONE.md": lesson_done(done), "most_interesting.md": interesting(),
+        "taskPL.md": task_pl(done),
+        "roadmapPL.md": roadmap_pl(done),
+        "lesson-28-DONE.md": lesson_done(done),
+        "most_interesting.md": interesting(),
     }
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true", help="Check freshness without writing files.")
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Check freshness without writing files.",
+    )
     options = parser.parse_args()
     stale = []
     for name, text in generated_documents().items():
@@ -298,7 +338,11 @@ def main():
         print("Nieaktualne pliki: " + ", ".join(stale))
         print("Uruchom: python lessons/lesson28/update_docs.py")
         return 1
-    print("Dokumentacja PL aktualna." if not stale else "Zaktualizowano: " + ", ".join(stale))
+    print(
+        "Dokumentacja PL aktualna."
+        if not stale
+        else "Zaktualizowano: " + ", ".join(stale)
+    )
     return 0
 
 

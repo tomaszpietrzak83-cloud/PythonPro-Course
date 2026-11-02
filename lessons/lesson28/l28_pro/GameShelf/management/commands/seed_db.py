@@ -11,7 +11,6 @@ from faker import Faker
 
 from GameShelf.models import Game, Genre, Studio, Tag, UserGame
 
-
 SEED_USER_GROUP = "GameShelf seeded users"
 
 
@@ -21,9 +20,16 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("--games", type=int, default=100)
         parser.add_argument("--seed", type=int, default=28)
-        parser.add_argument("--users", type=int, default=0, help="Number of seeded users to create/reuse.")
         parser.add_argument(
-            "--entries-per-user", type=int, default=0,
+            "--users",
+            type=int,
+            default=0,
+            help="Number of seeded users to create/reuse.",
+        )
+        parser.add_argument(
+            "--entries-per-user",
+            type=int,
+            default=0,
             help="Number of seeded games to save for each seeded user.",
         )
         parser.add_argument(
@@ -35,32 +41,43 @@ class Command(BaseCommand):
         if options["games"] < 1:
             raise CommandError("--games must be a positive integer.")
         if options["users"] < 0 or options["entries_per_user"] < 0:
-            raise CommandError("--users and --entries-per-user cannot be negative.")
+            raise CommandError(
+                "--users and --entries-per-user cannot be negative."
+            )
         if options["entries_per_user"] and not options["users"]:
-            raise CommandError("--entries-per-user requires --users greater than zero.")
+            raise CommandError(
+                "--entries-per-user requires --users greater than zero."
+            )
         if options["entries_per_user"] > options["games"]:
             raise CommandError("--entries-per-user cannot exceed --games.")
         password = None
         if options["user_password_env"]:
             password = os.getenv(options["user_password_env"])
             if not password or not password.strip():
-                raise CommandError("The password environment variable is missing or empty.")
+                raise CommandError(
+                    "The password environment variable is missing or empty."
+                )
             try:
                 validate_password(password)
             except ValidationError as error:
-                raise CommandError("Seed user password: " + " ".join(error.messages)) from error
+                raise CommandError(
+                    "Seed user password: " + " ".join(error.messages)
+                ) from error
         return password
 
     def seed_taxonomy(self, fake, seed):
         fake.seed_instance(seed + 10000)
         genres, tags = [], []
         for model, prefix, count, target in (
-            (Genre, "theme", 4, genres), (Tag, "feature", 6, tags),
+            (Genre, "theme", 4, genres),
+            (Tag, "feature", 6, tags),
         ):
             for number in range(1, count + 1):
                 item, _ = model.objects.get_or_create(
                     slug=f"fake-{prefix}-{number:02d}",
-                    defaults={"name": f"FAKE {prefix.title()} {number:02d}: {fake.word().title()}"},
+                    defaults={
+                        "name": f"FAKE {prefix.title()} {number:02d}: {fake.word().title()}"
+                    },
                 )
                 target.append(item)
         return genres, tags
@@ -70,7 +87,9 @@ class Command(BaseCommand):
             return [], 0
         group, _ = Group.objects.get_or_create(name=SEED_USER_GROUP)
         if group.permissions.exists():
-            raise CommandError("The seeded-user marker group must not grant permissions.")
+            raise CommandError(
+                "The seeded-user marker group must not grant permissions."
+            )
         users, created_count = [], 0
         for number in range(1, count + 1):
             username = f"gameshelf_fake_{number:03d}"
@@ -78,9 +97,11 @@ class Command(BaseCommand):
             if user is None:
                 fake.seed_instance(seed + 20000 + number)
                 user = get_user_model().objects.create_user(
-                    username=username, password=password,
+                    username=username,
+                    password=password,
                     email=f"gameshelf-fake-{number:03d}@example.invalid",
-                    first_name=fake.first_name(), last_name=fake.last_name(),
+                    first_name=fake.first_name(),
+                    last_name=fake.last_name(),
                 )
                 user.groups.add(group)
                 created_count += 1
@@ -102,12 +123,17 @@ class Command(BaseCommand):
                 if index % 2 == 0:
                     list_type = UserGame.ListType.OWNED
                     status = fake.random_element(UserGame.PlayStatus.values)
-                    if status in (UserGame.PlayStatus.COMPLETED, UserGame.PlayStatus.PLAYING):
+                    if status in (
+                        UserGame.PlayStatus.COMPLETED,
+                        UserGame.PlayStatus.PLAYING,
+                    ):
                         rating = fake.random_int(min=1, max=10)
                 _, created = UserGame.objects.get_or_create(
-                    user=user, game=game,
+                    user=user,
+                    game=game,
                     defaults={
-                        "list_type": list_type, "play_status": status,
+                        "list_type": list_type,
+                        "play_status": status,
                         "rating": rating,
                         "note": f"FAKE demo note: {fake.sentence(nb_words=8)}",
                     },
@@ -120,8 +146,12 @@ class Command(BaseCommand):
         count = options["games"]
         password = self.validate_options(options)
 
-        genre, _ = Genre.objects.get_or_create(slug="fake", defaults={"name": "FAKE"})
-        tag, _ = Tag.objects.get_or_create(slug="fake", defaults={"name": "FAKE"})
+        genre, _ = Genre.objects.get_or_create(
+            slug="fake", defaults={"name": "FAKE"}
+        )
+        tag, _ = Tag.objects.get_or_create(
+            slug="fake", defaults={"name": "FAKE"}
+        )
         fake = Faker("en_US")
         genres, tags = self.seed_taxonomy(fake, options["seed"])
         created_count = 0
@@ -143,8 +173,10 @@ class Command(BaseCommand):
                 game, created = Game.objects.get_or_create(
                     seed_key=seed_key,
                     defaults={
-                        "title": title[:120], "description": description,
-                        "release_date": release_date, "studio": studio,
+                        "title": title[:120],
+                        "description": description,
+                        "release_date": release_date,
+                        "studio": studio,
                     },
                 )
                 created_count += int(created)
@@ -154,14 +186,18 @@ class Command(BaseCommand):
             game.tags.add(tags[(number - 1) % len(tags)])
             games.append(game)
 
-        users, users_created = self.seed_users(options["users"], fake, options["seed"], password)
+        users, users_created = self.seed_users(
+            options["users"], fake, options["seed"], password
+        )
         entries_created = self.seed_libraries(
             users, games, options["entries_per_user"], fake, options["seed"]
         )
 
-        self.stdout.write(self.style.SUCCESS(
-            f"Created {created_count}; reused {count - created_count} FAKE games.\n"
-            f"Users: created {users_created}; reused {len(users) - users_created}.\n"
-            f"Library entries: created {entries_created}; "
-            f"reused {len(users) * options['entries_per_user'] - entries_created}."
-        ))
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Created {created_count}; reused {count - created_count} FAKE games.\n"
+                f"Users: created {users_created}; reused {len(users) - users_created}.\n"
+                f"Library entries: created {entries_created}; "
+                f"reused {len(users) * options['entries_per_user'] - entries_created}."
+            )
+        )

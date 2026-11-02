@@ -4,7 +4,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from django.views.decorators.http import require_GET, require_http_methods, require_POST
+from django.views.decorators.http import (
+    require_GET,
+    require_http_methods,
+    require_POST,
+)
 
 from .forms import CatalogFilterForm, LibraryFilterForm, UserGameEditForm
 from .models import Game, UserGame
@@ -58,7 +62,10 @@ def game_suggestions(request):
     if not filter_form.is_valid() or not filter_form.cleaned_data["q"]:
         return JsonResponse({"results": []})
     results = [
-        {"title": game.title, "url": reverse("gameshelf:game_detail", args=[game.pk])}
+        {
+            "title": game.title,
+            "url": reverse("gameshelf:game_detail", args=[game.pk]),
+        }
         for game in games[:3]
     ]
     return JsonResponse({"results": results})
@@ -66,13 +73,20 @@ def game_suggestions(request):
 
 def game_detail(request, pk):
     game = get_object_or_404(
-        Game.objects.select_related("studio").prefetch_related("genres", "tags"), pk=pk
+        Game.objects.select_related("studio").prefetch_related(
+            "genres", "tags"
+        ),
+        pk=pk,
     )
     library_entry = None
     if request.user.is_authenticated:
-        library_entry = UserGame.objects.filter(user=request.user, game=game).first()
+        library_entry = UserGame.objects.filter(
+            user=request.user, game=game
+        ).first()
     return render(
-        request, "game_detail.html", {"game": game, "library_entry": library_entry}
+        request,
+        "game_detail.html",
+        {"game": game, "library_entry": library_entry},
     )
 
 
@@ -81,7 +95,9 @@ def game_detail(request, pk):
 def add_to_owned(request, pk):
     game = get_object_or_404(Game, pk=pk)
     UserGame.objects.update_or_create(
-        user=request.user, game=game, defaults={"list_type": UserGame.ListType.OWNED}
+        user=request.user,
+        game=game,
+        defaults={"list_type": UserGame.ListType.OWNED},
     )
     messages.success(request, f"{game.title} is now in your owned games.")
     return redirect("gameshelf:game_detail", pk=game.pk)
@@ -92,10 +108,14 @@ def add_to_owned(request, pk):
 def add_to_wishlist(request, pk):
     game = get_object_or_404(Game, pk=pk)
     entry, _ = UserGame.objects.get_or_create(
-        user=request.user, game=game, defaults={"list_type": UserGame.ListType.WISHLIST}
+        user=request.user,
+        game=game,
+        defaults={"list_type": UserGame.ListType.WISHLIST},
     )
     if entry.list_type == UserGame.ListType.OWNED:
-        messages.info(request, "This game is already owned. It stays in your owned games.")
+        messages.info(
+            request, "This game is already owned. It stays in your owned games."
+        )
     else:
         messages.success(request, f"{game.title} is now on your wishlist.")
     return redirect("gameshelf:game_detail", pk=game.pk)
@@ -104,9 +124,12 @@ def add_to_wishlist(request, pk):
 @login_required
 @require_GET
 def my_library(request):
-    entries = UserGame.objects.filter(user=request.user).select_related(
-        "game", "game__studio"
-    ).order_by("game__title", "pk")
+    entries = (
+        UserGame.objects
+        .filter(user=request.user)
+        .select_related("game", "game__studio")
+        .order_by("game__title", "pk")
+    )
     library_form = LibraryFilterForm(request.GET)
     if library_form.is_valid():
         list_type = library_form.cleaned_data["list_type"]
@@ -115,7 +138,9 @@ def my_library(request):
     else:
         entries = entries.none()
     return render(
-        request, "my_library.html", {"entries": entries, "library_form": library_form}
+        request,
+        "my_library.html",
+        {"entries": entries, "library_form": library_form},
     )
 
 
@@ -130,9 +155,13 @@ def edit_library_entry(request, pk):
     )
     if request.method == "POST" and form.is_valid():
         form.save()
-        messages.success(request, f"Your entry for {entry.game.title} has been updated.")
+        messages.success(
+            request, f"Your entry for {entry.game.title} has been updated."
+        )
         return redirect("gameshelf:my_library")
-    return render(request, "edit_library_entry.html", {"entry": entry, "form": form})
+    return render(
+        request, "edit_library_entry.html", {"entry": entry, "form": form}
+    )
 
 
 @login_required
@@ -144,6 +173,8 @@ def remove_library_entry(request, pk):
     if request.method == "POST":
         title = entry.game.title
         entry.delete()
-        messages.success(request, f"{title} has been removed from your library.")
+        messages.success(
+            request, f"{title} has been removed from your library."
+        )
         return redirect("gameshelf:my_library")
     return render(request, "remove_library_entry.html", {"entry": entry})

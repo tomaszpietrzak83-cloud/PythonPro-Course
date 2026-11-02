@@ -8,7 +8,11 @@ class CatalogCountAdmin(admin.ModelAdmin):
     ordering = ("name", "pk")
 
     def get_queryset(self, request):
-        return super().get_queryset(request).annotate(_game_count=Count("games", distinct=True))
+        return (
+            super()
+            .get_queryset(request)
+            .annotate(_game_count=Count("games", distinct=True))
+        )
 
     @admin.display(description="Games", ordering="_game_count")
     def game_count(self, obj):
@@ -57,8 +61,10 @@ class GameAdmin(admin.ModelAdmin):
     inlines = (UserGameInline,)
 
     def get_queryset(self, request):
-        return super().get_queryset(request).annotate(
-            _saved_by=Count("library_entries", distinct=True)
+        return (
+            super()
+            .get_queryset(request)
+            .annotate(_saved_by=Count("library_entries", distinct=True))
         )
 
     @admin.display(description="Saved by users", ordering="_saved_by")
