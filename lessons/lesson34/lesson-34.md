@@ -601,11 +601,7 @@ class User:
 
     @strawberry.field
     def posts(self) -> list[Post]:
-        return [
-            post
-            for post in fake_posts_db
-            if post.author_id == self.id
-        ]
+        return [post for post in fake_posts_db if post.author_id == self.id]
 
 
 fake_users_db = [

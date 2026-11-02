@@ -1,0 +1,7 @@
+Django>=5.2,<6
+Pygments>=2.19,<3
+psutil>=7,<8
+aiohttp>=3.12,<4
+strawberry-graphql[aiohttp]>=0.338,<0.339
+PyJWT>=2.10,<3
+aiosqlite>=0.20,<1

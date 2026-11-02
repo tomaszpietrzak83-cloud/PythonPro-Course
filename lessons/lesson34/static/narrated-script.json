@@ -1,0 +1,149 @@
+[
+  {
+    "kind": "intro",
+    "title": [
+      "Jedna wiadomość, dwóch odbiorców",
+      "One message, two recipients"
+    ],
+    "text": [
+      "Zbudujemy prosty broadcast. Anna i Jan połączą się z tym samym serwerem. Anna wyśle jedną wiadomość, a serwer odeśle ją do obojga. Najpierw prześledzimy kod, potem uruchomimy prawdziwy pokaz i odczytamy jego wyniki.",
+      "We will build a simple broadcast. Anna and Jan connect to the same server. Anna sends one message and the server delivers it to both clients. First we trace the code, then run a real demonstration and examine its results."
+    ]
+  },
+  {
+    "kind": "code",
+    "needle": "def create_app(",
+    "end": "return app",
+    "title": [
+      "Najpierw aplikacja i trasa",
+      "First, the application and route"
+    ],
+    "text": [
+      "Zaczynamy na końcu pliku, od funkcji create app. Tworzy ona aplikację i rejestruje adres ukośnik w s. Przekazujemy funkcję chat bez nawiasów. Nie wywołujemy jej teraz: aiohttp uruchomi ją dopiero po nadejściu połączenia. Return oddaje gotową aplikację.",
+      "Start at the bottom with create app. It creates the application and registers slash w s. We pass chat without parentheses. We do not call it yet: aiohttp invokes it when a connection arrives. Return supplies the configured application."
+    ]
+  },
+  {
+    "kind": "code",
+    "needle": "clients = set()",
+    "title": [
+      "Wspólny zbiór połączeń",
+      "A shared connection set"
+    ],
+    "text": [
+      "Zmienna clients jest zbiorem na poziomie modułu. Wszyscy klienci tego procesu korzystają z tej samej kolekcji. Każde gniazdo występuje w niej tylko raz. Początkowo zbiór jest pusty; za chwilę dodamy do niego Annę i Jana.",
+      "Clients is a module-level set shared by all connections in this process. Each socket appears only once. The set starts empty; Anna and Jan will be added when they connect."
+    ]
+  },
+  {
+    "kind": "code",
+    "needle": "async def chat(",
+    "end": "await ws.prepare(request)",
+    "title": [
+      "Handshake jednego klienta",
+      "One client’s handshake"
+    ],
+    "text": [
+      "Dla każdego połączenia działa osobne wywołanie chat. Tworzymy odpowiedź WebSocket i czekamy na prepare. To miejsce przełącza zwykłe żądanie HTTP na WebSocket. Await oddaje sterowanie pętli zdarzeń, więc w czasie oczekiwania można obsługiwać drugiego klienta.",
+      "Each connection has its own chat invocation. We create a WebSocket response and await prepare. This upgrades the HTTP request to WebSocket. Await yields to the event loop, allowing another client to be served while waiting."
+    ]
+  },
+  {
+    "kind": "code",
+    "needle": "clients.add(ws)",
+    "end": "await ws.send_str(",
+    "title": [
+      "Rejestracja i potwierdzenie Ready",
+      "Register and acknowledge Ready"
+    ],
+    "text": [
+      "Add dopisuje bieżące gniazdo do wspólnego zbioru. Następna linia wysyła tekst Ready tylko temu klientowi. To potwierdzenie gotowości, jeszcze nie broadcast. Gdy oboje się połączą, zbiór clients będzie zawierać dwa gniazda.",
+      "Add puts this socket in the shared set. The next line sends Ready only to this client. This acknowledges readiness; it is not a broadcast yet. After both connect, clients contains two sockets."
+    ]
+  },
+  {
+    "kind": "code",
+    "needle": "async for message in ws:",
+    "end": "if message.type ==",
+    "title": [
+      "Odbieranie i wybór tekstu",
+      "Receive and select text"
+    ],
+    "text": [
+      "Pętla async for czeka na kolejne wiadomości tego klienta. Warunek przepuszcza wiadomości tekstowe. Treść tekstu znajduje się w message kropka data. Sam odbiór nie wysyła jeszcze nic do Jana: do tego potrzebne jest wywołanie broadcast.",
+      "The async for loop awaits this client’s messages. The condition selects text messages. Their text is in message dot data. Receiving alone does not send anything to Jan; that needs the broadcast call."
+    ]
+  },
+  {
+    "kind": "code",
+    "needle": "await broadcast(",
+    "title": [
+      "Rozesłanie do wszystkich",
+      "Send to everyone"
+    ],
+    "text": [
+      "Broadcast dostaje cały zbiór odbiorców i tekst wiadomości. Funkcja pomocnicza przechodzi po migawce tego zbioru i wysyła tekst do każdego gniazda. Anna też jest w zbiorze, dlatego zobaczy własną wiadomość. Await czeka na zakończenie rozsyłania. To proste wysyłanie kolejno do odbiorców, nie osobne równoległe zadania.",
+      "Broadcast receives the recipient set and message text. The helper iterates a snapshot of that set and sends to each socket. Anna is in the set too, so she receives her own message. Await waits for delivery operations. This simple helper sends to recipients sequentially, not in separate parallel tasks."
+    ]
+  },
+  {
+    "kind": "code",
+    "needle": "finally:",
+    "end": "return ws",
+    "title": [
+      "Rozłączenie i sprzątanie",
+      "Disconnect and clean up"
+    ],
+    "text": [
+      "Kiedy połączenie się kończy, finally usuwa gniazdo ze zbioru. Discard nie zgłasza błędu, jeśli elementu już nie ma. Dzięki temu kolejny broadcast nie powinien próbować pisać do rozłączonego klienta. Return zwraca odpowiedź WebSocket i kończy handler.",
+      "When the connection ends, finally removes the socket. Discard does not fail if it is already absent. This keeps subsequent broadcasts from writing to disconnected clients. Return supplies the WebSocket response and ends the handler."
+    ]
+  },
+  {
+    "kind": "demo",
+    "phase": "ready",
+    "title": [
+      "Obserwuj działanie: prawdziwe połączenia",
+      "Observe execution: real connections"
+    ],
+    "text": [
+      "Pokaz został wykonany przez lokalnego Pythona. Spójrz na zapis rzeczywistych wiadomości: Anna i Jan nawiązali połączenia i każde z nich dostało Ready. Te potwierdzenia pochodzą z linii send str w handlerze, nie z animacji.",
+      "Local Python has now executed the demo. Look at the actual message trace: Anna and Jan connected and each received Ready. These acknowledgements come from the handler’s send str line, not from the animation."
+    ]
+  },
+  {
+    "kind": "demo",
+    "phase": "send",
+    "title": [
+      "Anna wysyła Hello room",
+      "Anna sends Hello room"
+    ],
+    "text": [
+      "Teraz zaznaczona jest wiadomość wychodząca od Anny: Hello room. Klient wysłał ją tylko raz. Handler Anny odebrał tekst i przekazał go do broadcast wraz ze wspólnym zbiorem gniazd.",
+      "The highlighted outgoing message is Anna’s Hello room. The client sent it just once. Anna’s handler received the text and passed it to broadcast together with the shared socket set."
+    ]
+  },
+  {
+    "kind": "demo",
+    "phase": "receive",
+    "title": [
+      "Dwie odpowiedzi z jednego broadcastu",
+      "Two deliveries from one broadcast"
+    ],
+    "text": [
+      "Wskazane odpowiedzi pokazują ten sam tekst u Anny i u Jana. To jest efekt broadcastu: jeden nadawca, dwóch odbiorców. Liczba odbiorców w pomiarach wynosi dwa, a scenariusz jest potwierdzony. Odtwarzamy zapis zakończonego wykonania, więc pauza lektora nie zatrzymuje serwera w połowie wysyłania.",
+      "The highlighted replies show the same text for Anna and Jan. That is broadcast: one sender, two recipients. The measured recipient count is two and the scenario is verified. We are replaying a completed execution, so pausing narration does not freeze the server mid-send."
+    ]
+  },
+  {
+    "kind": "summary",
+    "title": [
+      "Połącz kod z tym, co zobaczyłeś",
+      "Connect the code to what you saw"
+    ],
+    "text": [
+      "Cały przepływ wygląda tak: prepare otwiera połączenie, add rejestruje odbiorcę, async for odbiera wiadomość, broadcast rozsyła ją do zbioru, a finally sprząta po rozłączeniu. Spróbuj teraz własnymi słowami wyjaśnić, dlaczego Anna dostała swoją wiadomość i co zmieniłoby pominięcie discard.",
+      "The complete flow is prepare to open the connection, add to register a recipient, async for to receive a message, broadcast to deliver it to the set, and finally to clean up on disconnect. Explain in your own words why Anna received her own message and what omitting discard would change."
+    ]
+  }
+]
