@@ -1,0 +1,57 @@
+/* Full-width source canvas and independent note windows. */
+.hover-study{display:flex;flex-direction:column;min-width:0}
+.study-toolbar{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.study-toolbar p{margin:7px 0 12px;font-size:17px}.study-toolbar button{font-size:15px}
+.hover-legend{display:flex;gap:12px 24px;flex-wrap:wrap;font-size:14px;color:var(--muted);padding:0 0 12px}
+.study-files{margin:0 0 10px}.study-files button{font:14px Consolas,monospace;padding:8px 14px}
+#study-editor{min-height:0;flex:1;display:flex;flex-direction:column}
+.hover-editor.editor{width:100%;min-height:200px;background:#1e1e1e;display:flex;flex-direction:column;overflow:hidden;border-color:#52616a}
+.hover-editor .editor-head{background:#252526;color:#bdbdbd;font:14px/1.4 Consolas,monospace;padding:10px 15px}
+.hover-editor .code{max-height:68vh;height:auto;min-height:150px;overflow:auto;background:#1e1e1e;color:#d4d4d4;font:17px/1.65 Consolas,'Cascadia Code',monospace;padding:12px 0;tab-size:4}
+.hover-editor .code-row{display:flex;min-width:max-content;position:relative;border-left:3px solid transparent;padding:0 22px 0 0;opacity:1;line-height:1.65}
+.hover-editor .code-row:hover{background:#ffffff07;border-left-color:#52616a}
+.hover-editor .code-row.note-highlight{background:#2c444e;border-left-color:#80d5c3}
+.hover-editor .code-row .ln{font:inherit;font-size:14px;color:#858585;min-width:58px;width:58px;flex:0 0 58px;text-align:right;background:transparent;padding:0 14px 0 0;margin:0;border:0;border-right:1px solid #ffffff10;border-radius:0;cursor:help;user-select:none}
+.hover-editor .code-row .ln:hover,.hover-editor .ln:focus-visible{color:#a8e9d8;background:#28504c;outline:1px solid #80d5c3}
+.hover-editor .src{display:block;white-space:pre;padding-left:14px;padding-right:25px;min-width:30px;flex:1}
+.hover-editor .code-symbol{cursor:help;border-radius:2px;outline-offset:3px}
+.hover-editor .code-symbol:hover,.hover-editor .code-symbol:focus-visible{background:#ffffff15;outline:1px dashed #80d5c3;text-decoration:underline;text-underline-offset:4px}
+.hover-editor .src .k,.hover-editor .src .ow{color:#c586c0}.hover-editor .src .kn{color:#569cd6}
+.hover-editor .src .nb,.hover-editor .src .nf,.hover-editor .src .fm{color:#dcdcaa}
+.hover-editor .src .s,.hover-editor .src .s1,.hover-editor .src .s2,.hover-editor .src .sd{color:#ce9178}
+.hover-editor .src .mi,.hover-editor .src .mf{color:#b5cea8}
+.hover-editor .src .nc{color:#4ec9b0}.hover-editor .src .n,.hover-editor .src .nn,.hover-editor .src .na{color:#9cdcfe}
+.hover-editor .src .c,.hover-editor .src .c1{color:#6a9955}.hover-editor .src .o,.hover-editor .src .p{color:#d4d4d4}
+.study-keyboard{font-size:13px!important;color:var(--muted);margin:10px 0 0}
+.slide-task .hover-study{flex:1;overflow:hidden;min-height:0}
+.slide-task #study-editor{overflow:hidden}.slide-task .hover-editor{flex:1;min-height:0}
+.slide-task .hover-editor .code{flex:1;min-height:100px;max-height:none;font-size:17px}
+.large-text .hover-editor .code{font-size:20px}
+#code-note-layer{position:fixed;inset:0;pointer-events:none;z-index:1000}
+.code-note{position:fixed;pointer-events:auto;width:min(410px,calc(100vw - 16px));max-height:calc(100vh - 16px);display:flex;flex-direction:column;background:#202b33;border:1px solid #7f9eaa;border-top:3px solid #80d5c3;border-radius:10px;box-shadow:0 12px 45px #09141ba6;color:#ecf1f4;z-index:1005;overflow:hidden;font:16px/1.5 'Segoe UI',sans-serif}
+.code-note[hidden]{display:none}.code-note.pinned{border-top-color:#edbd83}
+.note-heading{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;gap:10px;background:#2c3d46;border-bottom:1px solid #52616a;font:11px/1.4 Consolas,monospace;letter-spacing:.5px;color:#a8e9d8;user-select:none}
+.pinned .note-heading{cursor:move;touch-action:none;color:#edbd83}
+.note-heading>div{display:flex;gap:5px;flex-shrink:0}.note-heading button{font:12px/1.2 'Segoe UI',sans-serif;border:1px solid #5d737e;border-radius:5px;padding:5px 7px;background:#304956;color:#e4f0ed;cursor:pointer}
+.note-heading [data-close]{font-size:19px;padding:0 6px}.note-heading button:hover{background:#476576}
+.note-content{padding:12px 16px 16px;overflow:auto}.note-content h3{font-size:19px;line-height:1.3;margin:0 0 10px;color:#e3d6b1;overflow-wrap:anywhere}
+.note-content p{font-size:16px;line-height:1.6;margin:8px 0;color:#e1e9ed;white-space:pre-wrap;overflow-wrap:anywhere}
+.note-content pre{font:13px/1.55 Consolas,monospace;color:#9cdcfe;background:#18232b;border-radius:5px;padding:9px;white-space:pre-wrap;overflow-wrap:anywhere;max-height:145px;overflow:auto;margin:0 0 9px}
+.note-content small{font-size:12px;color:#a5bbc4}.note-locate{padding:5px 9px;font-size:12px;margin-top:5px}
+@media(max-width:700px){.hover-legend{gap:6px 15px;font-size:12px}.study-toolbar{gap:6px}.study-toolbar p{font-size:14px}.hover-editor .code-row .ln{width:43px;min-width:43px;flex-basis:43px}.hover-editor .src{padding-left:9px}.slide-task .hover-editor .code{font-size:14px}.study-keyboard{display:none}}
+
+.study-actions{display:flex;gap:8px;flex-wrap:wrap}
+.code-focused .topbar,.code-focused .task-heading,.code-focused .sections,.code-focused .site-footer,.code-focused .nav-footer{display:none!important}
+.code-focused main{height:100dvh;padding:10px 20px!important;max-width:none}
+.code-focused .hover-study{height:calc(100dvh - 20px)}
+.code-focused .hover-legend{padding-bottom:7px}.code-focused .study-toolbar p{margin:3px 0 7px}
+.code-focused .hover-editor .code{max-height:none;flex:1}
+
+.note-resize{position:absolute;width:15px;height:15px;z-index:5;touch-action:none}
+.note-resize.nw{left:0;top:0;cursor:nwse-resize}.note-resize.ne{right:0;top:0;cursor:nesw-resize}
+.note-resize.sw{left:0;bottom:0;cursor:nesw-resize}.note-resize.se{right:0;bottom:0;cursor:nwse-resize}
+.note-resize:after{content:'';position:absolute;inset:3px;border:solid #edbd83;opacity:.6}
+.note-resize.nw:after{border-width:2px 0 0 2px}.note-resize.ne:after{border-width:2px 2px 0 0}
+.note-resize.sw:after{border-width:0 0 2px 2px}.note-resize.se:after{border-width:0 2px 2px 0}
+.code-note.pinned .note-heading{flex-shrink:0}.code-note.pinned .note-content{min-height:0;flex:1}
+.code-note{max-width:calc(100vw - 16px)}
