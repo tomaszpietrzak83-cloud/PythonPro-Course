@@ -282,7 +282,7 @@ Implementacja: [l28_pro/GameShelf/management/commands/import_games.py — Comman
 
 ## Wersja 0.9.0 — Podstawowe API
 
-**Stan: zaplanowane.** Cel: Udostępnić API REST przed dodaniem Swaggera.
+**Stan: wykonane.** Cel: Udostępnić API REST przed dodaniem Swaggera.
 
 1. Skonfigurować Django REST Framework.
 2. Dodać serializery gier, gatunków, tagów i wpisów biblioteki.
@@ -291,7 +291,7 @@ Implementacja: [l28_pro/GameShelf/management/commands/import_games.py — Comman
 5. Dodać chronione GET /api/v1/library/ tylko dla bieżącego użytkownika.
 6. Testować filtry, 404, logowanie i prywatność notatek.
 
-Miejsce do rozbudowy: [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1).
+Implementacja: [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1).
 
 ## Wersja 0.9.0.1 — OpenAPI i Swagger UI
 

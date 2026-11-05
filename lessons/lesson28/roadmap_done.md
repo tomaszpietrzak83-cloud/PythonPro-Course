@@ -325,7 +325,7 @@ Status: done.
 
 ## Next Version
 
-Continue with: Version 0.9.0 - Small API.
+Continue with: Version 0.9.0.1 - OpenAPI and Swagger UI.
 
 ## Version 0.8.0 - Optional External Import
 
@@ -333,3 +333,10 @@ Status: done.
 
 - Added a bounded PC-game importer for RAWG, with unique IDs and local cover storage.
 - Verified behavior with simulated RAWG responses; live import requires RAWG_API_KEY.
+
+## Version 0.9.0 - Small API
+
+Status: done.
+
+- Added read-only DRF catalog routes and a session-protected library scoped to the current user.
+- Reused catalog filters; verified public access, validation, missing games and library isolation.

@@ -29,7 +29,7 @@ projektu, chyba że obecnego rzeczywiście nie da się naprawić.
 | Upload i wyświetlanie ImageField | Wykonane (0.5.0.1) | [l28_pro/GameShelf/test_covers.py — CoverUploadTests.test_admin_upload_stores_file_path_and_displays_cover](l28_pro/GameShelf/test_covers.py#L53) |
 | Domyślna okładka i brakujące pliki | Wykonane (0.6.0) | [l28_pro/GameShelf/models.py — Game.cover_url](l28_pro/GameShelf/models.py#L58) |
 | Testy najważniejszych funkcji | Wykonane (0.7.0) | [l28_pro/GameShelf/test_workflows.py — PlayerWorkflowTests](l28_pro/GameShelf/test_workflows.py#L8) |
-| API REST | Zaplanowane (0.9.0) | [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1) |
+| API REST | Wykonane (0.9.0) | [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1) |
 | OpenAPI, Swagger UI i ReDoc | Zaplanowane (0.9.0.1) | [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1) |
 | Operacje biblioteki w API i demonstracja Swaggera | Zaplanowane (0.9.0.2) | [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1) |
 | Końcowe dopracowanie interfejsu | Zaplanowane (0.10.0) | [l28_pro/GameShelf/templates/base.html](l28_pro/GameShelf/templates/base.html#L1) |

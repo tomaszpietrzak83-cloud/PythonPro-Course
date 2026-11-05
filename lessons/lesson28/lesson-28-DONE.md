@@ -2,7 +2,7 @@
 
 > Plik generowany przez `update_docs.py`. Status pochodzi z `roadmap_done.md`, a fragmenty kodu i numery linii z aktualnych plików. Opisy PL: `docs_pl_data.py`.
 
-<p style="color:red"><strong>Stan realizacji:</strong> Ukończono GameShelf do 0.8.0. W kodzie zdefiniowano 101 testów; wynik ich wykonania opisuje roadmap_done.md.</p>
+<p style="color:red"><strong>Stan realizacji:</strong> Ukończono GameShelf do 0.9.0. W kodzie zdefiniowano 105 testów; wynik ich wykonania opisuje roadmap_done.md.</p>
 
 ## Zrealizowane etapy i miejsca w kodzie
 
@@ -53,6 +53,8 @@
 <p style="color:red"><strong>Wykonane: 0.7.0 — Testy najważniejszych funkcji.</strong> Gdzie: <a href="l28_pro/GameShelf/test_workflows.py#L8">l28_pro/GameShelf/test_workflows.py, okolice linii 8</a>.</p>
 
 <p style="color:red"><strong>Wykonane: 0.8.0 — Opcjonalny import zewnętrzny.</strong> Gdzie: <a href="l28_pro/GameShelf/management/commands/import_games.py#L72">l28_pro/GameShelf/management/commands/import_games.py, okolice linii 72</a>.</p>
+
+<p style="color:red"><strong>Wykonane: 0.9.0 — Podstawowe API.</strong> Gdzie: <a href="l28_pro/l28_pro/urls.py#L1">l28_pro/l28_pro/urls.py, okolice linii 1</a>.</p>
 
 
 ---
@@ -226,7 +228,7 @@ Możemy używać:
 
 ## 5. Użycie docstringów
 
-<p style="color:red"><strong>Stan realizacji:</strong> Docstringi są już w kodzie Python, np. Game.cover_url i filtered_games. Pokazany niżej APIView pozostaje przykładem lekcyjnym; nie jest obecnym widokiem GameShelf.</p>
+<p style="color:red"><strong>Stan realizacji:</strong> API ma własne widoki i serializery — ich opisy należy aktualizować z kodem.</p>
 
 
 Biblioteka może pobierać opisy z docstringów klas widoków, na przykład `APIView` albo `ViewSet`.
@@ -380,7 +382,7 @@ Dzięki `drf-spectacular` można to opisać w dokumentacji API tak, aby endpoint
 
 ## 8. Podsumowanie
 
-<p style="color:red"><strong>Stan realizacji:</strong> Aktualny stan: do 0.8.0. Szczegóły wersji są w roadmapPL.md i roadmap_done.md; wybrane rzeczywiste bloki kodu objaśnia most_interesting.md.</p>
+<p style="color:red"><strong>Stan realizacji:</strong> Aktualny stan: do 0.9.0. Szczegóły wersji są w roadmapPL.md i roadmap_done.md; wybrane rzeczywiste bloki kodu objaśnia most_interesting.md.</p>
 
 
 W tej lekcji pojawiły się najważniejsze elementy dokumentacji API:
