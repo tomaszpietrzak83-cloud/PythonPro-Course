@@ -16,6 +16,9 @@
             {% empty %}Not assigned{% endfor %}
         </p>
         <p class="detail-description">{{ game.description }}</p>
+        {% if game.rawg_id %}
+            <p>Game data and cover source: <a href="https://rawg.io/">RAWG</a></p>
+        {% endif %}
         <p>Tags:
             {% for tag in game.tags.all %}
                 <a class="text-link" href="{% url 'gameshelf:game_list' %}?tag={{ tag.slug }}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}

@@ -325,4 +325,11 @@ Status: done.
 
 ## Next Version
 
-Continue with: Version 0.8.0 - Optional External Import.
+Continue with: Version 0.9.0 - Small API.
+
+## Version 0.8.0 - Optional External Import
+
+Status: done.
+
+- Added a bounded PC-game importer for RAWG, with unique IDs and local cover storage.
+- Verified behavior with simulated RAWG responses; live import requires RAWG_API_KEY.

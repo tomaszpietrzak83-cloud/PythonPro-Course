@@ -24,7 +24,7 @@ Implementacja: [l28_pro/l28_pro/settings.py](l28_pro/l28_pro/settings.py#L1).
 3. Podłączyć routing projektu.
 4. Dodać odnośnik do admina.
 
-Implementacja: [l28_pro/GameShelf/views.py — home](l28_pro/GameShelf/views.py#L13).
+Implementacja: [l28_pro/GameShelf/views.py — home](l28_pro/GameShelf/views.py#L17).
 
 ## Wersja 0.0.3 — Pierwszy model
 
@@ -45,7 +45,7 @@ Implementacja: [l28_pro/GameShelf/models.py — Game](l28_pro/GameShelf/models.p
 2. Pokazać tytuły oraz skrócone opisy.
 3. Połączyć katalog ze stroną główną odnośnikami.
 
-Implementacja: [l28_pro/GameShelf/views.py — game_list](l28_pro/GameShelf/views.py#L48).
+Implementacja: [l28_pro/GameShelf/views.py — game_list](l28_pro/GameShelf/views.py#L52).
 
 ## Wersja 0.0.5 — Szczegóły gry
 
@@ -56,7 +56,7 @@ Implementacja: [l28_pro/GameShelf/views.py — game_list](l28_pro/GameShelf/view
 3. Podlinkować gry w katalogu.
 4. Zwracać 404 przez get_object_or_404 dla nieistniejącej gry.
 
-Implementacja: [l28_pro/GameShelf/views.py — game_detail](l28_pro/GameShelf/views.py#L67).
+Implementacja: [l28_pro/GameShelf/views.py — game_detail](l28_pro/GameShelf/views.py#L74).
 
 ## Wersja 0.1.0 — Minimalna użyteczna aplikacja
 
@@ -111,7 +111,7 @@ Implementacja: [l28_pro/GameShelf/models.py — Tag](l28_pro/GameShelf/models.py
 3. Zachować czytelne parametry URL.
 4. Od pierwszego znaku sugerować maksymalnie 3 tytuły z lokalnej bazy.
 
-Implementacja: [l28_pro/GameShelf/views.py — game_suggestions](l28_pro/GameShelf/views.py#L55).
+Implementacja: [l28_pro/GameShelf/views.py — game_suggestions](l28_pro/GameShelf/views.py#L59).
 
 ## Wersja 0.1.4.1 — Seeder 100 fikcyjnych gier
 
@@ -124,7 +124,7 @@ Implementacja: [l28_pro/GameShelf/views.py — game_suggestions](l28_pro/GameShe
 5. Obsłużyć --games oraz powtarzalny --seed.
 6. Testować liczbę gier, oznaczenia FAKE i ponowne uruchomienie.
 
-Implementacja: [l28_pro/GameShelf/management/commands/seed_db.py — Command.handle](l28_pro/GameShelf/management/commands/seed_db.py#L118).
+Implementacja: [l28_pro/GameShelf/management/commands/seed_db.py — Command.handle](l28_pro/GameShelf/management/commands/seed_db.py#L144).
 
 ## Wersja 0.2.0 — Rejestracja i logowanie
 
@@ -136,7 +136,7 @@ Implementacja: [l28_pro/GameShelf/management/commands/seed_db.py — Command.han
 4. Dodać widok i szablon rejestracji.
 5. Sprawdzić rejestrację w przeglądarce.
 
-Implementacja: [l28_pro/GameShelf/views.py — register](l28_pro/GameShelf/views.py#L17).
+Implementacja: [l28_pro/GameShelf/views.py — register](l28_pro/GameShelf/views.py#L21).
 
 ## Wersja 0.2.1 — Model UserGame
 
@@ -148,7 +148,7 @@ Implementacja: [l28_pro/GameShelf/views.py — register](l28_pro/GameShelf/views
 4. Zarejestrować model w adminie.
 5. Przetestować ograniczenie unikalności.
 
-Implementacja: [l28_pro/GameShelf/models.py — UserGame](l28_pro/GameShelf/models.py#L62).
+Implementacja: [l28_pro/GameShelf/models.py — UserGame](l28_pro/GameShelf/models.py#L69).
 
 ## Wersja 0.2.2 — Dodawanie do posiadanych
 
@@ -159,7 +159,7 @@ Implementacja: [l28_pro/GameShelf/models.py — UserGame](l28_pro/GameShelf/mode
 3. Przenosić istniejący wpis z wishlisty do owned.
 4. Wyświetlić komunikat sukcesu.
 
-Implementacja: [l28_pro/GameShelf/views.py — add_to_owned](l28_pro/GameShelf/views.py#L79).
+Implementacja: [l28_pro/GameShelf/views.py — add_to_owned](l28_pro/GameShelf/views.py#L93).
 
 ## Wersja 0.2.3 — Wishlist
 
@@ -170,7 +170,7 @@ Implementacja: [l28_pro/GameShelf/views.py — add_to_owned](l28_pro/GameShelf/v
 3. Wybrać regułę dla posiadanej gry: obecnie pozostaje owned.
 4. Pokazać komunikat i zapobiegać duplikatom.
 
-Implementacja: [l28_pro/GameShelf/views.py — add_to_wishlist](l28_pro/GameShelf/views.py#L90).
+Implementacja: [l28_pro/GameShelf/views.py — add_to_wishlist](l28_pro/GameShelf/views.py#L106).
 
 ## Wersja 0.2.4 — Moja biblioteka
 
@@ -181,7 +181,7 @@ Implementacja: [l28_pro/GameShelf/views.py — add_to_wishlist](l28_pro/GameShel
 3. Dodać filtry all/owned/wishlist.
 4. Dodać My Library do nawigacji.
 
-Implementacja: [l28_pro/GameShelf/views.py — my_library](l28_pro/GameShelf/views.py#L104).
+Implementacja: [l28_pro/GameShelf/views.py — my_library](l28_pro/GameShelf/views.py#L124).
 
 ## Wersja 0.3.0 — Status, ocena i notatka
 
@@ -205,7 +205,7 @@ Implementacja: [l28_pro/GameShelf/forms.py — UserGameEditForm](l28_pro/GameShe
 4. Wyświetlać komunikat.
 5. Przetestować ochronę cudzych wpisów.
 
-Implementacja: [l28_pro/GameShelf/views.py — remove_library_entry](l28_pro/GameShelf/views.py#L138).
+Implementacja: [l28_pro/GameShelf/views.py — remove_library_entry](l28_pro/GameShelf/views.py#L167).
 
 ## Wersja 0.4.0 — Wygodniejszy panel admina
 
@@ -216,7 +216,7 @@ Implementacja: [l28_pro/GameShelf/views.py — remove_library_entry](l28_pro/Gam
 3. Użyć edycji inline tam, gdzie pomaga.
 4. Dodać własne metody, np. licznik użytkowników zapisujących grę.
 
-Implementacja: [l28_pro/GameShelf/admin.py — GameAdmin](l28_pro/GameShelf/admin.py#L46).
+Implementacja: [l28_pro/GameShelf/admin.py — GameAdmin](l28_pro/GameShelf/admin.py#L50).
 
 ## Wersja 0.5.0 — Rozszerzony seeder
 
@@ -228,7 +228,7 @@ Implementacja: [l28_pro/GameShelf/admin.py — GameAdmin](l28_pro/GameShelf/admi
 4. Dodać jawne opcje --users i --entries-per-user.
 5. Zachować unikalność wpisów i bezpieczeństwo ponownych uruchomień.
 
-Implementacja: [l28_pro/GameShelf/management/commands/seed_db.py — Command.seed_libraries](l28_pro/GameShelf/management/commands/seed_db.py#L94).
+Implementacja: [l28_pro/GameShelf/management/commands/seed_db.py — Command.seed_libraries](l28_pro/GameShelf/management/commands/seed_db.py#L115).
 
 ## Wersja 0.5.0.1 — Upload i wyświetlanie obrazów
 
@@ -241,7 +241,7 @@ Implementacja: [l28_pro/GameShelf/management/commands/seed_db.py — Command.see
 5. Wyświetlić go w katalogu i szczegółach; sprawdzić brak okładki.
 6. Przechowywać plik w media, a jego ścieżkę w bazie; bez zewnętrznego importu.
 
-Implementacja: [l28_pro/GameShelf/test_covers.py — CoverUploadTests.test_admin_upload_stores_file_path_and_displays_cover](l28_pro/GameShelf/test_covers.py#L47).
+Implementacja: [l28_pro/GameShelf/test_covers.py — CoverUploadTests.test_admin_upload_stores_file_path_and_displays_cover](l28_pro/GameShelf/test_covers.py#L53).
 
 ## Wersja 0.6.0 — Okładki
 
@@ -252,7 +252,7 @@ Implementacja: [l28_pro/GameShelf/test_covers.py — CoverUploadTests.test_admin
 3. Wyświetlać okładki w katalogu i szczegółach.
 4. Nie przerywać działania strony przy braku pliku.
 
-Implementacja: [l28_pro/GameShelf/models.py — Game.cover_url](l28_pro/GameShelf/models.py#L51).
+Implementacja: [l28_pro/GameShelf/models.py — Game.cover_url](l28_pro/GameShelf/models.py#L58).
 
 ## Wersja 0.7.0 — Testy najważniejszych funkcji
 
@@ -269,7 +269,7 @@ Implementacja: [l28_pro/GameShelf/test_workflows.py — PlayerWorkflowTests](l28
 
 ## Wersja 0.8.0 — Opcjonalny import zewnętrzny
 
-**Stan: zaplanowane.** Cel: Importować rzeczywiste dane gier, np. z RAWG.
+**Stan: wykonane.** Cel: Importować rzeczywiste dane gier, np. z RAWG.
 
 1. Wybrać źródło i przechowywać klucz API poza kodem.
 2. Dodać polecenie import_games.
@@ -278,7 +278,7 @@ Implementacja: [l28_pro/GameShelf/test_workflows.py — PlayerWorkflowTests](l28
 5. Pobierać okładki do media i przypisywać je do Game.cover; URL źródła może być metadanymi.
 6. Czytelnie obsłużyć błędy API.
 
-Miejsce do rozbudowy: [l28_pro/GameShelf/management/commands](l28_pro/GameShelf/management/commands#L1).
+Implementacja: [l28_pro/GameShelf/management/commands/import_games.py — Command.handle](l28_pro/GameShelf/management/commands/import_games.py#L72).
 
 ## Wersja 0.9.0 — Podstawowe API
 

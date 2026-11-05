@@ -16,18 +16,18 @@ projektu, chyba że obecnego rzeczywiście nie da się naprawić.
 
 | Wymaganie | Stan | Gdzie szukać |
 |---|---|---|
-| Rejestracja, logowanie i wylogowanie przez Django | Wykonane (0.2.0) | [l28_pro/GameShelf/views.py — register](l28_pro/GameShelf/views.py#L17) |
-| Publiczny katalog i szczegóły gry | Wykonane (0.0.5) | [l28_pro/GameShelf/views.py — game_detail](l28_pro/GameShelf/views.py#L67) |
-| Wyszukiwanie tytułu, gatunki i tagi | Wykonane (0.1.4) | [l28_pro/GameShelf/views.py — game_suggestions](l28_pro/GameShelf/views.py#L55) |
-| Posiadane gry i wishlisty | Wykonane (0.2.3) | [l28_pro/GameShelf/views.py — add_to_wishlist](l28_pro/GameShelf/views.py#L90) |
-| Prywatna biblioteka użytkownika | Wykonane (0.2.4) | [l28_pro/GameShelf/views.py — my_library](l28_pro/GameShelf/views.py#L104) |
+| Rejestracja, logowanie i wylogowanie przez Django | Wykonane (0.2.0) | [l28_pro/GameShelf/views.py — register](l28_pro/GameShelf/views.py#L21) |
+| Publiczny katalog i szczegóły gry | Wykonane (0.0.5) | [l28_pro/GameShelf/views.py — game_detail](l28_pro/GameShelf/views.py#L74) |
+| Wyszukiwanie tytułu, gatunki i tagi | Wykonane (0.1.4) | [l28_pro/GameShelf/views.py — game_suggestions](l28_pro/GameShelf/views.py#L59) |
+| Posiadane gry i wishlisty | Wykonane (0.2.3) | [l28_pro/GameShelf/views.py — add_to_wishlist](l28_pro/GameShelf/views.py#L106) |
+| Prywatna biblioteka użytkownika | Wykonane (0.2.4) | [l28_pro/GameShelf/views.py — my_library](l28_pro/GameShelf/views.py#L124) |
 | Status, ocena i prywatna notatka | Wykonane (0.3.0) | [l28_pro/GameShelf/forms.py — UserGameEditForm](l28_pro/GameShelf/forms.py#L42) |
-| Usuwanie własnego wpisu | Wykonane (0.3.1) | [l28_pro/GameShelf/views.py — remove_library_entry](l28_pro/GameShelf/views.py#L138) |
-| Konfiguracja panelu admina | Wykonane (0.4.0) | [l28_pro/GameShelf/admin.py — GameAdmin](l28_pro/GameShelf/admin.py#L46) |
-| Faker: 100 gier FAKE i polecenie seed_db | Wykonane (0.1.4.1) | [l28_pro/GameShelf/management/commands/seed_db.py — Command.handle](l28_pro/GameShelf/management/commands/seed_db.py#L118) |
-| Seeder użytkowników i bibliotek | Wykonane (0.5.0) | [l28_pro/GameShelf/management/commands/seed_db.py — Command.seed_libraries](l28_pro/GameShelf/management/commands/seed_db.py#L94) |
-| Upload i wyświetlanie ImageField | Wykonane (0.5.0.1) | [l28_pro/GameShelf/test_covers.py — CoverUploadTests.test_admin_upload_stores_file_path_and_displays_cover](l28_pro/GameShelf/test_covers.py#L47) |
-| Domyślna okładka i brakujące pliki | Wykonane (0.6.0) | [l28_pro/GameShelf/models.py — Game.cover_url](l28_pro/GameShelf/models.py#L51) |
+| Usuwanie własnego wpisu | Wykonane (0.3.1) | [l28_pro/GameShelf/views.py — remove_library_entry](l28_pro/GameShelf/views.py#L167) |
+| Konfiguracja panelu admina | Wykonane (0.4.0) | [l28_pro/GameShelf/admin.py — GameAdmin](l28_pro/GameShelf/admin.py#L50) |
+| Faker: 100 gier FAKE i polecenie seed_db | Wykonane (0.1.4.1) | [l28_pro/GameShelf/management/commands/seed_db.py — Command.handle](l28_pro/GameShelf/management/commands/seed_db.py#L144) |
+| Seeder użytkowników i bibliotek | Wykonane (0.5.0) | [l28_pro/GameShelf/management/commands/seed_db.py — Command.seed_libraries](l28_pro/GameShelf/management/commands/seed_db.py#L115) |
+| Upload i wyświetlanie ImageField | Wykonane (0.5.0.1) | [l28_pro/GameShelf/test_covers.py — CoverUploadTests.test_admin_upload_stores_file_path_and_displays_cover](l28_pro/GameShelf/test_covers.py#L53) |
+| Domyślna okładka i brakujące pliki | Wykonane (0.6.0) | [l28_pro/GameShelf/models.py — Game.cover_url](l28_pro/GameShelf/models.py#L58) |
 | Testy najważniejszych funkcji | Wykonane (0.7.0) | [l28_pro/GameShelf/test_workflows.py — PlayerWorkflowTests](l28_pro/GameShelf/test_workflows.py#L8) |
 | API REST | Zaplanowane (0.9.0) | [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1) |
 | OpenAPI, Swagger UI i ReDoc | Zaplanowane (0.9.0.1) | [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1) |

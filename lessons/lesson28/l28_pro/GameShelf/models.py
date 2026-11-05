@@ -37,6 +37,7 @@ class Tag(models.Model):
 
 
 class Game(models.Model):
+    rawg_id = models.PositiveBigIntegerField(null=True, blank=True, unique=True)
     seed_key = models.CharField(
         max_length=80, unique=True, null=True, blank=True, editable=False
     )

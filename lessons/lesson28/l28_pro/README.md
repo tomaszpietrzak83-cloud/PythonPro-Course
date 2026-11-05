@@ -50,6 +50,19 @@ python manage.py seed_db --users 3 --entries-per-user 10 --user-password-env GAM
 Seeder odczyta hasło ze zmiennej i zastosuje je wyłącznie do **nowych** kont.
 Nie wypisuje hasła. Hasło istniejącego konta można zmienić w panelu admina.
 
+## Import RAWG
+
+Ustaw `RAWG_API_KEY` w środowisku lub w lokalnym `../.env`. Następnie:
+
+```powershell
+python manage.py import_games --genre action --limit 10
+```
+
+Import pobiera jedną partię gier PC (limit 1–20), zapisuje okładki lokalnie
+i rozpoznaje powtórzenia po ID RAWG. Ponowny import zachowuje ręczne edycje.
+Jeśli pobranie obrazu się nie uda, gra korzysta z placeholdera. Źródło:
+[dokumentacja RAWG](https://api.rawg.io/docs/).
+
 ## Panel admina
 
 Listy wspierają wyszukiwanie, filtrowanie i sortowanie. Gry pokazują liczbę

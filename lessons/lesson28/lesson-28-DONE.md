@@ -2,19 +2,19 @@
 
 > Plik generowany przez `update_docs.py`. Status pochodzi z `roadmap_done.md`, a fragmenty kodu i numery linii z aktualnych plików. Opisy PL: `docs_pl_data.py`.
 
-<p style="color:red"><strong>Stan realizacji:</strong> Ukończono GameShelf do 0.7.0. W kodzie zdefiniowano 97 testów; wynik ich wykonania opisuje roadmap_done.md.</p>
+<p style="color:red"><strong>Stan realizacji:</strong> Ukończono GameShelf do 0.8.0. W kodzie zdefiniowano 101 testów; wynik ich wykonania opisuje roadmap_done.md.</p>
 
 ## Zrealizowane etapy i miejsca w kodzie
 
 <p style="color:red"><strong>Wykonane: 0.0.1 — Uruchomienie projektu.</strong> Gdzie: <a href="l28_pro/l28_pro/settings.py#L1">l28_pro/l28_pro/settings.py, okolice linii 1</a>.</p>
 
-<p style="color:red"><strong>Wykonane: 0.0.2 — Pierwsza strona.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L13">l28_pro/GameShelf/views.py, okolice linii 13</a>.</p>
+<p style="color:red"><strong>Wykonane: 0.0.2 — Pierwsza strona.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L17">l28_pro/GameShelf/views.py, okolice linii 17</a>.</p>
 
 <p style="color:red"><strong>Wykonane: 0.0.3 — Pierwszy model.</strong> Gdzie: <a href="l28_pro/GameShelf/models.py#L39">l28_pro/GameShelf/models.py, okolice linii 39</a>.</p>
 
-<p style="color:red"><strong>Wykonane: 0.0.4 — Katalog gier.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L48">l28_pro/GameShelf/views.py, okolice linii 48</a>.</p>
+<p style="color:red"><strong>Wykonane: 0.0.4 — Katalog gier.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L52">l28_pro/GameShelf/views.py, okolice linii 52</a>.</p>
 
-<p style="color:red"><strong>Wykonane: 0.0.5 — Szczegóły gry.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L67">l28_pro/GameShelf/views.py, okolice linii 67</a>.</p>
+<p style="color:red"><strong>Wykonane: 0.0.5 — Szczegóły gry.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L74">l28_pro/GameShelf/views.py, okolice linii 74</a>.</p>
 
 <p style="color:red"><strong>Wykonane: 0.1.0 — Minimalna użyteczna aplikacja.</strong> Gdzie: <a href="l28_pro/GameShelf/templates/base.html#L1">l28_pro/GameShelf/templates/base.html, okolice linii 1</a>.</p>
 
@@ -24,33 +24,35 @@
 
 <p style="color:red"><strong>Wykonane: 0.1.3 — Tagi.</strong> Gdzie: <a href="l28_pro/GameShelf/models.py#L28">l28_pro/GameShelf/models.py, okolice linii 28</a>.</p>
 
-<p style="color:red"><strong>Wykonane: 0.1.4 — Wyszukiwanie.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L55">l28_pro/GameShelf/views.py, okolice linii 55</a>.</p>
+<p style="color:red"><strong>Wykonane: 0.1.4 — Wyszukiwanie.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L59">l28_pro/GameShelf/views.py, okolice linii 59</a>.</p>
 
-<p style="color:red"><strong>Wykonane: 0.1.4.1 — Seeder 100 fikcyjnych gier.</strong> Gdzie: <a href="l28_pro/GameShelf/management/commands/seed_db.py#L118">l28_pro/GameShelf/management/commands/seed_db.py, okolice linii 118</a>.</p>
+<p style="color:red"><strong>Wykonane: 0.1.4.1 — Seeder 100 fikcyjnych gier.</strong> Gdzie: <a href="l28_pro/GameShelf/management/commands/seed_db.py#L144">l28_pro/GameShelf/management/commands/seed_db.py, okolice linii 144</a>.</p>
 
-<p style="color:red"><strong>Wykonane: 0.2.0 — Rejestracja i logowanie.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L17">l28_pro/GameShelf/views.py, okolice linii 17</a>.</p>
+<p style="color:red"><strong>Wykonane: 0.2.0 — Rejestracja i logowanie.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L21">l28_pro/GameShelf/views.py, okolice linii 21</a>.</p>
 
-<p style="color:red"><strong>Wykonane: 0.2.1 — Model UserGame.</strong> Gdzie: <a href="l28_pro/GameShelf/models.py#L62">l28_pro/GameShelf/models.py, okolice linii 62</a>.</p>
+<p style="color:red"><strong>Wykonane: 0.2.1 — Model UserGame.</strong> Gdzie: <a href="l28_pro/GameShelf/models.py#L69">l28_pro/GameShelf/models.py, okolice linii 69</a>.</p>
 
-<p style="color:red"><strong>Wykonane: 0.2.2 — Dodawanie do posiadanych.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L79">l28_pro/GameShelf/views.py, okolice linii 79</a>.</p>
+<p style="color:red"><strong>Wykonane: 0.2.2 — Dodawanie do posiadanych.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L93">l28_pro/GameShelf/views.py, okolice linii 93</a>.</p>
 
-<p style="color:red"><strong>Wykonane: 0.2.3 — Wishlist.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L90">l28_pro/GameShelf/views.py, okolice linii 90</a>.</p>
+<p style="color:red"><strong>Wykonane: 0.2.3 — Wishlist.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L106">l28_pro/GameShelf/views.py, okolice linii 106</a>.</p>
 
-<p style="color:red"><strong>Wykonane: 0.2.4 — Moja biblioteka.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L104">l28_pro/GameShelf/views.py, okolice linii 104</a>.</p>
+<p style="color:red"><strong>Wykonane: 0.2.4 — Moja biblioteka.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L124">l28_pro/GameShelf/views.py, okolice linii 124</a>.</p>
 
 <p style="color:red"><strong>Wykonane: 0.3.0 — Status, ocena i notatka.</strong> Gdzie: <a href="l28_pro/GameShelf/forms.py#L42">l28_pro/GameShelf/forms.py, okolice linii 42</a>.</p>
 
-<p style="color:red"><strong>Wykonane: 0.3.1 — Usuwanie z biblioteki.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L138">l28_pro/GameShelf/views.py, okolice linii 138</a>.</p>
+<p style="color:red"><strong>Wykonane: 0.3.1 — Usuwanie z biblioteki.</strong> Gdzie: <a href="l28_pro/GameShelf/views.py#L167">l28_pro/GameShelf/views.py, okolice linii 167</a>.</p>
 
-<p style="color:red"><strong>Wykonane: 0.4.0 — Wygodniejszy panel admina.</strong> Gdzie: <a href="l28_pro/GameShelf/admin.py#L46">l28_pro/GameShelf/admin.py, okolice linii 46</a>.</p>
+<p style="color:red"><strong>Wykonane: 0.4.0 — Wygodniejszy panel admina.</strong> Gdzie: <a href="l28_pro/GameShelf/admin.py#L50">l28_pro/GameShelf/admin.py, okolice linii 50</a>.</p>
 
-<p style="color:red"><strong>Wykonane: 0.5.0 — Rozszerzony seeder.</strong> Gdzie: <a href="l28_pro/GameShelf/management/commands/seed_db.py#L94">l28_pro/GameShelf/management/commands/seed_db.py, okolice linii 94</a>.</p>
+<p style="color:red"><strong>Wykonane: 0.5.0 — Rozszerzony seeder.</strong> Gdzie: <a href="l28_pro/GameShelf/management/commands/seed_db.py#L115">l28_pro/GameShelf/management/commands/seed_db.py, okolice linii 115</a>.</p>
 
-<p style="color:red"><strong>Wykonane: 0.5.0.1 — Upload i wyświetlanie obrazów.</strong> Gdzie: <a href="l28_pro/GameShelf/test_covers.py#L47">l28_pro/GameShelf/test_covers.py, okolice linii 47</a>.</p>
+<p style="color:red"><strong>Wykonane: 0.5.0.1 — Upload i wyświetlanie obrazów.</strong> Gdzie: <a href="l28_pro/GameShelf/test_covers.py#L53">l28_pro/GameShelf/test_covers.py, okolice linii 53</a>.</p>
 
-<p style="color:red"><strong>Wykonane: 0.6.0 — Okładki.</strong> Gdzie: <a href="l28_pro/GameShelf/models.py#L51">l28_pro/GameShelf/models.py, okolice linii 51</a>.</p>
+<p style="color:red"><strong>Wykonane: 0.6.0 — Okładki.</strong> Gdzie: <a href="l28_pro/GameShelf/models.py#L58">l28_pro/GameShelf/models.py, okolice linii 58</a>.</p>
 
 <p style="color:red"><strong>Wykonane: 0.7.0 — Testy najważniejszych funkcji.</strong> Gdzie: <a href="l28_pro/GameShelf/test_workflows.py#L8">l28_pro/GameShelf/test_workflows.py, okolice linii 8</a>.</p>
+
+<p style="color:red"><strong>Wykonane: 0.8.0 — Opcjonalny import zewnętrzny.</strong> Gdzie: <a href="l28_pro/GameShelf/management/commands/import_games.py#L72">l28_pro/GameShelf/management/commands/import_games.py, okolice linii 72</a>.</p>
 
 
 ---
@@ -378,7 +380,7 @@ Dzięki `drf-spectacular` można to opisać w dokumentacji API tak, aby endpoint
 
 ## 8. Podsumowanie
 
-<p style="color:red"><strong>Stan realizacji:</strong> Aktualny stan: do 0.7.0. Szczegóły wersji są w roadmapPL.md i roadmap_done.md; wybrane rzeczywiste bloki kodu objaśnia most_interesting.md.</p>
+<p style="color:red"><strong>Stan realizacji:</strong> Aktualny stan: do 0.8.0. Szczegóły wersji są w roadmapPL.md i roadmap_done.md; wybrane rzeczywiste bloki kodu objaśnia most_interesting.md.</p>
 
 
 W tej lekcji pojawiły się najważniejsze elementy dokumentacji API:

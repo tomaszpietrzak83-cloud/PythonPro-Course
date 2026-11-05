@@ -6,7 +6,7 @@ To rzeczywisty kod projektu, nie uproszczone kopie. Numery linii i treść są o
 
 ## Relacje i ograniczenia bazy
 
-Źródło: [l28_pro/GameShelf/models.py — UserGame](l28_pro/GameShelf/models.py#L62).
+Źródło: [l28_pro/GameShelf/models.py — UserGame](l28_pro/GameShelf/models.py#L69).
 
 ```python
 class UserGame(models.Model):
@@ -21,33 +21,51 @@ class UserGame(models.Model):
         WISHLIST = "wishlist", "Wishlist"
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="game_entries"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="game_entries",
     )
     game = models.ForeignKey(
         Game, on_delete=models.CASCADE, related_name="library_entries"
     )
-    list_type = models.CharField(max_length=8, choices=ListType.choices, default=ListType.OWNED)
+    list_type = models.CharField(
+        max_length=8, choices=ListType.choices, default=ListType.OWNED
+    )
     play_status = models.CharField(
-        max_length=11, choices=PlayStatus.choices, default=PlayStatus.NOT_STARTED
+        max_length=11,
+        choices=PlayStatus.choices,
+        default=PlayStatus.NOT_STARTED,
     )
     rating = models.PositiveSmallIntegerField(
-        null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(10)]
+        null=True,
+        blank=True,
+        validators=[MinValueValidator(1), MaxValueValidator(10)],
     )
     note = models.TextField(blank=True, max_length=5000)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(fields=("user", "game"), name="unique_user_game"),
+            models.UniqueConstraint(
+                fields=("user", "game"), name="unique_user_game"
+            ),
             models.CheckConstraint(
                 condition=models.Q(list_type__in=("owned", "wishlist")),
                 name="valid_user_game_list_type",
             ),
             models.CheckConstraint(
-                condition=models.Q(rating__isnull=True) | models.Q(rating__gte=1, rating__lte=10),
+                condition=models.Q(rating__isnull=True)
+                | models.Q(rating__gte=1, rating__lte=10),
                 name="user_game_rating_1_to_10",
             ),
             models.CheckConstraint(
-                condition=models.Q(play_status__in=("not_started", "playing", "completed", "abandoned")),
+                condition=models.Q(
+                    play_status__in=(
+                        "not_started",
+                        "playing",
+                        "completed",
+                        "abandoned",
+                    )
+                ),
                 name="valid_user_game_play_status",
             ),
         ]
@@ -60,7 +78,7 @@ ForeignKey łączy wpis z użytkownikiem i grą. TextChoices nadaje czytelne naz
 
 ## Wyszukiwanie i filtry w jednym miejscu
 
-Źródło: [l28_pro/GameShelf/views.py — filtered_games](l28_pro/GameShelf/views.py#L29).
+Źródło: [l28_pro/GameShelf/views.py — filtered_games](l28_pro/GameShelf/views.py#L33).
 
 ```python
 def filtered_games(params):
@@ -86,7 +104,7 @@ Formularz najpierw sprawdza parametry URL. cleaned_data zawiera już prawidłowe
 
 ## Trzy podpowiedzi z bazy
 
-Źródło: [l28_pro/GameShelf/views.py — game_suggestions](l28_pro/GameShelf/views.py#L55).
+Źródło: [l28_pro/GameShelf/views.py — game_suggestions](l28_pro/GameShelf/views.py#L59).
 
 ```python
 @require_GET
@@ -95,7 +113,10 @@ def game_suggestions(request):
     if not filter_form.is_valid() or not filter_form.cleaned_data["q"]:
         return JsonResponse({"results": []})
     results = [
-        {"title": game.title, "url": reverse("gameshelf:game_detail", args=[game.pk])}
+        {
+            "title": game.title,
+            "url": reverse("gameshelf:game_detail", args=[game.pk]),
+        }
         for game in games[:3]
     ]
     return JsonResponse({"results": results})
@@ -127,7 +148,7 @@ ModelForm bierze walidatory i typy z modelu. Jawne fields ogranicza edycję do s
 
 ## Sprawdzenie właściciela przed edycją
 
-Źródło: [l28_pro/GameShelf/views.py — edit_library_entry](l28_pro/GameShelf/views.py#L122).
+Źródło: [l28_pro/GameShelf/views.py — edit_library_entry](l28_pro/GameShelf/views.py#L147).
 
 ```python
 @login_required
@@ -141,16 +162,20 @@ def edit_library_entry(request, pk):
     )
     if request.method == "POST" and form.is_valid():
         form.save()
-        messages.success(request, f"Your entry for {entry.game.title} has been updated.")
+        messages.success(
+            request, f"Your entry for {entry.game.title} has been updated."
+        )
         return redirect("gameshelf:my_library")
-    return render(request, "edit_library_entry.html", {"entry": entry, "form": form})
+    return render(
+        request, "edit_library_entry.html", {"entry": entry, "form": form}
+    )
 ```
 
 get_object_or_404 filtruje jednocześnie po pk i request.user. Użytkownik nie może otworzyć cudzego wpisu nawet znając jego ID. Po prawidłowym POST następuje przekierowanie, co ogranicza przypadkowe ponowne wysłanie formularza.
 
 ## GET potwierdza, POST usuwa
 
-Źródło: [l28_pro/GameShelf/views.py — remove_library_entry](l28_pro/GameShelf/views.py#L138).
+Źródło: [l28_pro/GameShelf/views.py — remove_library_entry](l28_pro/GameShelf/views.py#L167).
 
 ```python
 @login_required
@@ -162,7 +187,9 @@ def remove_library_entry(request, pk):
     if request.method == "POST":
         title = entry.game.title
         entry.delete()
-        messages.success(request, f"{title} has been removed from your library.")
+        messages.success(
+            request, f"{title} has been removed from your library."
+        )
         return redirect("gameshelf:my_library")
     return render(request, "remove_library_entry.html", {"entry": entry})
 ```
@@ -171,7 +198,7 @@ Odczyt strony potwierdzenia niczego nie zmienia. Usunięcie jest wewnątrz warun
 
 ## Liczniki w jednym zapytaniu
 
-Źródło: [l28_pro/GameShelf/admin.py — GameAdmin](l28_pro/GameShelf/admin.py#L46).
+Źródło: [l28_pro/GameShelf/admin.py — GameAdmin](l28_pro/GameShelf/admin.py#L50).
 
 ```python
 @admin.register(Game)
@@ -188,8 +215,10 @@ class GameAdmin(admin.ModelAdmin):
     inlines = (UserGameInline,)
 
     def get_queryset(self, request):
-        return super().get_queryset(request).annotate(
-            _saved_by=Count("library_entries", distinct=True)
+        return (
+            super()
+            .get_queryset(request)
+            .annotate(_saved_by=Count("library_entries", distinct=True))
         )
 
     @admin.display(description="Saved by users", ordering="_saved_by")
@@ -201,7 +230,7 @@ annotate i Count obliczają licznik zapisów razem z danymi gry. distinct zapobi
 
 ## Powtarzalne biblioteki testowe
 
-Źródło: [l28_pro/GameShelf/management/commands/seed_db.py — Command.seed_libraries](l28_pro/GameShelf/management/commands/seed_db.py#L94).
+Źródło: [l28_pro/GameShelf/management/commands/seed_db.py — Command.seed_libraries](l28_pro/GameShelf/management/commands/seed_db.py#L115).
 
 ```python
     def seed_libraries(self, users, games, count, fake, seed):
@@ -215,12 +244,17 @@ annotate i Count obliczają licznik zapisów razem z danymi gry. distinct zapobi
                 if index % 2 == 0:
                     list_type = UserGame.ListType.OWNED
                     status = fake.random_element(UserGame.PlayStatus.values)
-                    if status in (UserGame.PlayStatus.COMPLETED, UserGame.PlayStatus.PLAYING):
+                    if status in (
+                        UserGame.PlayStatus.COMPLETED,
+                        UserGame.PlayStatus.PLAYING,
+                    ):
                         rating = fake.random_int(min=1, max=10)
                 _, created = UserGame.objects.get_or_create(
-                    user=user, game=game,
+                    user=user,
+                    game=game,
                     defaults={
-                        "list_type": list_type, "play_status": status,
+                        "list_type": list_type,
+                        "play_status": status,
                         "rating": rating,
                         "note": f"FAKE demo note: {fake.sentence(nb_words=8)}",
                     },
@@ -233,7 +267,7 @@ seed_instance odtwarza te same losowania. get_or_create szuka istniejącej pary 
 
 ## Okładka albo bezpieczny placeholder
 
-Źródło: [l28_pro/GameShelf/models.py — Game.cover_url](l28_pro/GameShelf/models.py#L51).
+Źródło: [l28_pro/GameShelf/models.py — Game.cover_url](l28_pro/GameShelf/models.py#L58).
 
 ```python
     @property
@@ -248,12 +282,13 @@ seed_instance odtwarza te same losowania. get_or_create szuka istniejącej pary 
 
 ## Test prawdziwego uploadu do admina
 
-Źródło: [l28_pro/GameShelf/test_covers.py — CoverUploadTests.test_admin_upload_stores_file_path_and_displays_cover](l28_pro/GameShelf/test_covers.py#L47).
+Źródło: [l28_pro/GameShelf/test_covers.py — CoverUploadTests.test_admin_upload_stores_file_path_and_displays_cover](l28_pro/GameShelf/test_covers.py#L53).
 
 ```python
     def test_admin_upload_stores_file_path_and_displays_cover(self):
         response = self.client.post(
-            reverse("admin:GameShelf_game_add"), self.admin_data(cover=uploaded_cover())
+            reverse("admin:GameShelf_game_add"),
+            self.admin_data(cover=uploaded_cover()),
         )
         self.assertEqual(response.status_code, 302)
         game = Game.objects.get(title="Uploaded cover game")
@@ -261,7 +296,10 @@ seed_instance odtwarza te same losowania. get_or_create szuka istniejącej pary 
         self.assertTrue(Path(game.cover.path).is_file())
         with Image.open(game.cover.path) as image:
             self.assertEqual(image.size, (240, 360))
-        for url in (reverse("gameshelf:game_list"), reverse("gameshelf:game_detail", args=[game.pk])):
+        for url in (
+            reverse("gameshelf:game_list"),
+            reverse("gameshelf:game_detail", args=[game.pk]),
+        ):
             self.assertContains(self.client.get(url), game.cover.url)
 ```
 
@@ -269,39 +307,64 @@ Test przesyła rzeczywisty PNG jako plik formularza, sprawdza przekierowanie, ś
 
 ## Test całego przepływu z CSRF
 
-Źródło: [l28_pro/GameShelf/test_workflows.py — PlayerWorkflowTests.test_register_discover_save_edit_remove_and_logout](l28_pro/GameShelf/test_workflows.py#L38).
+Źródło: [l28_pro/GameShelf/test_workflows.py — PlayerWorkflowTests.test_register_discover_save_edit_remove_and_logout](l28_pro/GameShelf/test_workflows.py#L58).
 
 ```python
     def test_register_discover_save_edit_remove_and_logout(self):
         detail = reverse("gameshelf:game_detail", args=[self.game.pk])
-        response = self.client.get(reverse("gameshelf:game_list"), {
-            "q": "Orbit", "genre": "action", "tag": "singleplayer",
-        })
+        response = self.client.get(
+            reverse("gameshelf:game_list"),
+            {
+                "q": "Orbit",
+                "genre": "action",
+                "tag": "singleplayer",
+            },
+        )
         self.assertContains(response, self.game.title)
         self.assertContains(response, "cover-placeholder.svg")
         client = self.register_and_login("workflow_player")
         wishlist = reverse("gameshelf:add_to_wishlist", args=[self.game.pk])
-        self.assertRedirects(self.post_form(client, wishlist, form_url=detail), detail)
+        self.assertRedirects(
+            self.post_form(client, wishlist, form_url=detail), detail
+        )
         entry = UserGame.objects.get()
         original_pk = entry.pk
         self.assertEqual(entry.list_type, "wishlist")
         self.post_form(client, wishlist, form_url=detail)
         self.assertEqual(UserGame.objects.count(), 1)
-        self.post_form(client, reverse("gameshelf:add_to_owned", args=[self.game.pk]), form_url=detail)
+        self.post_form(
+            client,
+            reverse("gameshelf:add_to_owned", args=[self.game.pk]),
+            form_url=detail,
+        )
         entry.refresh_from_db()
         self.assertEqual((entry.pk, entry.list_type), (original_pk, "owned"))
         edit_url = reverse("gameshelf:edit_library_entry", args=[entry.pk])
-        response = self.post_form(client, edit_url, {
-            "play_status": "completed", "rating": 10, "note": "Workflow private note",
-        })
+        response = self.post_form(
+            client,
+            edit_url,
+            {
+                "play_status": "completed",
+                "rating": 10,
+                "note": "Workflow private note",
+            },
+        )
         self.assertRedirects(response, reverse("gameshelf:my_library"))
-        self.assertContains(client.get(reverse("gameshelf:my_library")), "Workflow private note")
+        self.assertContains(
+            client.get(reverse("gameshelf:my_library")), "Workflow private note"
+        )
         self.assertNotContains(self.client.get(detail), "Workflow private note")
         remove_url = reverse("gameshelf:remove_library_entry", args=[entry.pk])
-        self.assertRedirects(self.post_form(client, remove_url), reverse("gameshelf:my_library"))
+        self.assertRedirects(
+            self.post_form(client, remove_url), reverse("gameshelf:my_library")
+        )
         self.assertFalse(UserGame.objects.exists())
         self.assertTrue(Game.objects.filter(pk=self.game.pk).exists())
-        response = self.post_form(client, reverse("gameshelf:logout"), form_url=reverse("gameshelf:my_library"))
+        response = self.post_form(
+            client,
+            reverse("gameshelf:logout"),
+            form_url=reverse("gameshelf:my_library"),
+        )
         self.assertRedirects(response, reverse("gameshelf:home"))
         self.assertNotIn("_auth_user_id", client.session)
 ```

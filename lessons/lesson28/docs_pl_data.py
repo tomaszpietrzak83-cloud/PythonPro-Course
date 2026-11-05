@@ -73,7 +73,7 @@ STAGES = [
      "l28_pro/GameShelf/test_workflows.py::PlayerWorkflowTests"),
     ("0.8.0", "Opcjonalny import zewnętrzny", "Importować rzeczywiste dane gier, np. z RAWG.",
      "Wybrać źródło i przechowywać klucz API poza kodem|Dodać polecenie import_games|Zacząć od jednego gatunku i małego limitu|Zapisywać zewnętrzne ID, aby uniknąć duplikatów|Pobierać okładki do media i przypisywać je do Game.cover; URL źródła może być metadanymi|Czytelnie obsłużyć błędy API",
-     "l28_pro/GameShelf/management/commands"),
+     "l28_pro/GameShelf/management/commands/import_games.py::Command.handle"),
     ("0.9.0", "Podstawowe API", "Udostępnić API REST przed dodaniem Swaggera.",
      "Skonfigurować Django REST Framework|Dodać serializery gier, gatunków, tagów i wpisów biblioteki|Dodać publiczne GET /api/v1/games/, /api/v1/games/{id}/, /api/v1/genres/ i /api/v1/tags/|Obsłużyć q, genre i tag tak jak w katalogu|Dodać chronione GET /api/v1/library/ tylko dla bieżącego użytkownika|Testować filtry, 404, logowanie i prywatność notatek",
      "l28_pro/l28_pro/urls.py"),
