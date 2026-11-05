@@ -1,0 +1,13 @@
+{% extends "drf_spectacular/swagger_ui.html" %}
+{% block body %}
+<nav aria-label="GameShelf API session" style="padding: 1rem; background: #efedff; font-family: sans-serif">
+    {% if request.user.is_authenticated %}
+        Signed in as {{ request.user.get_username }}. Try it out uses your session and adds CSRF for writes.
+    {% else %}
+        <a href="{% url 'gameshelf:login' %}?next={{ request.path|urlencode }}">Sign in to test your library</a>.
+        Public catalog endpoints can be tested without signing in.
+    {% endif %}
+    <a href="{% url 'gameshelf:home' %}">GameShelf home</a>
+</nav>
+{{ block.super }}
+{% endblock %}

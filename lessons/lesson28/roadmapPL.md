@@ -295,7 +295,7 @@ Implementacja: [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1).
 
 ## Wersja 0.9.0.1 — OpenAPI i Swagger UI
 
-**Stan: zaplanowane.** Cel: Udokumentować działające API.
+**Stan: wykonane.** Cel: Udokumentować działające API.
 
 1. Skonfigurować drf-spectacular jako generator schematu.
 2. Dodać /api/schema/, /api/schema/swagger-ui/ i /api/schema/redoc/.
@@ -305,7 +305,7 @@ Implementacja: [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1).
 6. Walidować schemat i testować adresy dokumentacji.
 7. W Swagger Try it out wywołać listę, filtr FAKE, szczegóły i brakującą grę.
 
-Miejsce do rozbudowy: [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1).
+Implementacja: [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1).
 
 ## Wersja 0.9.0.2 — Dodatkowe endpointy i demonstracja Swaggera
 

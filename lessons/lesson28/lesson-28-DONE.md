@@ -2,7 +2,7 @@
 
 > Plik generowany przez `update_docs.py`. Status pochodzi z `roadmap_done.md`, a fragmenty kodu i numery linii z aktualnych plików. Opisy PL: `docs_pl_data.py`.
 
-<p style="color:red"><strong>Stan realizacji:</strong> Ukończono GameShelf do 0.9.0. W kodzie zdefiniowano 105 testów; wynik ich wykonania opisuje roadmap_done.md.</p>
+<p style="color:red"><strong>Stan realizacji:</strong> Ukończono GameShelf do 0.9.0.1. W kodzie zdefiniowano 108 testów; wynik ich wykonania opisuje roadmap_done.md.</p>
 
 ## Zrealizowane etapy i miejsca w kodzie
 
@@ -56,6 +56,8 @@
 
 <p style="color:red"><strong>Wykonane: 0.9.0 — Podstawowe API.</strong> Gdzie: <a href="l28_pro/l28_pro/urls.py#L1">l28_pro/l28_pro/urls.py, okolice linii 1</a>.</p>
 
+<p style="color:red"><strong>Wykonane: 0.9.0.1 — OpenAPI i Swagger UI.</strong> Gdzie: <a href="l28_pro/l28_pro/urls.py#L1">l28_pro/l28_pro/urls.py, okolice linii 1</a>.</p>
+
 
 ---
 
@@ -87,7 +89,7 @@ Dobra dokumentacja API jest jak czytelna instrukcja obsługi. Dzięki niej:
 
 ## 2. OpenAPI i Swagger
 
-<p style="color:red"><strong>Stan realizacji:</strong> OpenAPI i Swagger w aplikacji GameShelf są jeszcze zaplanowane (0.9.0.1). Nie należy mylić plików Markdown ani JSON-owych podpowiedzi z dokumentacją Swagger.</p>
+<p style="color:red"><strong>Stan realizacji:</strong> Etap OpenAPI i Swagger jest zapisany jako wykonany; sprawdź routing i ustawienia projektu.</p>
 
 
 Kiedy mówimy o dokumentacji API, często pojawiają się dwa terminy: **OpenAPI** i **Swagger**.
@@ -120,7 +122,7 @@ Swagger = narzędzia używające OpenAPI
 
 ## 3. Integracja Swagger UI z Django REST Framework
 
-<p style="color:red"><strong>Stan realizacji:</strong> Ten fragment jest materiałem do późniejszego etapu 0.9.0.1. Obecne INSTALLED_APPS i routing nie konfigurują jeszcze DRF, schematu OpenAPI, Swagger UI ani ReDoc.</p>
+<p style="color:red"><strong>Stan realizacji:</strong> Integracja dokumentacji API: etap 0.9.0.1 wykonany; konfiguracja w l28_pro/l28_pro/settings.py i urls.py.</p>
 
 
 Ręczne pisanie specyfikacji OpenAPI byłoby czasochłonne.
@@ -214,7 +216,7 @@ http://127.0.0.1:8000/api/schema/swagger-ui/
 
 ## 4. Ulepszanie automatycznie generowanej dokumentacji
 
-<p style="color:red"><strong>Stan realizacji:</strong> extend_schema, OpenApiParameter i OpenApiResponse nie są jeszcze użyte w GameShelf. Filtry HTML są już w forms.py i filtered_games w views.py; ich dokumentacja API powstanie później.</p>
+<p style="color:red"><strong>Stan realizacji:</strong> Opis parametrów i odpowiedzi API należy utrzymywać razem ze schematem; zobacz etap 0.9.0.1.</p>
 
 
 `drf-spectacular` dobrze analizuje serializery i widoki, ale czasem warto dodać więcej szczegółów ręcznie.
@@ -260,7 +262,7 @@ class ProductListView(APIView):
 
 ## 6. Dekorator `@extend_schema`
 
-<p style="color:red"><strong>Stan realizacji:</strong> Przykłady @extend_schema są planem do 0.9.0.1–0.9.0.2. Aktualne aplikacyjne POST-y biblioteki są zwykłymi widokami Django w GameShelf/views.py i korzystają z sesji oraz CSRF.</p>
+<p style="color:red"><strong>Stan realizacji:</strong> Dekoratory dokumentacji należy porównać z rzeczywistymi kodami odpowiedzi i walidacją.</p>
 
 
 `@extend_schema` pozwala doprecyzować dokumentację pojedynczego endpointu.
@@ -382,7 +384,7 @@ Dzięki `drf-spectacular` można to opisać w dokumentacji API tak, aby endpoint
 
 ## 8. Podsumowanie
 
-<p style="color:red"><strong>Stan realizacji:</strong> Aktualny stan: do 0.9.0. Szczegóły wersji są w roadmapPL.md i roadmap_done.md; wybrane rzeczywiste bloki kodu objaśnia most_interesting.md.</p>
+<p style="color:red"><strong>Stan realizacji:</strong> Aktualny stan: do 0.9.0.1. Szczegóły wersji są w roadmapPL.md i roadmap_done.md; wybrane rzeczywiste bloki kodu objaśnia most_interesting.md.</p>
 
 
 W tej lekcji pojawiły się najważniejsze elementy dokumentacji API:

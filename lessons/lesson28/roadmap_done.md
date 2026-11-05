@@ -325,7 +325,7 @@ Status: done.
 
 ## Next Version
 
-Continue with: Version 0.9.0.1 - OpenAPI and Swagger UI.
+Continue with: Version 0.9.0.2 - Additional API Endpoints and Swagger Demonstration.
 
 ## Version 0.8.0 - Optional External Import
 
@@ -340,3 +340,10 @@ Status: done.
 
 - Added read-only DRF catalog routes and a session-protected library scoped to the current user.
 - Reused catalog filters; verified public access, validation, missing games and library isolation.
+
+## Version 0.9.0.1 - OpenAPI and Swagger UI
+
+Status: done.
+
+- Generated OpenAPI with DRF serializers and explicit filter, authentication and error documentation.
+- Added Swagger UI and ReDoc using local sidecar assets.
