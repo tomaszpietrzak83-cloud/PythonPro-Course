@@ -309,7 +309,7 @@ Implementacja: [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1).
 
 ## Wersja 0.9.0.2 — Dodatkowe endpointy i demonstracja Swaggera
 
-**Stan: zaplanowane.** Cel: Pokazać walidację i różne metody HTTP na bibliotece.
+**Stan: wykonane.** Cel: Pokazać walidację i różne metody HTTP na bibliotece.
 
 1. Dodać POST /api/v1/library/ (201, duplikat 400).
 2. Dodać GET /api/v1/library/{id}/.
@@ -320,7 +320,7 @@ Implementacja: [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1).
 7. Przetestować poprawne i błędne operacje.
 8. W Swaggerze znaleźć FAKE, dodać wishlistę, przenieść do owned, pokazać błąd oceny i usunąć wpis.
 
-Miejsce do rozbudowy: [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1).
+Implementacja: [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1).
 
 ## Wersja 0.10.0 — Dopracowanie interfejsu
 

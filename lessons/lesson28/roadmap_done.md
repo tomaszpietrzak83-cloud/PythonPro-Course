@@ -323,10 +323,6 @@ Status: done.
   (tests and migrations excluded); system checks and migration consistency checks pass.
 - Browser checks confirmed PNG upload, loaded placeholder images and a 390px layout without overflow.
 
-## Next Version
-
-Continue with: Version 0.9.0.2 - Additional API Endpoints and Swagger Demonstration.
-
 ## Version 0.8.0 - Optional External Import
 
 Status: done.
@@ -347,3 +343,19 @@ Status: done.
 
 - Generated OpenAPI with DRF serializers and explicit filter, authentication and error documentation.
 - Added Swagger UI and ReDoc using local sidecar assets.
+- Verified filtered FAKE games, a game detail and a missing game through Swagger Try it out.
+
+## Version 0.9.0.2 - Additional API Endpoints and Swagger Demonstration
+
+Status: done.
+
+- Added session- and CSRF-protected library POST, detail GET, PATCH and DELETE.
+- Enforced ownership, duplicate prevention, rating validation and the owned/wishlist rule.
+- Documented request examples and actual success/error responses in OpenAPI.
+- Verified the Swagger session and CSRF flow: wishlist 201, move to owned 200,
+  invalid rating 400 and removal of the demo entry 204.
+- All 111 GameShelf tests pass on PostgreSQL; OpenAPI validates without warnings.
+
+## Next Version
+
+Continue with: Version 0.10.0 - Frontend Polish.

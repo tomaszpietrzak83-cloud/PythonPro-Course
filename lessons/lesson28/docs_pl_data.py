@@ -92,6 +92,10 @@ STAGES = [
 ]
 
 INTERESTING = [
+    ("Edycja przez REST API", "l28_pro/GameShelf/api.py::LibraryDetail.patch",
+     "Widok pobiera wpis z kolekcji ograniczonej do request.user. Transakcja obejmuje blokadę edytowanego wiersza, walidację zmian i zapis. partial=True pozwala wysłać tylko zmieniane pola; opis OpenAPI rozdziela dane wejściowe i odpowiedź."),
+    ("Import zewnętrznej okładki", "l28_pro/GameShelf/management/commands/import_games.py::download_cover",
+     "Pobieranie dopuszcza wyłącznie znany host HTTPS, bez przekierowań. Limit bajtów i weryfikacja Pillow chronią przed błędnymi plikami, a ContentFile pozwala zapisać dane w ImageField."),
     ("Relacje i ograniczenia bazy", "l28_pro/GameShelf/models.py::UserGame",
      "ForeignKey łączy wpis z użytkownikiem i grą. TextChoices nadaje czytelne nazwy stałym. UniqueConstraint pilnuje jednej pary użytkownik–gra, a CheckConstraint chroni oceny i status także przy bezpośrednim zapisie ORM. Walidacja formularza i ograniczenie bazy uzupełniają się."),
     ("Wyszukiwanie i filtry w jednym miejscu", "l28_pro/GameShelf/views.py::filtered_games",

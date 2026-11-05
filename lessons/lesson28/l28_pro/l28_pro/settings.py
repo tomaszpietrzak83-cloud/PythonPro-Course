@@ -68,7 +68,8 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     "TITLE": "GameShelf API",
     "DESCRIPTION": "Public game catalog and private library. Sign in to GameShelf to use library endpoints.",
-    "VERSION": "0.9.0.1",
+    "VERSION": "0.9.0.2",
+    "COMPONENT_SPLIT_REQUEST": True,
     "SERVE_INCLUDE_SCHEMA": False,
     "SWAGGER_UI_DIST": "SIDECAR",
     "SWAGGER_UI_FAVICON_HREF": "SIDECAR",

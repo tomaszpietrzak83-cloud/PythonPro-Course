@@ -36,3 +36,29 @@ class LibraryEntrySerializer(serializers.ModelSerializer):
         model = UserGame
         fields = ("id", "game", "game_title", "list_type", "play_status", "rating", "note")
         read_only_fields = fields
+
+
+class LibraryCreateSerializer(serializers.Serializer):
+    game = serializers.PrimaryKeyRelatedField(queryset=Game.objects.all())
+    list_type = serializers.ChoiceField(choices=UserGame.ListType.choices)
+
+    def create(self, validated_data):
+        entry, created = UserGame.objects.get_or_create(
+            user=self.context["request"].user,
+            game=validated_data["game"],
+            defaults={"list_type": validated_data["list_type"]},
+        )
+        if not created:
+            raise serializers.ValidationError({"game": ["This game is already in your library."]})
+        return entry
+
+
+class LibraryUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserGame
+        fields = ("list_type", "play_status", "rating", "note")
+
+    def validate_list_type(self, value):
+        if not self.instance.can_move_to(value):
+            raise serializers.ValidationError("An owned game cannot be moved to the wishlist.")
+        return value

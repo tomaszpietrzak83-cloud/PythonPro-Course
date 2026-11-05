@@ -2,7 +2,7 @@
 
 > Plik generowany przez `update_docs.py`. Status pochodzi z `roadmap_done.md`, a fragmenty kodu i numery linii z aktualnych plików. Opisy PL: `docs_pl_data.py`.
 
-<p style="color:red"><strong>Stan realizacji:</strong> Ukończono GameShelf do 0.9.0.1. W kodzie zdefiniowano 108 testów; wynik ich wykonania opisuje roadmap_done.md.</p>
+<p style="color:red"><strong>Stan realizacji:</strong> Ukończono GameShelf do 0.9.0.2. W kodzie zdefiniowano 111 testów; wynik ich wykonania opisuje roadmap_done.md.</p>
 
 ## Zrealizowane etapy i miejsca w kodzie
 
@@ -57,6 +57,8 @@
 <p style="color:red"><strong>Wykonane: 0.9.0 — Podstawowe API.</strong> Gdzie: <a href="l28_pro/l28_pro/urls.py#L1">l28_pro/l28_pro/urls.py, okolice linii 1</a>.</p>
 
 <p style="color:red"><strong>Wykonane: 0.9.0.1 — OpenAPI i Swagger UI.</strong> Gdzie: <a href="l28_pro/l28_pro/urls.py#L1">l28_pro/l28_pro/urls.py, okolice linii 1</a>.</p>
+
+<p style="color:red"><strong>Wykonane: 0.9.0.2 — Dodatkowe endpointy i demonstracja Swaggera.</strong> Gdzie: <a href="l28_pro/l28_pro/urls.py#L1">l28_pro/l28_pro/urls.py, okolice linii 1</a>.</p>
 
 
 ---
@@ -384,7 +386,7 @@ Dzięki `drf-spectacular` można to opisać w dokumentacji API tak, aby endpoint
 
 ## 8. Podsumowanie
 
-<p style="color:red"><strong>Stan realizacji:</strong> Aktualny stan: do 0.9.0.1. Szczegóły wersji są w roadmapPL.md i roadmap_done.md; wybrane rzeczywiste bloki kodu objaśnia most_interesting.md.</p>
+<p style="color:red"><strong>Stan realizacji:</strong> Aktualny stan: do 0.9.0.2. Szczegóły wersji są w roadmapPL.md i roadmap_done.md; wybrane rzeczywiste bloki kodu objaśnia most_interesting.md.</p>
 
 
 W tej lekcji pojawiły się najważniejsze elementy dokumentacji API:

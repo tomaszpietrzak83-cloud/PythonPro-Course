@@ -12,6 +12,10 @@ FORBIDDEN = OpenApiResponse(
     DETAIL_ERROR, description="Sign in first. For writes, the session must also have a valid CSRF token."
 )
 INVALID_FILTER = OpenApiResponse(FIELD_ERRORS, description="Invalid filter value, keyed by field.")
+INVALID_ENTRY = OpenApiResponse(
+    {"oneOf": [FIELD_ERRORS, DETAIL_ERROR]},
+    description="Invalid input (including duplicate games or an out-of-range rating), or malformed JSON.",
+)
 CATALOG_PARAMETERS = [
     OpenApiParameter("q", {"type": "string", "maxLength": 120}, description="Title contains this text (case-insensitive)."),
     OpenApiParameter(

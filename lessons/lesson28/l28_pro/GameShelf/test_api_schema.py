@@ -14,6 +14,15 @@ class APISchemaTests(TestCase):
         library = schema["paths"]["/api/v1/library/"]["get"]
         self.assertIn("403", library["responses"])
         self.assertEqual(library["security"], [{"cookieAuth": []}])
+        paths = schema["paths"]
+        create = paths["/api/v1/library/"]["post"]
+        self.assertEqual(set(create["responses"]), {"201", "400", "403"})
+        examples = create["requestBody"]["content"]["application/json"]["examples"]
+        self.assertIn({"game": 1, "list_type": "wishlist"}, [item["value"] for item in examples.values()])
+        entry = paths["/api/v1/library/{id}/"]
+        self.assertEqual(set(entry), {"get", "patch", "delete"})
+        self.assertEqual(set(entry["patch"]["responses"]), {"200", "400", "403", "404"})
+        self.assertEqual(set(entry["delete"]["responses"]), {"204", "403", "404"})
 
     def test_swagger_and_redoc_load_local_assets(self):
         for name, asset in (

@@ -1,4 +1,4 @@
-# GameShelf 0.7.0
+# GameShelf 0.9.0.2
 
 Katalog gier z rejestracją i prywatną biblioteką użytkownika. Gra może należeć
 do posiadanych albo wishlisty. W bibliotece można edytować status rozgrywki,
@@ -62,6 +62,33 @@ Import pobiera jedną partię gier PC (limit 1–20), zapisuje okładki lokalnie
 i rozpoznaje powtórzenia po ID RAWG. Ponowny import zachowuje ręczne edycje.
 Jeśli pobranie obrazu się nie uda, gra korzysta z placeholdera. Źródło:
 [dokumentacja RAWG](https://api.rawg.io/docs/).
+
+## API, OpenAPI i Swagger UI
+
+- Katalog publiczny: `/api/v1/games/`, `/api/v1/games/{id}/`, `/api/v1/genres/`, `/api/v1/tags/`.
+- Biblioteka: `GET/POST /api/v1/library/` i `GET/PATCH/DELETE /api/v1/library/{id}/`.
+- Schemat: `/api/schema/`; interfejsy: `/api/schema/swagger-ui/` i `/api/schema/redoc/`.
+
+Przykład w Swagger UI:
+
+1. Wybierz **Sign in to test your library** i zaloguj się na konto testowe.
+2. W **List games → Try it out** ustaw `genre=fake` i `tag=fake`. Weź `id` gry,
+   której jeszcze nie masz w bibliotece (najpierw uruchom `seed_db`, jeśli katalog jest pusty).
+3. W **Save a game** wyślij JSON `{"game": 1, "list_type": "wishlist"}`,
+   podmieniając `1` na ID gry. Odpowiedź **201** zawiera osobne `id` wpisu.
+4. W **Update my saved game** użyj ID **wpisu** i wyślij `{"list_type": "owned"}`
+   (**200**). Spróbuj `{"rating": 11}` (**400**).
+5. W **Remove my saved game** usuń utworzony wpis testowy (**204**).
+
+Swagger działa pod tym samym adresem co Django: przeglądarka wysyła ciasteczko
+sesji, a Swagger dołącza `X-CSRFToken` do zapisów. Przy ręcznych żądaniach
+wyślij sesję, ciasteczko CSRF i nagłówek z tokenem. Bez sesji lub poprawnego
+CSRF zapis zwróci **403**; cudzy wpis zwróci **404**. Ponowny POST tej samej
+gry zwróci **400**. Posiadanej gry nie można przenieść na wishlistę.
+
+Schemat można zweryfikować poleceniem `python manage.py spectacular --validate --fail-on-warn`.
+Dokumentacja: [DRF SessionAuthentication](https://www.django-rest-framework.org/api-guide/authentication/#sessionauthentication)
+i [drf-spectacular](https://drf-spectacular.readthedocs.io/en/latest/readme.html).
 
 ## Panel admina
 

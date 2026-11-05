@@ -127,5 +127,8 @@ class UserGame(models.Model):
             ),
         ]
 
+    def can_move_to(self, list_type):
+        return not (self.list_type == self.ListType.OWNED and list_type == self.ListType.WISHLIST)
+
     def __str__(self):
         return f"{self.user} - {self.game} ({self.get_list_type_display()})"

@@ -4,6 +4,62 @@
 
 To rzeczywisty kod projektu, nie uproszczone kopie. Numery linii i treść są odświeżane przez generator.
 
+## Edycja przez REST API
+
+Źródło: [l28_pro/GameShelf/api.py — LibraryDetail.patch](l28_pro/GameShelf/api.py#L114).
+
+```python
+    @extend_schema(
+        tags=["My library"], summary="Update my saved game",
+        description="Ratings are 1–10 or null. You can move wishlist to owned, but not owned to wishlist.",
+        request=LibraryUpdateSerializer(partial=True),
+        responses={200: LibraryEntrySerializer, 400: INVALID_ENTRY, 403: FORBIDDEN, 404: NOT_FOUND},
+        examples=[
+            OpenApiExample("Move to owned", value={"list_type": "owned"}, request_only=True),
+            OpenApiExample("Rate a completed game", value={"play_status": "completed", "rating": 9}, request_only=True),
+            OpenApiExample("Rating outside range", value={"rating": ["Ensure this value is less than or equal to 10."]},
+                           response_only=True, status_codes=["400"]),
+        ],
+    )
+    @transaction.atomic
+    def patch(self, request, *args, **kwargs):
+        entry = self.get_object()
+        serializer = LibraryUpdateSerializer(entry, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        return Response(self.get_serializer(serializer.save()).data)
+```
+
+Widok pobiera wpis z kolekcji ograniczonej do request.user. Transakcja obejmuje blokadę edytowanego wiersza, walidację zmian i zapis. partial=True pozwala wysłać tylko zmieniane pola; opis OpenAPI rozdziela dane wejściowe i odpowiedź.
+
+## Import zewnętrznej okładki
+
+Źródło: [l28_pro/GameShelf/management/commands/import_games.py — download_cover](l28_pro/GameShelf/management/commands/import_games.py#L37).
+
+```python
+def download_cover(url):
+    if not isinstance(url, str):
+        raise ValueError("Invalid image URL")
+    parsed = urlsplit(url)
+    if parsed.scheme != "https" or parsed.netloc != "media.rawg.io":
+        raise ValueError("Unsupported image host")
+    with requests.get(url, stream=True, timeout=(5, 20), allow_redirects=False) as response:
+        if response.status_code != 200:
+            raise ValueError("Image request failed")
+        content = bytearray()
+        for chunk in response.iter_content(64 * 1024):
+            content.extend(chunk)
+            if len(content) > MAX_IMAGE_BYTES:
+                raise ValueError("Image is too large")
+    with Image.open(BytesIO(content)) as image:
+        extension = IMAGE_TYPES.get(image.format)
+        if not extension or image.width * image.height > 20_000_000:
+            raise ValueError("Unsupported image format or dimensions")
+        image.verify()
+    return extension, ContentFile(bytes(content))
+```
+
+Pobieranie dopuszcza wyłącznie znany host HTTPS, bez przekierowań. Limit bajtów i weryfikacja Pillow chronią przed błędnymi plikami, a ContentFile pozwala zapisać dane w ImageField.
+
 ## Relacje i ograniczenia bazy
 
 Źródło: [l28_pro/GameShelf/models.py — UserGame](l28_pro/GameShelf/models.py#L69).
@@ -69,6 +125,9 @@ class UserGame(models.Model):
                 name="valid_user_game_play_status",
             ),
         ]
+
+    def can_move_to(self, list_type):
+        return not (self.list_type == self.ListType.OWNED and list_type == self.ListType.WISHLIST)
 
     def __str__(self):
         return f"{self.user} - {self.game} ({self.get_list_type_display()})"

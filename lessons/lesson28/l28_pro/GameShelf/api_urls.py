@@ -10,4 +10,5 @@ urlpatterns = [
     path("genres/", api.GenreList.as_view(), name="genre-list"),
     path("tags/", api.TagList.as_view(), name="tag-list"),
     path("library/", api.LibraryList.as_view(), name="library-list"),
+    path("library/<int:pk>/", api.LibraryDetail.as_view(), name="library-detail"),
 ]

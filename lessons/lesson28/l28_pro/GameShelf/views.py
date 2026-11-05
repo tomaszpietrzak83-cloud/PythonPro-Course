@@ -112,7 +112,7 @@ def add_to_wishlist(request, pk):
         game=game,
         defaults={"list_type": UserGame.ListType.WISHLIST},
     )
-    if entry.list_type == UserGame.ListType.OWNED:
+    if not entry.can_move_to(UserGame.ListType.WISHLIST):
         messages.info(
             request, "This game is already owned. It stays in your owned games."
         )

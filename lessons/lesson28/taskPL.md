@@ -31,7 +31,7 @@ projektu, chyba że obecnego rzeczywiście nie da się naprawić.
 | Testy najważniejszych funkcji | Wykonane (0.7.0) | [l28_pro/GameShelf/test_workflows.py — PlayerWorkflowTests](l28_pro/GameShelf/test_workflows.py#L8) |
 | API REST | Wykonane (0.9.0) | [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1) |
 | OpenAPI, Swagger UI i ReDoc | Wykonane (0.9.0.1) | [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1) |
-| Operacje biblioteki w API i demonstracja Swaggera | Zaplanowane (0.9.0.2) | [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1) |
+| Operacje biblioteki w API i demonstracja Swaggera | Wykonane (0.9.0.2) | [l28_pro/l28_pro/urls.py](l28_pro/l28_pro/urls.py#L1) |
 | Końcowe dopracowanie interfejsu | Zaplanowane (0.10.0) | [l28_pro/GameShelf/templates/base.html](l28_pro/GameShelf/templates/base.html#L1) |
 
 ## Sugerowane modele
