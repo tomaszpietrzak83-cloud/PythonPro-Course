@@ -1,0 +1,17 @@
+pycache/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info/
+.env
+.venv/
+venv/
+.git/
+.gitignore
+*.md
+.vscode/
+.idea/
+*.sqlite3

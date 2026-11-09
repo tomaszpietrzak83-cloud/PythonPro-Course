@@ -1,0 +1,77 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+    - 127.0.0.1:3000:80
+    depends_on:
+    - backend
+  backend:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://lesson:lesson-local@database:5432/lesson
+      REDIS_URL: redis://redis:6379/0
+      OLLAMA_URL: http://ollama:11434
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_started
+  worker:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://lesson:lesson-local@database:5432/lesson
+      REDIS_URL: redis://redis:6379/0
+      OLLAMA_URL: http://ollama:11434
+    depends_on:
+      database:
+        condition: service_healthy
+      redis:
+        condition: service_started
+      model:
+        condition: service_completed_successfully
+    command:
+    - celery
+    - -A
+    - service:celery
+    - worker
+    - --loglevel=info
+    - --concurrency=2
+  database:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: lesson
+      POSTGRES_USER: lesson
+      POSTGRES_PASSWORD: lesson-local
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 3s
+      timeout: 3s
+      retries: 15
+  redis:
+    image: redis:7-alpine
+  ollama:
+    image: ollama/ollama
+    volumes:
+    - models:/root/.ollama
+    healthcheck:
+      test:
+      - CMD
+      - ollama
+      - list
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  model:
+    image: ollama/ollama
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    command:
+    - pull
+    - embeddinggemma
+    depends_on:
+      ollama:
+        condition: service_healthy
+volumes:
+  models: {}

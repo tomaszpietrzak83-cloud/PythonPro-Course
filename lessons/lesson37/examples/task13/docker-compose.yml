@@ -1,0 +1,52 @@
+services:
+  users-service:
+    build: .
+    environment:
+      ROLE: users
+      DATABASE_URL: postgresql://lesson:lesson-local@users-db:5432/lesson
+    depends_on:
+      users-db:
+        condition: service_healthy
+  posts-service:
+    build: .
+    environment:
+      ROLE: posts
+      DATABASE_URL: postgresql://lesson:lesson-local@posts-db:5432/lesson
+    depends_on:
+      posts-db:
+        condition: service_healthy
+  api-gateway:
+    build: .
+    environment:
+      ROLE: gateway
+    ports:
+    - 127.0.0.1:3000:8000
+    depends_on:
+    - users-service
+    - posts-service
+  users-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: lesson
+      POSTGRES_USER: lesson
+      POSTGRES_PASSWORD: lesson-local
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 3s
+      timeout: 3s
+      retries: 15
+  posts-db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: lesson
+      POSTGRES_USER: lesson
+      POSTGRES_PASSWORD: lesson-local
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - pg_isready -h 127.0.0.1 -U $$POSTGRES_USER -d $$POSTGRES_DB
+      interval: 3s
+      timeout: 3s
+      retries: 15

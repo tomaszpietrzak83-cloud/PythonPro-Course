@@ -1,0 +1,162 @@
+[
+  [
+    "Dockerfile opisuje obraz, a CMD wybiera program przy starcie.",
+    "The Dockerfile describes the image. CMD selects the startup program.",
+    "Kiedy działa CMD?",
+    "When does CMD run?",
+    "Gdy kontener startuje z obrazu.",
+    "When a container starts from the image."
+  ],
+  [
+    "Program czyta NAME w czasie startu procesu.",
+    "The program reads NAME at process startup.",
+    "Czy zmiana NAME wymaga nowego obrazu?",
+    "Does changing NAME require a new image?",
+    "Wystarczy przekazać inną wartość podczas uruchomienia.",
+    "Pass a different value when starting the container."
+  ],
+  [
+    "Serwer słucha wewnątrz kontenera na 8000, a host publikuje go pod 3000.",
+    "The server listens on 8000 inside the container. The host publishes it on 3000.",
+    "Który port widzi przeglądarka hosta?",
+    "Which port does the host browser use?",
+    "Port 3000 z lewej strony mapowania.",
+    "Port 3000 on the left of the mapping."
+  ],
+  [
+    "Wolumin oddziela cykl życia pliku od cyklu życia kontenera.",
+    "A volume separates file lifetime from container lifetime.",
+    "Gdzie trafia plik events.log?",
+    "Where does events.log go?",
+    "Do katalogu /data zamontowanego z woluminu logs.",
+    "Into /data mounted from the logs volume."
+  ],
+  [
+    "Etap build przygotowuje plik, a finalny etap kopiuje wybrany wynik.",
+    "The build stage prepares a file. The final stage copies the selected result.",
+    "Co wpływa tutaj na różnicę rozmiarów?",
+    "What affects the size difference here?",
+    "Obraz bazowy i zawartość kopiowana z etapu build.",
+    "The base image and content copied from the build stage."
+  ],
+  [
+    "Compose uruchamia backend i bazę jako odrębne serwisy.",
+    "Compose runs the backend and database as separate services.",
+    "Co oznacza host database?",
+    "What does host database mean?",
+    "Nazwę serwisu rozpoznawaną we wspólnej sieci Compose.",
+    "The service name resolved on the shared Compose network."
+  ],
+  [
+    "Sonda PostgreSQL dopuszcza backend po potwierdzeniu gotowości.",
+    "The PostgreSQL probe allows the backend to start once ready.",
+    "Czym różni się start od gotowości?",
+    "How does startup differ from readiness?",
+    "Proces może istnieć, zanim zacznie przyjmować połączenia.",
+    "The process can exist before it starts accepting connections."
+  ],
+  [
+    "Sieć bridge daje serwisom wspólny zasięg i nazwy DNS.",
+    "A bridge network gives services shared reachability and DNS names.",
+    "Czy klient potrzebuje mapowania portów na hosta?",
+    "Does the client need a published host port?",
+    "Klient na tej samej sieci korzysta bezpośrednio z portu serwera.",
+    "The client on the same network uses the server port directly."
+  ],
+  [
+    "Aplikacja szuka klucza w Redis. Przy braku zapisuje wynik źródłowy z TTL.",
+    "The app checks Redis. On a miss it caches the source result with a TTL.",
+    "Kiedy nastąpi kolejny miss?",
+    "When will another miss occur?",
+    "Po wygaśnięciu, usunięciu klucza lub przy nowym kluczu.",
+    "After expiration, deletion, or a request for a new key."
+  ],
+  [
+    "Operacje CRUD używają parametrów SQL i mapują brak rekordu na 404.",
+    "CRUD operations bind SQL parameters and map missing records to 404.",
+    "Dlaczego tytuł jest parametrem SQL?",
+    "Why bind the title as an SQL parameter?",
+    "Sterownik przekazuje wartość jako dane, niezależnie od składni zapytania.",
+    "The driver passes it as data separately from query syntax."
+  ],
+  [
+    "Nginx serwuje pliki z katalogu i przekazuje pozostałe żądania do API.",
+    "Nginx serves files from a directory and forwards other requests to the API.",
+    "Które żądanie omija backend?",
+    "Which request bypasses the backend?",
+    "Plik pod /static/ obsługuje alias Nginx.",
+    "Nginx handles files under /static/ through its alias."
+  ],
+  [
+    "Pliki override nakładają różne ustawienia na wspólną bazę Compose.",
+    "Override files apply environment settings to a shared Compose base.",
+    "Dlaczego w dev jest bind mount?",
+    "Why does dev use a bind mount?",
+    "Zmiana pliku hosta trafia do procesu obserwującego kod.",
+    "Host file changes reach the process watching the code."
+  ],
+  [
+    "Każdy serwis przechowuje własne dane, a brama łączy odpowiedzi HTTP.",
+    "Each service owns its data. The gateway joins HTTP responses.",
+    "Gdzie odbywa się łączenie danych?",
+    "Where does joining happen?",
+    "W bramie, na podstawie identyfikatora użytkownika.",
+    "In the gateway using the user identifier."
+  ],
+  [
+    "HTTP zwraca identyfikator zadania, a worker odbiera je z Redis i zapisuje raport.",
+    "HTTP returns a task ID. A worker receives the job from Redis and saves the report.",
+    "Co znaczy 202?",
+    "What does 202 mean?",
+    "Przyjęto zadanie. Wynik będzie dostępny po zakończeniu pracy.",
+    "The task was accepted. Results follow when work completes."
+  ],
+  [
+    "Licznik rośnie przy wywołaniach API. Prometheus okresowo pobiera /metrics.",
+    "The counter increases on API calls. Prometheus periodically scrapes /metrics.",
+    "Dlaczego sonda /metrics nie zwiększa licznika?",
+    "Why does /metrics not increment the counter?",
+    "Middleware pomija ścieżkę, żeby pomiar nie zmieniał liczonej wartości.",
+    "The middleware excludes that path so scraping does not affect the count."
+  ],
+  [
+    "Nginx rozdziela żądania między repliki wykrywane przez DNS.",
+    "Nginx distributes requests to replicas discovered through DNS.",
+    "Dlaczego brak container_name?",
+    "Why omit container_name?",
+    "Każda replika otrzymuje własną nazwę od Compose.",
+    "Compose gives each replica its own name."
+  ],
+  [
+    "Runner buduje i testuje obraz przed publikacją z tagiem commita.",
+    "The runner builds and tests the image before publishing it with the commit tag.",
+    "Gdzie są dane do Docker Hub?",
+    "Where are Docker Hub credentials kept?",
+    "Token jest sekretem repozytorium, a nazwa użytkownika zmienną workflow.",
+    "The token is a repository secret and the username is a workflow variable."
+  ],
+  [
+    "Redis dostarcza wiadomość subskrybentom na wszystkich replikach.",
+    "Redis delivers a message to subscribers across replicas.",
+    "Jak odbiorca na innej replice dostaje tekst?",
+    "How does a recipient on another replica get the message?",
+    "Każda replika subskrybuje wspólny kanał Redis i przekazuje tekst do WebSocket.",
+    "Each replica subscribes to the shared Redis channel and forwards text to WebSocket."
+  ],
+  [
+    "Jednorazowy init wykonuje migracje i przygotowuje użytkownika przed backendem.",
+    "A one-shot init migrates the database and prepares a user before the backend.",
+    "Co jeśli init zakończy się błędem?",
+    "What if init fails?",
+    "Warunek service_completed_successfully zatrzyma start backendu.",
+    "The service_completed_successfully condition blocks backend startup."
+  ],
+  [
+    "Worker pobiera książki, tworzy wektory i szereguje tytuły według cosinusa.",
+    "The worker loads books, embeds text and ranks titles by cosine similarity.",
+    "Co daje cache w tym zadaniu?",
+    "What does caching save here?",
+    "Zwraca ranking dla tego samego zapytania i zestawu tytułów bez ponownego liczenia wektorów.",
+    "It returns the ranking for the same query and titles without embedding again."
+  ]
+]

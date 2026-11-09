@@ -1,0 +1,7 @@
+services:
+  logger:
+    build: .
+    volumes:
+    - logs:/data
+volumes:
+  logs: {}

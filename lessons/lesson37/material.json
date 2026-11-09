@@ -1,0 +1,122 @@
+[
+  [
+    "Pierwszy obraz",
+    "First image",
+    "Python wypisze Hello, Docker!.",
+    "Python prints Hello, Docker!."
+  ],
+  [
+    "Parametr NAME",
+    "NAME parameter",
+    "Dwa procesy wypiszą powitania dla Ady i Linusa.",
+    "Two processes print greetings for Ada and Linus."
+  ],
+  [
+    "Porty hosta i kontenera",
+    "Host and container ports",
+    "Lokalna sonda otrzyma HTTP 200. Compose mapuje 3000 na 8000.",
+    "The local probe gets HTTP 200. Compose maps 3000 to 8000."
+  ],
+  [
+    "Dane po restarcie",
+    "Data after restart",
+    "Dwa procesy zapiszą dwie linie w tym samym pliku.",
+    "Two processes append two lines to one file."
+  ],
+  [
+    "Etapy budowania obrazu",
+    "Image build stages",
+    "Pokaz odczyta dwa etapy. Skrypt Docker porówna rzeczywiste rozmiary.",
+    "The demo reads two stages. The Docker script compares actual sizes."
+  ],
+  [
+    "Backend i PostgreSQL",
+    "Backend and PostgreSQL",
+    "Zapytanie SELECT 1 zwróci 1. W Compose backend użyje PostgreSQL.",
+    "SELECT 1 returns 1. The Compose backend uses PostgreSQL."
+  ],
+  [
+    "Start po sondzie bazy",
+    "Startup after database probe",
+    "Compose deklaruje pg_isready i service_healthy.",
+    "Compose declares pg_isready and service_healthy."
+  ],
+  [
+    "Nazwa serwisu w sieci bridge",
+    "Service name on bridge",
+    "Klient Compose odwołuje się do serwisu server. Lokalny HTTP odpowie 200.",
+    "The Compose client uses service name server. Local HTTP returns 200."
+  ],
+  [
+    "Miss i hit cache",
+    "Cache miss and hit",
+    "Dwa odczyty użyją kolejno źródła i cache.",
+    "Two reads use the source and cache in order."
+  ],
+  [
+    "CRUD książek",
+    "Book CRUD",
+    "Lokalne API zwróci 201, 200, 200, 204 i 404.",
+    "The local API returns 201, 200, 200, 204 and 404."
+  ],
+  [
+    "Proxy i pliki statyczne",
+    "Proxy and static files",
+    "Pokaz sprawdzi CRUD oraz trasę proxy i plik statyczny.",
+    "The demo checks CRUD, the proxy route and a static file."
+  ],
+  [
+    "Tryb developerski i produkcyjny",
+    "Development and production",
+    "Tryb dev montuje kod z reload. Prod używa plików z obrazu.",
+    "Dev mounts source with reload. Prod uses files from the image."
+  ],
+  [
+    "Dwie bazy i brama API",
+    "Two databases and an API gateway",
+    "Brama połączy użytkowników i posty według user_id.",
+    "The gateway joins users and posts by user_id."
+  ],
+  [
+    "Raport w kolejce Celery",
+    "Report in a Celery queue",
+    "Funkcja raportu zwróci sumę 10. Compose uruchomi oddzielny worker.",
+    "The report function returns total 10. Compose defines a separate worker."
+  ],
+  [
+    "Scrape metryk HTTP",
+    "HTTP metrics scraping",
+    "Pięć wywołań CRUD zwiększy licznik na /metrics.",
+    "Five CRUD calls increment the counter exposed at /metrics."
+  ],
+  [
+    "Trzy instancje i round-robin",
+    "Three replicas and round robin",
+    "Model rozdzieli dziewięć żądań po trzy.",
+    "The model splits nine requests into groups of three."
+  ],
+  [
+    "Build, test i publikacja obrazu",
+    "Build, test and publish an image",
+    "Test uruchomi ten sam program, który workflow uruchamia w kontenerze.",
+    "The test runs the same program the workflow runs inside the image."
+  ],
+  [
+    "WebSocket i Redis Pub/Sub",
+    "WebSocket and Redis Pub/Sub",
+    "Dwa lokalne odbiorniki dostaną ten sam tekst. Compose deklaruje trzy repliki.",
+    "Two local receivers get the same text. Compose declares three replicas."
+  ],
+  [
+    "Inicjalizacja przed backendem",
+    "Initialize before backend startup",
+    "Lokalny model wykona migrację i wstawi użytkownika tylko raz.",
+    "The local model migrates and inserts the user only once."
+  ],
+  [
+    "Rekomendacje i wektory",
+    "Recommendations and vectors",
+    "Kontrolne wektory ustawią książkę Python na pierwszym miejscu.",
+    "Fixture vectors rank Python first."
+  ]
+]

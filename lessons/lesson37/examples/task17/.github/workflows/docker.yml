@@ -1,0 +1,23 @@
+name: Docker Hub release
+'on': [push]
+permissions:
+  contents: read
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: docker build -t lesson37 .
+      - run: test "$(docker run --rm lesson37)" = 'Hello, Docker!'
+      - uses: docker/login-action@v4
+        if: github.ref == 'refs/heads/main'
+        with:
+          username: ${{ vars.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Publish tested image
+        if: github.ref == 'refs/heads/main'
+        env:
+          IMAGE: ${{ vars.DOCKERHUB_USERNAME }}/lesson37:${{ github.sha }}
+        run: |
+          docker tag lesson37 "$IMAGE"
+          docker push "$IMAGE"

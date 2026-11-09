@@ -1,0 +1,28 @@
+services:
+  server:
+    build: .
+    networks:
+    - lab
+    healthcheck:
+      test:
+      - CMD
+      - python
+      - -c
+      - import urllib.request; urllib.request.urlopen('http://localhost:8000', timeout=2)
+      interval: 2s
+      timeout: 3s
+      retries: 10
+  client:
+    image: python:3.12-slim
+    networks:
+    - lab
+    depends_on:
+      server:
+        condition: service_healthy
+    command:
+    - python
+    - -c
+    - import urllib.request; print(urllib.request.urlopen('http://server:8000', timeout=5).read())
+networks:
+  lab:
+    driver: bridge
