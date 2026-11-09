@@ -1,55 +1,79 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} {% block title %}{{ game.title }} | GameShelf{%
+endblock %} {% block content %}
+<a class="text-link" href="{% url 'gameshelf:game_list' %}"
+  >← Back to game catalog</a
+>
 
-{% block title %}{{ game.title }} | GameShelf{% endblock %}
+<article class="detail-card">
+  <img
+    class="game-cover detail-cover"
+    src="{{ game.cover_url }}"
+    alt="Cover of {{ game.title }}"
+    width="480"
+    height="640"
+  />
+  <p class="eyebrow">Game details</p>
+  <h2>{{ game.title }}</h2>
+  {% if game.studio %}
+  <p>Studio: {{ game.studio.name }}</p>
+  {% endif %}
+  <p>
+    Genres: {% for genre in game.genres.all %}
+    <a
+      class="text-link"
+      href="{% url 'gameshelf:game_list' %}?genre={{ genre.slug }}"
+      >{{ genre.name }}</a
+    >{% if not forloop.last %}, {% endif %} {% empty %}Not assigned{% endfor %}
+  </p>
+  <p class="detail-description">{{ game.description }}</p>
+  {% if game.rawg_id %}
+  <p>Game data and cover source: <a href="https://rawg.io/">RAWG</a></p>
+  {% endif %}
+  <p>
+    Tags: {% for tag in game.tags.all %}
+    <a
+      class="text-link"
+      href="{% url 'gameshelf:game_list' %}?tag={{ tag.slug }}"
+      >{{ tag.name }}</a
+    >{% if not forloop.last %}, {% endif %} {% empty %}Not assigned{% endfor %}
+  </p>
 
-{% block content %}
-    <a class="text-link" href="{% url 'gameshelf:game_list' %}">← Back to game catalog</a>
-
-    <article class="detail-card">
-        <img class="game-cover detail-cover" src="{{ game.cover_url }}" alt="Cover of {{ game.title }}" width="480" height="640">
-        <p class="eyebrow">Game details</p>
-        <h2>{{ game.title }}</h2>
-        {% if game.studio %}<p>Studio: {{ game.studio.name }}</p>{% endif %}
-        <p>Genres:
-            {% for genre in game.genres.all %}
-                <a class="text-link" href="{% url 'gameshelf:game_list' %}?genre={{ genre.slug }}">{{ genre.name }}</a>{% if not forloop.last %}, {% endif %}
-            {% empty %}Not assigned{% endfor %}
-        </p>
-        <p class="detail-description">{{ game.description }}</p>
-        {% if game.rawg_id %}
-            <p>Game data and cover source: <a href="https://rawg.io/">RAWG</a></p>
-        {% endif %}
-        <p>Tags:
-            {% for tag in game.tags.all %}
-                <a class="text-link" href="{% url 'gameshelf:game_list' %}?tag={{ tag.slug }}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
-            {% empty %}Not assigned{% endfor %}
-        </p>
-
-        {% if game.release_date %}
-            <p class="release-date">Released {{ game.release_date|date:"F j, Y" }}</p>
-        {% endif %}
-        <div class="library-actions">
-            {% if user.is_authenticated %}
-                {% if library_entry %}
-                    <p>In your library: <strong>{{ library_entry.get_list_type_display }}</strong></p>
-                    <a class="text-link" href="{% url 'gameshelf:my_library' %}">View my library</a>
-                    <a class="text-link" href="{% url 'gameshelf:edit_library_entry' library_entry.pk %}">Edit my entry</a>
-                {% endif %}
-                {% if library_entry.list_type != 'owned' %}
-                    <form method="post" action="{% url 'gameshelf:add_to_owned' game.pk %}">
-                        {% csrf_token %}
-                        <button class="button" type="submit">Add to owned</button>
-                    </form>
-                {% endif %}
-                {% if not library_entry %}
-                    <form method="post" action="{% url 'gameshelf:add_to_wishlist' game.pk %}">
-                        {% csrf_token %}
-                        <button class="button" type="submit">Add to wishlist</button>
-                    </form>
-                {% endif %}
-            {% else %}
-                <p><a class="text-link" href="{% url 'gameshelf:login' %}?next={{ request.path|urlencode }}">Log in to save this game</a></p>
-            {% endif %}
-        </div>
-    </article>
+  {% if game.release_date %}
+  <p class="release-date">Released {{ game.release_date|date:"F j, Y" }}</p>
+  {% endif %}
+  <div class="library-actions">
+    {% if user.is_authenticated %} {% if library_entry %}
+    <p>
+      In your library:
+      <strong>{{ library_entry.get_list_type_display }}</strong>
+    </p>
+    <a class="text-link" href="{% url 'gameshelf:my_library' %}"
+      >View my library</a
+    >
+    <a
+      class="text-link"
+      href="{% url 'gameshelf:edit_library_entry' library_entry.pk %}"
+      >Edit my entry</a
+    >
+    {% endif %} {% if library_entry.list_type != 'owned' %}
+    <form method="post" action="{% url 'gameshelf:add_to_owned' game.pk %}">
+      {% csrf_token %}
+      <button class="button" type="submit">Add to owned</button>
+    </form>
+    {% endif %} {% if not library_entry %}
+    <form method="post" action="{% url 'gameshelf:add_to_wishlist' game.pk %}">
+      {% csrf_token %}
+      <button class="button" type="submit">Add to wishlist</button>
+    </form>
+    {% endif %} {% else %}
+    <p>
+      <a
+        class="text-link"
+        href="{% url 'gameshelf:login' %}?next={{ request.path|urlencode }}"
+        >Log in to save this game</a
+      >
+    </p>
+    {% endif %}
+  </div>
+</article>
 {% endblock %}

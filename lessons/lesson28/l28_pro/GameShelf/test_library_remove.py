@@ -11,11 +11,15 @@ class LibraryRemovalTests(TestCase):
         cls.user = get_user_model().objects.create_user("remover")
         cls.other = get_user_model().objects.create_user("other_remover")
         cls.game = Game.objects.create(title="Shared catalog game")
-        cls.entry = UserGame.objects.create(user=cls.user, game=cls.game, note="Private note")
+        cls.entry = UserGame.objects.create(
+            user=cls.user, game=cls.game, note="Private note"
+        )
         cls.other_entry = UserGame.objects.create(user=cls.other, game=cls.game)
 
     def setUp(self):
-        self.url = reverse("gameshelf:remove_library_entry", args=[self.entry.pk])
+        self.url = reverse(
+            "gameshelf:remove_library_entry", args=[self.entry.pk]
+        )
 
     def test_get_displays_confirmation_without_deleting(self):
         self.client.force_login(self.user)
@@ -30,7 +34,9 @@ class LibraryRemovalTests(TestCase):
         response = self.client.post(self.url, follow=True)
         self.assertContains(response, "has been removed from your library")
         self.assertFalse(UserGame.objects.filter(pk=self.entry.pk).exists())
-        self.assertTrue(UserGame.objects.filter(pk=self.other_entry.pk).exists())
+        self.assertTrue(
+            UserGame.objects.filter(pk=self.other_entry.pk).exists()
+        )
         self.assertTrue(Game.objects.filter(pk=self.game.pk).exists())
         self.assertNotContains(response, "Private note")
 
@@ -57,7 +63,9 @@ class LibraryRemovalTests(TestCase):
         self.assertEqual(client.post(self.url).status_code, 403)
         self.assertTrue(UserGame.objects.filter(pk=self.entry.pk).exists())
         client.get(self.url)
-        response = client.post(self.url, {"csrfmiddlewaretoken": client.cookies["csrftoken"].value})
+        response = client.post(
+            self.url, {"csrfmiddlewaretoken": client.cookies["csrftoken"].value}
+        )
         self.assertEqual(response.status_code, 302)
         self.assertFalse(UserGame.objects.filter(pk=self.entry.pk).exists())
 

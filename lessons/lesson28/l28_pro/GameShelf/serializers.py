@@ -16,7 +16,9 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class GameSerializer(serializers.ModelSerializer):
-    studio = serializers.CharField(source="studio.name", allow_null=True, read_only=True)
+    studio = serializers.CharField(
+        source="studio.name", allow_null=True, read_only=True
+    )
     genres = GenreSerializer(many=True, read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     cover_url = serializers.SerializerMethodField()
@@ -26,7 +28,16 @@ class GameSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Game
-        fields = ("id", "title", "description", "release_date", "studio", "genres", "tags", "cover_url")
+        fields = (
+            "id",
+            "title",
+            "description",
+            "release_date",
+            "studio",
+            "genres",
+            "tags",
+            "cover_url",
+        )
 
 
 class LibraryEntrySerializer(serializers.ModelSerializer):
@@ -34,7 +45,15 @@ class LibraryEntrySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserGame
-        fields = ("id", "game", "game_title", "list_type", "play_status", "rating", "note")
+        fields = (
+            "id",
+            "game",
+            "game_title",
+            "list_type",
+            "play_status",
+            "rating",
+            "note",
+        )
         read_only_fields = fields
 
 
@@ -49,7 +68,9 @@ class LibraryCreateSerializer(serializers.Serializer):
             defaults={"list_type": validated_data["list_type"]},
         )
         if not created:
-            raise serializers.ValidationError({"game": ["This game is already in your library."]})
+            raise serializers.ValidationError({
+                "game": ["This game is already in your library."]
+            })
         return entry
 
 
@@ -60,5 +81,7 @@ class LibraryUpdateSerializer(serializers.ModelSerializer):
 
     def validate_list_type(self, value):
         if not self.instance.can_move_to(value):
-            raise serializers.ValidationError("An owned game cannot be moved to the wishlist.")
+            raise serializers.ValidationError(
+                "An owned game cannot be moved to the wishlist."
+            )
         return value

@@ -1,14 +1,15 @@
-{% extends 'base.html' %}
-{% block title %}Register | GameShelf{% endblock %}
-{% block content %}
-    <section class="auth-card">
-        <p class="eyebrow">Start your collection</p>
-        <h1>Create an account</h1>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button class="button" type="submit">Register</button>
-        </form>
-        <p class="auth-switch">Already registered? <a class="text-link" href="{% url 'gameshelf:login' %}">Log in</a></p>
-    </section>
+{% extends 'base.html' %} {% block title %}Register | GameShelf{% endblock %} {%
+block content %}
+<section class="auth-card">
+  <p class="eyebrow">Start your collection</p>
+  <h1>Create an account</h1>
+  <form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button class="button" type="submit">Register</button>
+  </form>
+  <p class="auth-switch">
+    Already registered?
+    <a class="text-link" href="{% url 'gameshelf:login' %}">Log in</a>
+  </p>
+</section>
 {% endblock %}

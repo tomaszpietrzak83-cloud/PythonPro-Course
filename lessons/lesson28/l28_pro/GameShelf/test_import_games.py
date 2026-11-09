@@ -3,9 +3,9 @@ from tempfile import TemporaryDirectory
 from unittest.mock import Mock, patch
 
 import requests
-from PIL import Image
-from django.core.management import call_command, CommandError
+from django.core.management import CommandError, call_command
 from django.test import TestCase, override_settings
+from PIL import Image
 
 from .models import Game
 
@@ -29,14 +29,24 @@ class ImportGamesTests(TestCase):
         image = BytesIO()
         Image.new("RGB", (20, 30)).save(image, format="PNG")
         cover_url = "https://media.rawg.io/media/demo.png"
-        row = {"id": 123, "name": "Orbit", "released": "2020-01-03", "background_image": cover_url}
+        row = {
+            "id": 123,
+            "name": "Orbit",
+            "released": "2020-01-03",
+            "background_image": cover_url,
+        }
         listing = {"results": [row]}
         get.side_effect = [
-            response(payload=listing), response(payload={"description": "<p>Orbit game</p>"}),
-            response(content=image.getvalue()), response(payload=listing),
+            response(payload=listing),
+            response(payload={"description": "<p>Orbit game</p>"}),
+            response(content=image.getvalue()),
+            response(payload=listing),
         ]
         manual = Game.objects.create(title="Orbit")
-        with TemporaryDirectory() as folder, override_settings(MEDIA_ROOT=folder):
+        with (
+            TemporaryDirectory() as folder,
+            override_settings(MEDIA_ROOT=folder),
+        ):
             call_command("import_games", stdout=StringIO())
             game = Game.objects.get(rawg_id=123)
             self.assertTrue(game.cover.storage.exists(game.cover.name))
@@ -55,7 +65,17 @@ class ImportGamesTests(TestCase):
     @patch(REQUEST)
     def test_cover_on_unknown_host_is_not_requested(self, get):
         get.side_effect = [
-            response(payload={"results": [{"id": 123, "name": "Orbit", "background_image": "https://example.invalid/a.png"}]}),
+            response(
+                payload={
+                    "results": [
+                        {
+                            "id": 123,
+                            "name": "Orbit",
+                            "background_image": "https://example.invalid/a.png",
+                        }
+                    ]
+                }
+            ),
             response(payload={}),
         ]
         errors = StringIO()

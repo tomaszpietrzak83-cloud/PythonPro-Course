@@ -18,11 +18,15 @@ class SeederTests(TestCase):
         return output.getvalue()
 
     def test_default_seeder_is_repeatable_and_preserves_manual_games(self):
-        manual = Game.objects.create(title="My real game", description="Keep me")
+        manual = Game.objects.create(
+            title="My real game", description="Keep me"
+        )
         self.assertIn("Created 100", self.seed())
         seeded = Game.objects.filter(seed_key__isnull=False)
         self.assertEqual(seeded.count(), 100)
-        self.assertEqual(seeded.filter(genres__slug="fake", tags__slug="fake").count(), 100)
+        self.assertEqual(
+            seeded.filter(genres__slug="fake", tags__slug="fake").count(), 100
+        )
         game = seeded.first()
         game.title = "My edited seeded title"
         game.save()
@@ -36,11 +40,19 @@ class SeederTests(TestCase):
 
     def test_seed_is_reproducible_and_count_can_grow(self):
         self.seed(games=2, seed=42)
-        fields = ("seed_key", "title", "description", "release_date", "studio__name")
+        fields = (
+            "seed_key",
+            "title",
+            "description",
+            "release_date",
+            "studio__name",
+        )
         first = list(Game.objects.order_by("seed_key").values_list(*fields))
         Game.objects.all().delete()
         self.seed(games=2, seed=42)
-        self.assertEqual(first, list(Game.objects.order_by("seed_key").values_list(*fields)))
+        self.assertEqual(
+            first, list(Game.objects.order_by("seed_key").values_list(*fields))
+        )
         self.seed(games=3, seed=42)
         self.assertEqual(Game.objects.count(), 3)
 
@@ -52,8 +64,12 @@ class SeederTests(TestCase):
 
     def test_default_seed_adds_fictional_taxonomy_without_creating_users(self):
         self.seed(games=8)
-        self.assertEqual(Genre.objects.filter(slug__startswith="fake-theme-").count(), 4)
-        self.assertEqual(Tag.objects.filter(slug__startswith="fake-feature-").count(), 6)
+        self.assertEqual(
+            Genre.objects.filter(slug__startswith="fake-theme-").count(), 4
+        )
+        self.assertEqual(
+            Tag.objects.filter(slug__startswith="fake-feature-").count(), 6
+        )
         self.assertTrue(Genre.objects.filter(slug="action").exists())
         for game in Game.objects.all():
             self.assertEqual(game.genres.count(), 2)
@@ -64,52 +80,84 @@ class SeederTests(TestCase):
     def test_users_and_libraries_repeat_safely_and_preserve_manual_edits(self):
         manual_user = get_user_model().objects.create_user("manual_collector")
         manual_game = Game.objects.create(title="Real game")
-        manual_entry = UserGame.objects.create(user=manual_user, game=manual_game, note="Keep this")
+        manual_entry = UserGame.objects.create(
+            user=manual_user, game=manual_game, note="Keep this"
+        )
         options = {"games": 6, "users": 2, "entries_per_user": 4}
         self.seed(**options)
         self.assertEqual(UserGame.objects.count(), 9)
-        seeded_users = get_user_model().objects.filter(groups__name=SEED_USER_GROUP)
+        seeded_users = get_user_model().objects.filter(
+            groups__name=SEED_USER_GROUP
+        )
         self.assertEqual(seeded_users.count(), 2)
         for user in seeded_users:
             self.assertFalse(user.has_usable_password())
             self.assertFalse(user.is_staff or user.is_superuser)
             self.assertEqual(user.game_entries.count(), 4)
-            self.assertEqual(set(user.game_entries.values_list("list_type", flat=True)), {"owned", "wishlist"})
+            self.assertEqual(
+                set(user.game_entries.values_list("list_type", flat=True)),
+                {"owned", "wishlist"},
+            )
         entry = UserGame.objects.exclude(pk=manual_entry.pk).first()
-        entry.note, entry.rating, entry.play_status = "My edited seed note", 10, "completed"
+        entry.note, entry.rating, entry.play_status = (
+            "My edited seed note",
+            10,
+            "completed",
+        )
         entry.save()
-        self.assertIn("Library entries: created 0; reused 8", self.seed(**options))
+        self.assertIn(
+            "Library entries: created 0; reused 8", self.seed(**options)
+        )
         entry.refresh_from_db()
         manual_entry.refresh_from_db()
-        self.assertEqual((entry.note, entry.rating, entry.play_status), ("My edited seed note", 10, "completed"))
+        self.assertEqual(
+            (entry.note, entry.rating, entry.play_status),
+            ("My edited seed note", 10, "completed"),
+        )
         self.assertEqual(manual_entry.note, "Keep this")
         self.assertEqual(UserGame.objects.count(), 9)
 
     def test_optional_password_only_applies_to_new_users(self):
         password = "Seed-Only-Nebula!82945"
-        options = {"games": 2, "users": 1, "user_password_env": "GAMESHELF_TEST_PASSWORD"}
+        options = {
+            "games": 2,
+            "users": 1,
+            "user_password_env": "GAMESHELF_TEST_PASSWORD",
+        }
         with patch.dict("os.environ", {"GAMESHELF_TEST_PASSWORD": password}):
             self.seed(**options)
         user = get_user_model().objects.get(username="gameshelf_fake_001")
         self.assertTrue(user.check_password(password))
-        with patch.dict("os.environ", {"GAMESHELF_TEST_PASSWORD": "Different-Seed-Only!82945"}):
+        with patch.dict(
+            "os.environ",
+            {"GAMESHELF_TEST_PASSWORD": "Different-Seed-Only!82945"},
+        ):
             self.seed(**options)
         user.refresh_from_db()
         self.assertTrue(user.check_password(password))
 
     def test_invalid_library_options_write_nothing(self):
-        cases = ({"users": -1}, {"entries_per_user": -1}, {"entries_per_user": 1},
-                 {"users": 1, "games": 2, "entries_per_user": 3},
-                 {"users": 1, "user_password_env": "GAMESHELF_MISSING_PASSWORD"})
+        cases = (
+            {"users": -1},
+            {"entries_per_user": -1},
+            {"entries_per_user": 1},
+            {"users": 1, "games": 2, "entries_per_user": 3},
+            {"users": 1, "user_password_env": "GAMESHELF_MISSING_PASSWORD"},
+        )
         with patch.dict("os.environ", {}, clear=True):
             for options in cases:
-                with self.subTest(options=options), self.assertRaises(CommandError):
+                with (
+                    self.subTest(options=options),
+                    self.assertRaises(CommandError),
+                ):
                     self.seed(**options)
         self.assertFalse(Game.objects.exists())
         self.assertFalse(get_user_model().objects.exists())
 
     def test_manual_username_collision_rolls_back_the_whole_command(self):
-        manual = get_user_model().objects.create_user("gameshelf_fake_002", first_name="Keep me")
+        manual = get_user_model().objects.create_user(
+            "gameshelf_fake_002", first_name="Keep me"
+        )
         with self.assertRaises(CommandError):
             self.seed(games=2, users=2, entries_per_user=1)
         self.assertFalse(Game.objects.exists())
