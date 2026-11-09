@@ -1,0 +1,162 @@
+[
+  [
+    "Waiter oddziela wysłanie żądania od gotowości bazy.",
+    "A waiter separates sending the request from database readiness.",
+    "Dlaczego migawka następuje po waiterze?",
+    "Why does the snapshot follow the waiter?",
+    "Żądanie tworzenia wraca przed zakończeniem inicjalizacji instancji.",
+    "The creation request returns before instance initialization finishes."
+  ],
+  [
+    "Endpoint rozróżnia stan normalny i przekroczony próg pamięci.",
+    "The endpoint distinguishes normal operation from a memory threshold breach.",
+    "Co oznacza odpowiedź 503?",
+    "What does 503 mean?",
+    "Serwer odpowiada, ale deklaruje brak gotowości.",
+    "The server responds but declares itself unready."
+  ],
+  [
+    "Security Group zezwala na ruch pasujący do reguł wejściowych.",
+    "A security group permits traffic matching inbound rules.",
+    "Jak zablokowany jest SSH?",
+    "How is SSH blocked?",
+    "Port 22 nie ma reguły zezwalającej w tej grupie.",
+    "Port 22 has no allow rule in this group."
+  ],
+  [
+    "Pakowanie plików i przesłanie obiektu to dwie osobne operacje.",
+    "Archiving files and uploading the object are separate operations.",
+    "Co wskazuje s3://?",
+    "What does s3:// identify?",
+    "Bucket i klucz obiektu. Dostęp zależy od uprawnień.",
+    "The bucket and object key. Access depends on permissions."
+  ],
+  [
+    "CLI zwraca JSON, który skrypt zapisuje w jednym raporcie.",
+    "The CLI returns JSON, which the script collects in one report.",
+    "Jak kod rozpozna błąd polecenia?",
+    "How does the code detect command failure?",
+    "check=True zgłasza wyjątek przy kodzie wyjścia różnym od zera.",
+    "check=True raises on a nonzero exit code."
+  ],
+  [
+    "Rekord A wiąże nazwę z IPv4, a TTL wpływa na przechowywanie odpowiedzi DNS.",
+    "An A record maps a name to IPv4. TTL controls caching.",
+    "Co robi UPSERT?",
+    "What does UPSERT do?",
+    "Tworzy rekord albo aktualizuje istniejący.",
+    "It creates the record or updates an existing one."
+  ],
+  [
+    "Grupa docelowa definiuje port aplikacji i sondę gotowości.",
+    "A target group defines the application port and readiness probe.",
+    "Gdzie sprawdzany jest /health?",
+    "Where is /health checked?",
+    "Na zarejestrowanym celu, na porcie aplikacji.",
+    "On a registered target at the application port."
+  ],
+  [
+    "Replika dostaje osobny adres po osiągnięciu stanu available.",
+    "The replica receives an address after reaching available.",
+    "Czego użyje klient odczytu?",
+    "What does a read client use?",
+    "Endpointu repliki zamiast endpointu instancji źródłowej.",
+    "The replica endpoint in place of the source endpoint."
+  ],
+  [
+    "Kolejne sondy wyznaczają obserwowany początek i koniec przerwy.",
+    "Successive probes bound the observed outage.",
+    "Od czego zależy dokładność pomiaru?",
+    "What determines measurement accuracy?",
+    "Od częstotliwości sond i momentu wystąpienia awarii pomiędzy nimi.",
+    "The probe interval and where the failure falls between probes."
+  ],
+  [
+    "ALB kieruje ruch z listenera do zdrowych celów w grupie.",
+    "An ALB forwards listener traffic to healthy targets.",
+    "Co model robi z niezdrowym celem?",
+    "What does the model do with an unhealthy target?",
+    "Wyklucza go z listy przed rozdziałem żądań.",
+    "It removes it from the list before distributing requests."
+  ],
+  [
+    "Wagi dotyczą odpowiedzi DNS. Resolver może używać jednej odpowiedzi wielokrotnie.",
+    "Weights apply to DNS answers. A resolver can reuse one answer.",
+    "Czy 100 żądań HTTP gwarantuje 80/20?",
+    "Do 100 HTTP requests guarantee an 80/20 split?",
+    "Cache DNS i losowość zmieniają proporcję obserwowaną w żądaniach.",
+    "DNS caching and randomness change the observed request ratio."
+  ],
+  [
+    "Rotacja ogranicza wybór do migawek rozpoznanych po prefiksie aplikacji.",
+    "Rotation selects snapshots identified by the application prefix.",
+    "Kiedy rozpoczyna się usuwanie?",
+    "When does deletion begin?",
+    "Po potwierdzeniu gotowości nowej migawki.",
+    "After confirming that the new snapshot is ready."
+  ],
+  [
+    "Aktualizacja wymienia instancje etapami, utrzymując pojemność do obsługi.",
+    "A rolling update replaces instances in stages while retaining capacity.",
+    "Co wyzwala rollback?",
+    "What triggers rollback?",
+    "Niespełniona sonda zdrowia nowej wersji.",
+    "A failed readiness probe for the new version."
+  ],
+  [
+    "Po przekroczeniu progu nieudanych sond model wybiera region zapasowy.",
+    "After the failed-probe threshold, the model selects the backup region.",
+    "Czym różnią się RTO i RPO?",
+    "How do RTO and RPO differ?",
+    "RTO opisuje czas odzyskania usługi. RPO opisuje tolerowaną utratę danych.",
+    "RTO measures time to recover service. RPO measures tolerated data loss."
+  ],
+  [
+    "Licznik połączeń jest próbkowany, a dwa progi wyznaczają decyzję.",
+    "The active connection count is sampled and two thresholds determine a decision.",
+    "Co dzieje się przy równo 100?",
+    "What happens at exactly 100?",
+    "Pojemność pozostaje bez zmiany, ponieważ warunek wymaga więcej niż 100.",
+    "Capacity stays the same because the condition is strictly above 100."
+  ],
+  [
+    "Nowa grupa przechodzi walidację przed zmianą aktywnej wersji.",
+    "The new group passes validation before switching the active version.",
+    "Co pozwala wrócić do blue?",
+    "What enables rollback to blue?",
+    "Poprzednia wersja pozostaje gotowa do ponownego przyjęcia ruchu.",
+    "The old version remains ready to receive traffic again."
+  ],
+  [
+    "Wyniki testów i ręczna zgoda bramkują kolejne środowiska.",
+    "Test results and manual approval gate successive environments.",
+    "Gdzie ustawia się wymaganych recenzentów?",
+    "Where are required reviewers configured?",
+    "W ustawieniach środowiska produkcyjnego repozytorium.",
+    "In the repository's production environment settings."
+  ],
+  [
+    "Każda oszczędność wynika z różnicy stawek pomnożonej przez użycie.",
+    "Each saving comes from a rate difference multiplied by usage.",
+    "Skąd biorą się liczby w raporcie?",
+    "Where do the report numbers come from?",
+    "Z danych kontrolnych i jawnych założeń dla każdego wariantu.",
+    "From fixture data and explicit assumptions for each option."
+  ],
+  [
+    "Alarmy sprawdzają próg i liczbę kolejnych próbek w oknie.",
+    "Alarms check thresholds and consecutive samples in a window.",
+    "Dlaczego pojedynczy skok CPU nie wystarczy?",
+    "Why is one CPU spike insufficient?",
+    "Reguła wymaga pięciu próbek ponad progiem.",
+    "The rule requires five samples above the threshold."
+  ],
+  [
+    "Graf zależności porządkuje zasoby według ich wymagań wstępnych.",
+    "A dependency graph orders resources by their prerequisites.",
+    "Co musi powstać przed repliką?",
+    "What must exist before a replica?",
+    "Instancja źródłowa RDS oraz jej zależności sieciowe i dostępowe.",
+    "The source RDS instance and its network and access dependencies."
+  ]
+]

@@ -1,0 +1,46 @@
+name: Staging and production gate
+'on':
+  push:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        suite: [unit, integration]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - run: python -m unittest discover -s tests -p "test_${{ matrix.suite }}.py"
+  staging:
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    environment: staging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: python deploy.py staging "$GITHUB_SHA"
+  production:
+    needs: staging
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: python deploy.py production "$GITHUB_SHA"
+      - name: Roll back demo state
+        if: failure()
+        run: python deploy.py rollback
+      - name: Notify Slack
+        if: always()
+        env:
+          WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          RELEASE_RESULT: ${{ job.status }}
+        run: |
+          if [ -n "$WEBHOOK" ]; then
+            jq -n --arg status "$RELEASE_RESULT" '{text: ("Production demo: " + $status)}' |
+              curl -fsS -H 'Content-Type: application/json' --data-binary @- "$WEBHOOK"
+          fi

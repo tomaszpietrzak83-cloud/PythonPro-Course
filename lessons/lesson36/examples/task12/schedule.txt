@@ -1,0 +1,3 @@
+# Example Linux crontab. Install boto3 and configure AWS credentials.
+CRON_TZ=UTC
+0 2 * * * /path/to/python /path/to/backup_job.py lesson-db --region eu-central-1 --sender backup@example.com --recipient ops@example.com >> /path/to/backup.log 2>&1

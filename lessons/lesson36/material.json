@@ -1,0 +1,122 @@
+[
+  [
+    "Migawka po gotowości RDS",
+    "Snapshot after RDS readiness",
+    "Model zapisze kolejność: utworzenie → available → migawka. Retencja wynosi 3 dni.",
+    "The model records create → available → snapshot, with three-day retention."
+  ],
+  [
+    "Gotowość aplikacji",
+    "Application readiness",
+    "Lokalny /health odpowie 200 przy pamięci 40% i 503 przy 95%.",
+    "Local /health returns 200 at 40% memory and 503 at 95%."
+  ],
+  [
+    "Reguły wejściowe Security Group",
+    "Security group ingress",
+    "Porty 80 i 443 przejdą. Port 22 nie pasuje do żadnej reguły.",
+    "Ports 80 and 443 pass. Port 22 matches no rule."
+  ],
+  [
+    "Archiwum aplikacji w S3",
+    "Application archive in S3",
+    "Prawdziwy ZIP zawiera app.txt. Adapter zapisze klucz releases/app.zip.",
+    "A real ZIP contains app.txt. The adapter records releases/app.zip."
+  ],
+  [
+    "Inwentarz przez AWS CLI",
+    "AWS CLI inventory",
+    "Trzy polecenia dadzą raport aws-resources.txt na danych kontrolnych.",
+    "Three commands produce aws-resources.txt from fixtures."
+  ],
+  [
+    "Rekord DNS z TTL",
+    "DNS record with TTL",
+    "Plan UPSERT mapuje test.yourdomain.com na 1.2.3.4 z TTL 300.",
+    "The UPSERT plan maps test.yourdomain.com to 1.2.3.4 with TTL 300."
+  ],
+  [
+    "Target Group i sonda HTTP",
+    "Target group and HTTP probe",
+    "Plan łączy port 8000 ze ścieżką /health i interwałem 30 s.",
+    "The plan combines port 8000, /health and a 30-second interval."
+  ],
+  [
+    "Replika i waiter",
+    "Read replica and waiter",
+    "Endpoint zostanie odczytany po przejściu repliki do available.",
+    "The endpoint is read after the replica reaches available."
+  ],
+  [
+    "Pomiar failover Multi-AZ",
+    "Multi-AZ failover measurement",
+    "Sondy wykryją trzy sekundy przerwy na zegarze modelu.",
+    "Probes observe a three-second outage on the model clock."
+  ],
+  [
+    "ALB i rozdział ruchu",
+    "ALB and traffic distribution",
+    "Model rozdzieli 12 żądań po równo pomiędzy dwa zdrowe targety.",
+    "The model splits 12 requests evenly between two healthy targets."
+  ],
+  [
+    "Ważony wybór DNS",
+    "Weighted DNS selection",
+    "Sto niezależnych wyborów z ustalonym ziarnem daje proporcje zbliżone do 80/20.",
+    "One hundred seeded independent choices approximate 80/20."
+  ],
+  [
+    "Rotacja własnych migawek",
+    "Rotating owned snapshots",
+    "Raport wybierze tylko migawkę aplikacji starszą niż siedem dni.",
+    "Only the application's snapshot older than seven days is selected."
+  ],
+  [
+    "Rolling update i rollback",
+    "Rolling update and rollback",
+    "Zdrowa wersja zastąpi obie instancje. Błąd drugiej sondy przywróci v1.",
+    "A healthy version replaces both instances. A failed second probe restores v1."
+  ],
+  [
+    "Przełączenie między regionami",
+    "Cross-region recovery",
+    "Model przełączy ruch do kopii po dwóch nieudanych sondach.",
+    "The model routes to the backup after two failed probes."
+  ],
+  [
+    "Skalowanie na podstawie połączeń",
+    "Scaling by connections",
+    "Próbki 110, 100, 20 i 19 zmienią pojemność na 3, 3, 3, 2.",
+    "Samples 110, 100, 20 and 19 produce capacities 3, 3, 3, 2."
+  ],
+  [
+    "Blue-green i powrót do blue",
+    "Blue-green and rollback",
+    "Walidacja zatrzyma złą wersję. Udany cutover zachowa opcję powrotu.",
+    "Validation blocks a bad release. A successful cutover retains rollback."
+  ],
+  [
+    "Testy, staging i bramka produkcji",
+    "Tests, staging and production gate",
+    "Model wykona staging i poczeka na ręczną zgodę przed produkcją.",
+    "The model deploys staging and waits for manual production approval."
+  ],
+  [
+    "Szacunek oszczędności",
+    "Savings estimate",
+    "Raport oddzieli oszczędność skalowania, Spot, archiwum i rezerwacji.",
+    "The report separates scaling, Spot, archive and reservation savings."
+  ],
+  [
+    "Alarmy z oknem pomiarowym",
+    "Alarms over an evaluation window",
+    "Pięć wysokich próbek CPU i błędy 6% wyzwolą dwa alarmy. Latencja 1,4 s nie wyzwoli alarmu.",
+    "Five high CPU samples and 6% errors fire two alarms. 1.4 s latency does not."
+  ],
+  [
+    "Plan infrastruktury produkcyjnej",
+    "Production infrastructure plan",
+    "Plan pokaże zależności od sieci i sekretów do DNS, monitoringu i wdrożenia.",
+    "The plan shows dependencies from network and secrets through DNS, monitoring and deployment."
+  ]
+]
