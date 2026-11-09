@@ -1,0 +1,10 @@
+name: First workflow
+'on':
+  push: {}
+permissions:
+  contents: read
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo "Hello, CI/CD!"

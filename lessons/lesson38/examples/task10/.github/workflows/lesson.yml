@@ -1,0 +1,23 @@
+name: Test results as an artifact
+'on':
+  push: {}
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - run: python -m pip install -r requirements.txt
+    - run: python -m pytest --junitxml=results.xml
+    - uses: actions/upload-artifact@v7
+      if: always()
+      with:
+        name: test-results
+        path: results.xml
+        if-no-files-found: error

@@ -1,0 +1,35 @@
+image: python:3.11-slim
+stages:
+- build
+- test
+- deploy
+variables:
+  PIP_CACHE_DIR: $CI_PROJECT_DIR/.cache/pip
+cache:
+  key:
+    files:
+    - requirements.txt
+  paths:
+  - .cache/pip/
+build:
+  stage: build
+  script:
+  - python -m compileall -q src
+tests:
+  stage: test
+  script:
+  - python -m pip install -r requirements.txt
+  - python -m pytest --junitxml=results.xml
+  artifacts:
+    when: always
+    reports:
+      junit: results.xml
+    paths:
+    - results.xml
+deploy:
+  stage: deploy
+  rules:
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    when: manual
+  script:
+  - echo Deploying

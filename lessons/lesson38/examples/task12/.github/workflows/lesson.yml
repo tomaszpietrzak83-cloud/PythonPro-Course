@@ -1,0 +1,19 @@
+name: Conditional deployment step
+'on':
+  push: {}
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - run: python -m pip install -r requirements.txt
+    - run: python -m pytest
+    - run: echo "Ready to deploy!"
+      if: success() && github.ref == 'refs/heads/main'

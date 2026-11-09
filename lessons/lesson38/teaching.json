@@ -1,0 +1,162 @@
+[
+  [
+    "Zdarzenie push uruchamia job, a run przekazuje polecenie do powłoki.",
+    "A push starts the job and run sends a command to its shell.",
+    "Gdzie pojawi się wynik echo?",
+    "Where does echo output appear?",
+    "W logu kroku w jobie.",
+    "In the job's step log."
+  ],
+  [
+    "setup-python wybiera wersję przed uruchomieniem pliku.",
+    "setup-python selects the version before running the file.",
+    "Skąd runner bierze hello.py?",
+    "Where does the runner get hello.py?",
+    "Checkout pobiera pliki repozytorium do katalogu roboczego.",
+    "Checkout populates the workspace with repository files."
+  ],
+  [
+    "Pip czyta listę zależności z requirements.txt w katalogu repozytorium.",
+    "Pip reads dependency declarations from requirements.txt.",
+    "Co oznacza opcja -r?",
+    "What does -r mean?",
+    "Instalację zależności z podanego pliku.",
+    "Install requirements listed in the specified file."
+  ],
+  [
+    "Pytest wykrywa funkcje testowe i zgłasza błąd przy fałszywej asercji.",
+    "Pytest discovers tests and fails when an assertion is false.",
+    "Co zatrzyma job?",
+    "What fails the job?",
+    "Niezerowy kod zakończenia pytest.",
+    "A nonzero exit code from pytest."
+  ],
+  [
+    "Hash zawartości pliku pozwala odróżnić zestawy zależności w cache.",
+    "A file-content hash distinguishes dependency sets in cache.",
+    "Czy cache zastępuje pip install?",
+    "Does the cache replace pip install?",
+    "Pip nadal instaluje pakiety, korzystając z pobranych wcześniej danych.",
+    "Pip still installs packages using previously downloaded data."
+  ],
+  [
+    "Macierz tworzy osobny job dla każdej wersji Pythona.",
+    "The matrix creates a separate job for each Python version.",
+    "Skąd krok bierze wersję?",
+    "Where does the step get the version?",
+    "Z wartości matrix.python w danym jobie.",
+    "From matrix.python for that job."
+  ],
+  [
+    "Flake8 sprawdza jakość kodu w wybranym katalogu.",
+    "Flake8 checks code quality in the selected directory.",
+    "Co oznacza src/?",
+    "What does src/ select?",
+    "Katalog plików, które linter ma sprawdzić.",
+    "The directory of files the linter checks."
+  ],
+  [
+    "Każde zdarzenie ma własne warunki uruchomienia.",
+    "Each event has its own triggering conditions.",
+    "Czego dotyczy branches przy pull_request?",
+    "What does branches mean for pull_request?",
+    "Docelowej gałęzi pull requesta.",
+    "The pull request's base branch."
+  ],
+  [
+    "needs tworzy zależności między jobami.",
+    "needs establishes job prerequisites.",
+    "Kiedy build zostanie pominięty?",
+    "When is build skipped?",
+    "Gdy lint lub test zakończy się niepowodzeniem.",
+    "When lint or test fails."
+  ],
+  [
+    "JUnit XML zapisuje wyniki, a akcja upload udostępnia plik po wykonaniu.",
+    "JUnit XML stores results. Upload exposes the file after execution.",
+    "Dlaczego użyć always()?",
+    "Why use always()?",
+    "Żeby dołączyć raport również po nieudanych testach, jeśli plik powstał.",
+    "To upload the report even after failed tests if the file was created."
+  ],
+  [
+    "env joba nadpisuje zmienną o tej samej nazwie na poziomie workflow.",
+    "A job env overrides a workflow env variable with the same name.",
+    "Co stanie się z REGION?",
+    "What happens to REGION?",
+    "Job dziedziczy REGION, którego nie nadpisano.",
+    "The job inherits REGION because it was not overridden."
+  ],
+  [
+    "Krok sprawdza wynik poprzedników i pełną nazwę gałęzi.",
+    "The step checks prior success and the full branch reference.",
+    "Czy zielony test na feature wywoła deploy?",
+    "Does a successful feature branch test trigger deployment?",
+    "Warunek gałęzi odrzuca feature.",
+    "The branch condition excludes feature."
+  ],
+  [
+    "Lint, test i build poprzedzają demonstracyjny deploy.",
+    "Lint, test and build precede a demonstration deploy.",
+    "Co się stanie po błędzie lint?",
+    "What happens after lint fails?",
+    "Test i zależne od niego dalsze joby zostaną pominięte.",
+    "Test and jobs depending on it are skipped."
+  ],
+  [
+    "Publikacja do GHCR następuje dopiero po udanym teście obrazu.",
+    "GHCR publishing follows a successful image test.",
+    "Jakie uprawnienie pozwala publikować?",
+    "What permission allows publishing?",
+    "packages: write w jobie publikacji.",
+    "packages: write in the publishing job."
+  ],
+  [
+    "GitLab porządkuje joby według stages i zbiera raport JUnit z testów.",
+    "GitLab orders jobs by stages and collects the JUnit report from tests.",
+    "Który etap można wyzwolić ręcznie?",
+    "Which stage can be triggered manually?",
+    "Deploy na gałęzi domyślnej.",
+    "Deploy on the default branch."
+  ],
+  [
+    "Sekret jest udostępniany tylko krokowi, który go potrzebuje.",
+    "The secret is passed only to the step that needs it.",
+    "Co powinno znaleźć się w logu?",
+    "What belongs in the log?",
+    "Informacja o obecności sekretu lub stała maska.",
+    "Whether the secret is present or a fixed mask."
+  ],
+  [
+    "Cron uruchamia skan, a skrypt zamienia wyniki na treść zgłoszenia.",
+    "Cron starts a scan and the script turns findings into an issue body.",
+    "Co przy braku podatności?",
+    "What happens with no vulnerabilities?",
+    "Nie powstaje plik issue.md, więc krok tworzący zgłoszenie jest pomijany.",
+    "There is no issue.md, so issue creation is skipped."
+  ],
+  [
+    "Macierz łączy systemy z wersjami, a exclude odrzuca wskazane pary.",
+    "The matrix combines systems and versions. Exclude removes selected pairs.",
+    "Ile jobów zostaje po jednym wykluczeniu?",
+    "How many jobs remain after one exclusion?",
+    "Osiem z dziewięciu kombinacji bazowych.",
+    "Eight of the nine baseline combinations."
+  ],
+  [
+    "OIDC wydaje dostęp do roli. Obraz z ECR trafia do nowej rewizji definicji ECS.",
+    "OIDC assumes a role. The ECR image goes into a new ECS task revision.",
+    "Dlaczego rejestrować rewizję?",
+    "Why register a revision?",
+    "Nowa definicja wiąże kontener z obrazem oznaczonym SHA commita.",
+    "The new definition binds the container to the commit-tagged image."
+  ],
+  [
+    "Akcja composite pakuje kroki testowania i tworzenia odznaki do ponownego użycia.",
+    "A composite action bundles testing and badge creation for reuse.",
+    "Skąd badge bierze procent?",
+    "Where does the badge get its percentage?",
+    "Z pola line-rate w raporcie XML coverage.",
+    "From line-rate in the coverage XML report."
+  ]
+]

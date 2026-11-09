@@ -1,0 +1,15 @@
+name: Workflow and job variables
+'on':
+  push: {}
+permissions:
+  contents: read
+jobs:
+  show:
+    runs-on: ubuntu-latest
+    steps:
+    - run: printf "MODE=%s REGION=%s\n" "$MODE" "$REGION"
+    env:
+      MODE: job
+env:
+  MODE: global
+  REGION: local

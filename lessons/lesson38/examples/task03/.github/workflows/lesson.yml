@@ -1,0 +1,17 @@
+name: Installing dependencies
+'on':
+  push: {}
+permissions:
+  contents: read
+jobs:
+  deps:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - run: python -m pip install -r requirements.txt
+    - run: python -m pip show requests pytest

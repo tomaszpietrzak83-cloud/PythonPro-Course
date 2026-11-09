@@ -1,0 +1,122 @@
+[
+  [
+    "Pierwszy workflow",
+    "First workflow",
+    "Lokalny proces wykona polecenie echo i wypisze Hello, CI/CD!.",
+    "A local process runs echo and prints Hello, CI/CD!."
+  ],
+  [
+    "Python 3.11 na runnerze",
+    "Python 3.11 on the runner",
+    "Lokalnie uruchomi się hello.py, a workflow wybierze Python 3.11.",
+    "The local demo runs hello.py. The workflow selects Python 3.11."
+  ],
+  [
+    "Instalacja zależności",
+    "Installing dependencies",
+    "Pokaz odczyta requirements.txt i poda wersje dostępne lokalnie.",
+    "The demo reads requirements.txt and reports installed local versions."
+  ],
+  [
+    "Pierwszy test pytest",
+    "First pytest test",
+    "Test dodawania przejdzie w prawdziwym procesie pytest.",
+    "The addition test passes in a real pytest process."
+  ],
+  [
+    "Cache zależności pip",
+    "Pip dependency cache",
+    "Zmiana requirements.txt zmieni sumę, od której zależy klucz cache.",
+    "Changing requirements.txt changes the digest used in the cache key."
+  ],
+  [
+    "Macierz wersji Pythona",
+    "Python version matrix",
+    "Deklaracja rozwinie trzy wersje. Test lokalny użyje bieżącego interpretera.",
+    "The declaration expands to three versions. The local test uses this interpreter."
+  ],
+  [
+    "Linting katalogu src",
+    "Linting the src directory",
+    "Pokaz sprawdzi składnię src, a workflow wykona flake8.",
+    "The demo checks src syntax. The workflow runs flake8."
+  ],
+  [
+    "Trzy rodzaje wyzwalaczy",
+    "Three workflow triggers",
+    "Push i PR kierują się do main. Trzecia ścieżka jest ręczna.",
+    "Push and PR target main. The third path is manual."
+  ],
+  [
+    "Zależności lint, test i build",
+    "Lint, test and build dependencies",
+    "Build jest gotowy tylko po sukcesie obu poprzedników.",
+    "Build is eligible only after both predecessors succeed."
+  ],
+  [
+    "Raport testów jako artifact",
+    "Test results as an artifact",
+    "Pytest zapisze rzeczywisty raport XML z jednym zaliczonym testem.",
+    "Pytest writes a real XML report with one passing test."
+  ],
+  [
+    "Zmienne w workflow i jobie",
+    "Workflow and job variables",
+    "Wartość joba nadpisze wspólne MODE, pozostawiając REGION.",
+    "The job value overrides global MODE and keeps REGION."
+  ],
+  [
+    "Warunkowy krok wdrożenia",
+    "Conditional deployment step",
+    "Tylko main z zielonym testem pokaże Ready to deploy!.",
+    "Only main with a successful test prints Ready to deploy!."
+  ],
+  [
+    "Pipeline lint, test, build i deploy",
+    "Lint, test, build and deploy pipeline",
+    "Model ustawi cztery etapy w kolejności zależności.",
+    "The model orders the four stages by dependency."
+  ],
+  [
+    "Obraz w GitHub Container Registry",
+    "Image in GitHub Container Registry",
+    "Deklaracja ustawi test przed logowaniem do rejestru i publikacją.",
+    "The declaration puts tests before registry login and publishing."
+  ],
+  [
+    "Trzy etapy w GitLab CI",
+    "Three stages in GitLab CI",
+    "GitLab deklaruje build, test, deploy, cache pip i raport JUnit.",
+    "GitLab declares build, test, deploy, a pip cache and JUnit report."
+  ],
+  [
+    "Przekazanie sekretu do kroku",
+    "Passing a secret to a step",
+    "Brak sekretu zatrzyma operację. Z obecnym sekretem log pokaże jedynie maskę.",
+    "A missing secret stops the operation. The log only shows a mask when it is present."
+  ],
+  [
+    "Skan co dzień o 03:00 UTC",
+    "Daily scan at 03:00 UTC",
+    "Dane kontrolne utworzą lokalny opis podatności. Workflow otwiera issue po wykryciu wpisów.",
+    "Fixture data produces a local vulnerability report. The workflow opens an issue when findings exist."
+  ],
+  [
+    "Macierz systemów i wyjątków",
+    "OS matrix and exclusions",
+    "Iloczyn daje dziewięć kombinacji, a jeden przykład exclude zostawia osiem.",
+    "The product gives nine combinations. One example exclusion leaves eight."
+  ],
+  [
+    "OIDC, ECR i aktualizacja ECS",
+    "OIDC, ECR and ECS update",
+    "Pokaz zweryfikuje uprawnienie OIDC i kolejność publikacji oraz aktualizacji ECS.",
+    "The demo checks OIDC permission and the order of publishing and ECS update."
+  ],
+  [
+    "Własna akcja i badge coverage",
+    "Custom action and coverage badge",
+    "Akcja wykona pytest i wygeneruje SVG z wynikiem coverage.",
+    "The action runs pytest and generates a coverage SVG."
+  ]
+]

@@ -1,0 +1,14 @@
+name: Passing a secret to a step
+'on':
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - run: 'if [ -z "$API_KEY" ]; then echo "Missing API_KEY" >&2; exit 1; fi
+
+        printf "%s\n" "API_KEY=***" "Deploy simulation: credential available"'
+      env:
+        API_KEY: ${{ secrets.API_KEY }}

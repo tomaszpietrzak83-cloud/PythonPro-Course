@@ -1,0 +1,29 @@
+name: Image in GitHub Container Registry
+'on':
+  push: {}
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
+    - run: docker build -t lesson-ci .
+    - run: docker run --rm lesson-ci
+    - uses: docker/login-action@v4
+      if: github.ref == 'refs/heads/main'
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - run: 'IMAGE="ghcr.io/${GITHUB_REPOSITORY,,}:${GITHUB_SHA}"
+
+        docker tag lesson-ci "$IMAGE"
+
+        docker push "$IMAGE"'
+      if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write

@@ -1,0 +1,41 @@
+name: OIDC, ECR and ECS update
+'on':
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
+    - uses: aws-actions/configure-aws-credentials@v6.3.0
+      with:
+        role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+        aws-region: ${{ vars.AWS_REGION }}
+    - uses: aws-actions/amazon-ecr-login@v2
+      id: ecr
+    - run: "set -eu\nimage=\"$REGISTRY/$REPOSITORY:$GITHUB_SHA\"\ndocker build -t\
+        \ \"$image\" .\ndocker push \"$image\"\narn=$(aws ecs describe-services --cluster\
+        \ \"$CLUSTER\" --services \"$SERVICE\" --query 'services[0].taskDefinition'\
+        \ --output text)\naws ecs describe-task-definition --task-definition \"$arn\"\
+        \ --query taskDefinition > current.json\njq --arg image \"$image\" --arg container\
+        \ \"$CONTAINER\" '\n  del(.taskDefinitionArn,.revision,.status,.requiresAttributes,.compatibilities,.registeredAt,.registeredBy)\n\
+        \  | if any(.containerDefinitions[]; .name == $container)\n    then (.containerDefinitions[]\
+        \ | select(.name == $container) | .image) = $image\n    else error(\"Container\
+        \ not found\") end' current.json > next.json\nnext=$(aws ecs register-task-definition\
+        \ --cli-input-json file://next.json --query 'taskDefinition.taskDefinitionArn'\
+        \ --output text)\naws ecs update-service --cluster \"$CLUSTER\" --service\
+        \ \"$SERVICE\" --task-definition \"$next\"\naws ecs wait services-stable --cluster\
+        \ \"$CLUSTER\" --services \"$SERVICE\""
+      env:
+        REGISTRY: ${{ steps.ecr.outputs.registry }}
+        REPOSITORY: ${{ vars.ECR_REPOSITORY }}
+        CLUSTER: ${{ vars.ECS_CLUSTER }}
+        SERVICE: ${{ vars.ECS_SERVICE }}
+        CONTAINER: ${{ vars.ECS_CONTAINER }}
+    environment: staging
+    permissions:
+      contents: read
+      id-token: write

@@ -1,0 +1,20 @@
+name: Custom action and coverage badge
+'on':
+  push: {}
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        persist-credentials: false
+    - uses: actions/setup-python@v6
+      with:
+        python-version: '3.11'
+    - uses: ./.github/actions/my-action
+    - uses: actions/upload-artifact@v7
+      with:
+        name: coverage
+        path: coverage.svg
